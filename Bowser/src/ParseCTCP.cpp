@@ -24,7 +24,7 @@ ServerWindow::ParseCTCP(BString theNick, BString theMsg)
 		tempString << theNick << " :" << theMsg;
 		SendData (tempString.String());
 	}
-	else if(theCTCP == "VERSION")
+	else if((theCTCP == "VERSION") || (theCTCP == "CLIENTINFO"))
 	{
 		BString sysInfoString;
 		if(!bowser_app->GetParanoidState())
@@ -48,9 +48,10 @@ ServerWindow::ParseCTCP(BString theNick, BString theMsg)
 		BString tempString("NOTICE ");
 		tempString << theNick << " :\1VERSION Bowser[d" 
 			<< VERSION << "] : " << sysInfoString;
-		tempString << '\1';
+		tempString << " : http://bowser.sourceforge.net\1";
 		SendData (tempString.String());
 	}
+	
 	else if(theCTCP == "UPTIME")
 	{
 		bigtime_t micro = system_time();
@@ -60,7 +61,7 @@ ServerWindow::ParseCTCP(BString theNick, BString theMsg)
 		bigtime_t hours = min/60;
 		bigtime_t days = hours/24;
 	
-		char message[1024] = "";
+		char message[512] = "";
 		BString uptime = "BeOS system was booted ";
 
 		if (days)

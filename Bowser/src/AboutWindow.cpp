@@ -1,16 +1,17 @@
-
+#include <TranslationUtils.h>
 #include <Screen.h>
 #include <View.h>
 #include <TextView.h>
 #include <Bitmap.h>
 #include <Font.h>
-#include <TranslationUtils.h>
 #include <Message.h>
 #include <Application.h>
+#include <String.h>
 
 #include <stdio.h>
 
 #include "AboutWindow.h"
+#include "StringManip.h"
 #include "IRCDefines.h"
 
 AboutWindow::AboutWindow (const char *version)
@@ -86,20 +87,52 @@ AboutWindow::AboutWindow (const char *version)
 	const char *creditstext =
 		"\n\n\n\n\n\n\n\n\n"
 		"History\n\n"
-		"Once upon a time, there were lots of dinosaurs and stuff.  Er, fast-forward "
-		"to 1999.  There were two IRC clients for BeOS: Baxter and Felix.  They both "
+		"Once upon a time, there were lots of dinosaurs and stuff.  Err, fast-forward "
+		"to A.D. 1999; there were two IRC clients for BeOS: Baxter and Felix.  They both "
 		"had their merits, but Andrew Bazan didn't like either.  So he embarked on "
 		"writing his own.  He entitled it Bowser.  Eventually, he had too much other "
 		"crap going for him, so he open sourced it.  Now, there are a myriad of developers "
-		"working to constantly improve upon it.\n\n"
-		"Developers\n\n"
-		"Andrew Bazan (Hiisi),\nRene Gollent (AnEvilYak)\nTodd Lair (tlair),\nBrian Luft (Electroly),\nWade Majors (kurros),\n and Jamie Wilkinson (project).\n\n"
+		"working to constantly improve upon it.\n\n\n\n"
+		"Unit A\n\n"
+		"Andrew Bazan (Hiisi)\n"
+		"Rene Gollent (AnEvilYak)\n"
+		"Todd Lair (tlair)\n"
+		"Brian Luft (Electroly)\n"
+		"Wade Majors (kurros)\n"
+		"Jamie Wilkinson (project).\n\n\n\n"
+		"Unit B\n\n"
+		"Assistant to Wade Majors: Patches\n"
+		"Music Supervisor: Baron Arnold\n"
+		"Assistant to Baron Arnold: Ficus Kirkpatrick\n"
+		"Stunt Coordinator: Gilligan\n"
+		"Nude Scenes: Natalie Portman\n\n\n"
+		"No animals were injured during the production of this IRC client\n\n\n"
+		"Soundtrack available on Catastrophe Records\n\n\n"
 		"Thanks\n\n"
-		"Special thanks go out to: "
-		"Gord McLeod, Seth Flaxman, BeTika, Resartus, "
-		"John Kurt von Finck, Jean-Baptiste Quéru, and Be, Inc.\n\n"
-		"http://bowser.sourceforge.net\n\n\n\n\n\n\n\n"
+		"Special thanks go out to:\n"
+		"Gord McLeod\n"
+		"Seth Flaxman\n"
+		"BeTika\n"
+		"Resartus\n"
+		"Terminus\n"
+		"John Kurt von Finck\n"
+		"Jean-Baptiste Quéru\n"
+		"Be, Inc., Menlo Park, CA\n"
+		"Pizza Hut, Winter Haven, FL (now give me that free pizza Mike)\n\n\n"
+		"http://bowser.sourceforge.net\n\n\n\n"
+		"A human being should be able to change "
+		"a diaper, plan an invasion, butcher a "
+		"hog, conn a ship, design a building, "
+		"write a sonnet, balance accounts, build "
+		"a wall, set a bone, comfort the dying, "
+		"take orders, give orders, cooperate, act "
+		"alone, solve equations, analyze a new "
+		"problem, pitch manure, program a com"
+		"puter, cook a tasty meal, fight effi"
+		"ciently, die gallantly. Specialization "
+		"is for insects.\" -- Robert A. Heinlein\n\n\n\n\n\n\n\n"
 		"So, like, two guys walk into a bar.\n\n\n\n\nAnd they fell down.\n\n\n\n\nHAW!"
+		
 		"\n\n\n";
 
 	rgb_color black = {0, 0, 0, 255};
@@ -126,7 +159,7 @@ AboutWindow::AboutWindow (const char *version)
 		frame.Width()/2  -  Frame().Width()/2,
 		frame.Height()/2 - Frame().Height()/2); 
 
-	SetPulseRate (80000);
+	SetPulseRate (85000);
 }
 
 AboutWindow::~AboutWindow(void)
@@ -166,107 +199,85 @@ AboutWindow::MessageReceived (BMessage *msg)
 	{
 		
 		case M_ABOUT_ORGY:
-		{
-			BBitmap *bmp;	
-			if (EasterEggOn) {
-				
-				if ((bmp = BTranslationUtils::GetBitmap ('bits', "bits")) != 0)
-				{
-					BRect bmp_bounds (bmp->Bounds());
-					graphic->ResizeTo (bmp_bounds.Width(), bmp_bounds.Height());
-					graphic->SetViewBitmap (bmp);					
-					credits->MoveTo (0.0, graphic->Frame().bottom + 1);
-					graphic->Invalidate();
-					EasterEggOn = false;
-					delete bmp;
-	
-				}
+		{	
+			if (EasterEggOn)
+			{				
+				ResetImage();
 			}
 			else
-			{		  		
-		  		if ((bmp = BTranslationUtils::GetBitmap ('bits', "Gummy Orgy")) != 0)
-				{
-					BRect bmp_bounds (bmp->Bounds());
-					graphic->ResizeTo (bmp_bounds.Width(), bmp_bounds.Height());
-					graphic->SetViewBitmap (bmp);					
-					credits->MoveTo (0.0, graphic->Frame().bottom + 1);
-					graphic->Invalidate();
-					EasterEggOn = true;
-					delete bmp;
-	
-				}
+			{
+				char eggName[25];
+				sprintf(eggName, "Gummy Orgy");
+				EggImage (eggName);
 			}
 			break;
 		}
 		
 		case M_ABOUT_BUDDYJ:
 		{
-			BBitmap *bmp;			
-			if (EasterEggOn) {
-				
-				if ((bmp = BTranslationUtils::GetBitmap ('bits', "bits")) != 0)
-				{
-					BRect bmp_bounds (bmp->Bounds());
-					graphic->ResizeTo (bmp_bounds.Width(), bmp_bounds.Height());
-					graphic->SetViewBitmap (bmp);					
-					credits->MoveTo (0.0, graphic->Frame().bottom + 1);
-					graphic->Invalidate();
-					EasterEggOn = false;
-					delete bmp;
-	
-				}
+			if (EasterEggOn)
+			{
+				ResetImage();
 			}
 			else
-			{		  		
-		  		if ((bmp = BTranslationUtils::GetBitmap ('bits', "Buddy Jesus")) != 0)
-				{
-					BRect bmp_bounds (bmp->Bounds());
-					graphic->ResizeTo (bmp_bounds.Width(), bmp_bounds.Height());
-					graphic->SetViewBitmap (bmp);					
-					credits->MoveTo (0.0, graphic->Frame().bottom + 1);
-					graphic->Invalidate();
-					EasterEggOn = true;
-					delete bmp;
-	
-				}
+			{
+				char eggName[25];
+				sprintf(eggName, "Buddy Jesus");
+				EggImage (eggName);
 			}
 			break;
 		}
 
 		case M_ABOUT_ERIN:
-		{
-			BBitmap *bmp;			
-			if (EasterEggOn) {
-				
-				if ((bmp = BTranslationUtils::GetBitmap ('bits', "bits")) != 0)
-				{
-					BRect bmp_bounds (bmp->Bounds());
-					graphic->ResizeTo (bmp_bounds.Width(), bmp_bounds.Height());
-					graphic->SetViewBitmap (bmp);					
-					credits->MoveTo (0.0, graphic->Frame().bottom + 1);
-					graphic->Invalidate();
-					EasterEggOn = false;
-					delete bmp;
-	
-				}
+		{		
+			if (EasterEggOn)
+			{
+				ResetImage();
 			}
 			else
-			{		  		
-		  		if ((bmp = BTranslationUtils::GetBitmap ('bits', "Erin and Patches")) != 0)
-				{
-					BRect bmp_bounds (bmp->Bounds());
-					graphic->ResizeTo (bmp_bounds.Width(), bmp_bounds.Height());
-					graphic->SetViewBitmap (bmp);					
-					credits->MoveTo (0.0, graphic->Frame().bottom + 1);
-					graphic->Invalidate();
-					EasterEggOn = true;
-					delete bmp;
-				}
+			{
+				char eggName[25];
+				sprintf(eggName, "Erin and Patches");
+				EggImage (eggName);
 			}
 			break;
 		}
 
 	
 	};		
-		
+}
+
+void
+AboutWindow::ResetImage (void)
+{
+	// reset image
+	BBitmap *bmp;
+	
+	if ((bmp = BTranslationUtils::GetBitmap ('bits', "bits")) != 0)
+	{
+		BRect bmp_bounds (bmp->Bounds());
+		graphic->ResizeTo (bmp_bounds.Width(), bmp_bounds.Height());
+		graphic->SetViewBitmap (bmp);					
+		credits->MoveTo (0.0, graphic->Frame().bottom + 1);
+		graphic->Invalidate();
+		EasterEggOn = false;
+		delete bmp;
+	}
+}
+
+void
+AboutWindow::EggImage (const char *data)
+{
+	BBitmap *bmp;
+	
+	if ((bmp = BTranslationUtils::GetBitmap ('bits', data)) != 0)
+	{
+		BRect bmp_bounds (bmp->Bounds());
+		graphic->ResizeTo (bmp_bounds.Width(), bmp_bounds.Height());
+		graphic->SetViewBitmap (bmp);					
+		credits->MoveTo (0.0, graphic->Frame().bottom + 1);
+		graphic->Invalidate();
+		EasterEggOn = true;
+		delete bmp;
+	}
 }
