@@ -29,14 +29,14 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		msg.AddString ("server", serverName.String());
 		bowser_app->PostMessage (&msg);
 
-		BString theNick = GetWord(data, 3);
+		BString theNick (GetWord (data, 3));
 		myNick = theNick;
 		status->SetItemValue (1, myNick.String());
 
-		BString theMsg = RestOfString(data, 4);
-		theMsg.RemoveFirst(":");
-		theMsg.Prepend("* ");
-		theMsg.Append("\n");
+		BString theMsg (RestOfString (data, 4));
+		theMsg.RemoveFirst (":");
+		theMsg.Prepend ("* ");
+		theMsg.Append ("\n");
 		Display (theMsg.String(),0);
 
 		BString title ("Bowser: ");
@@ -105,17 +105,17 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	||  secondWord == "491"  // no o-lines for your host
 	||  secondWord == "502") // can't change mode for other users
 	{
-		BString tempString = RestOfString(data, 4);
-		tempString.RemoveFirst(":");
-		tempString.Append("\n");
+		BString tempString (RestOfString (data, 4));
+		tempString.RemoveFirst (":");
+		tempString.Append ("\n");
 		Display (tempString.String(), 0);
 		return true;
 	}
 
 	if (secondWord == "221") // user mode
 	{
-		BString theMode = GetWord(data, 4);
-		BString tempString("[x] Your current mode is: ");
+		BString theMode (GetWord (data, 4)),
+				tempString ("[x] Your current mode is: ");
 		tempString << theMode << '\n';
 
 		BMessage msg (M_DISPLAY);
@@ -127,8 +127,8 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if (secondWord == "252") // ircops
 	{
-		BString theNumber = GetWord(data, 4);
-		BString tempString("* ");
+		BString theNumber (GetWord (data, 4)),
+				tempString ("* ");
 		tempString << theNumber << " IRC Operators online\n";
 		Display (tempString.String(), 0);
 		return true;
@@ -136,8 +136,8 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	
 	if(secondWord == "254") // channels formed
 	{
-		BString theNumber = GetWord(data, 4);
-		BString tempString("* ");
+		BString theNumber (GetWord (data, 4)),
+				tempString ("* ");
 		tempString << theNumber << " channels formed\n";
 		Display (tempString.String(), 0);
 		return true;
@@ -146,10 +146,10 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "263") // server load too busy, wait a min
 	{
-		BString tempString("[x] ");
-		tempString << RestOfString(data, 4);
-		tempString.RemoveFirst(":");
-		tempString.Append("\n");
+		BString tempString ("[x] ");
+		tempString << RestOfString (data, 4);
+		tempString.RemoveFirst (":");
+		tempString.Append ("\n");
 		
 		BMessage msg (M_DISPLAY);
 		PackDisplay (&msg, tempString.String(), &quitColor, &serverFont);
@@ -159,8 +159,8 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		
 	if(secondWord == "301") // whois | away reason (5th param)
 	{
-		BString tempString("[x] ");
-		BString theReason = RestOfString(data, 5);
+		BString tempString ("[x] "),
+				theReason (RestOfString(data, 5));
 		theReason.RemoveFirst(":");
 		tempString << "Away: " << theReason << '\n';
 
@@ -186,10 +186,10 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "305") // back from away
 	{
-		BString tempString("[x] ");
-		tempString << RestOfString(data, 4);
-		tempString.RemoveFirst(":");
-		tempString.Append("\n");
+		BString tempString ("[x] ");
+		tempString << RestOfString (data, 4);
+		tempString.RemoveFirst (":");
+		tempString.Append ("\n");
 		
 		BMessage msg (M_DISPLAY);
 		PackDisplay (&msg, tempString.String(), &quitColor, &serverFont);
@@ -199,10 +199,10 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "306") // you are now away
 	{
-		BString tempString("[x] ");
-		tempString << RestOfString(data, 4);
-		tempString.RemoveFirst(":");
-		tempString.Append("\n");
+		BString tempString ("[x] ");
+		tempString << RestOfString (data, 4);
+		tempString.RemoveFirst (":");
+		tempString.Append ("\n");
 		
 		BMessage msg (M_DISPLAY);
 		PackDisplay (&msg, tempString.String(), &quitColor, &serverFont);
@@ -213,7 +213,6 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	if(secondWord == "307") // whois | user has identified
 	{
 		BString theInfo (RestOfString (data, 5));
-
 		theInfo.RemoveFirst (":");
 
 		BMessage display (M_DISPLAY);
@@ -228,12 +227,11 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	
 	if (secondWord == "311") // start of whois
 	{
-		BString theNick (GetWord (data, 4));
-		BString theIdent (GetWord (data, 5));
-		BString theAddress (GetWord (data, 6));
-		BString theName (RestOfString (data, 8));
-
-		theName.RemoveFirst(":");
+		BString theNick (GetWord (data, 4)),
+				theIdent (GetWord (data, 5)),
+				theAddress (GetWord (data, 6)),
+				theName (RestOfString (data, 8));
+		theName.RemoveFirst (":");
 
 		BMessage display (M_DISPLAY);
 		BString buffer;
@@ -254,10 +252,9 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "312") // whois | server
 	{
-		BString theNick (GetWord (data, 4));
-		BString theServer (GetWord (data, 5));
-		BString theInfo (RestOfString (data, 6));
-
+		BString theNick (GetWord (data, 4)),
+				theServer (GetWord (data, 5)),
+				theInfo (RestOfString (data, 6));
 		theInfo.RemoveFirst (":");
 
 		BMessage display (M_DISPLAY);
@@ -272,11 +269,10 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if (secondWord == "313") // IRC operator (uh oh)
 	{
-		BString theNick (GetWord (data, 4));
-		
-		BString tempString("[x] ");
-		BString info = RestOfString(data, 5);
-		info.Remove(0, 1);
+		BString theNick (GetWord (data, 4)),
+				tempString ("[x] "),
+				info (RestOfString (data, 5));
+		info.Remove (0, 1);
 		tempString << info << '\n';
 		BMessage msg (M_DISPLAY);
 
@@ -291,13 +287,12 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if (secondWord == "314") // whowas nickname info
 	{
-		BString theNick (GetWord (data, 4));
-		BString theIdent (GetWord (data, 5));
-		BString theAddress (GetWord (data, 6));
-		BString theName (RestOfString(data, 8));
-
-		BString tempString("[x] ");
-		theName.RemoveFirst(":");
+		BString theNick (GetWord (data, 4)),
+				theIdent (GetWord (data, 5)),
+				theAddress (GetWord (data, 6)),
+				theName (RestOfString (data, 8)),
+				tempString ("[x] ");
+		theName.RemoveFirst (":");
 		tempString << theNick << " [was] (" << theIdent << "@" << theAddress << ")\n";
 
 		BMessage msg (M_DISPLAY);
@@ -309,21 +304,21 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "315") // end of who
 	{
-		BString tempString = RestOfString(data, 4);
-		tempString.RemoveFirst(":");
-		tempString.Append("\n");
+		BString tempString (RestOfString (data, 4));
+		tempString.RemoveFirst (":");
+		tempString.Append ("\n");
 		Display (tempString.String(), 0);
 		return true;
 	}
 
 	if(secondWord == "317") // whois | idle/signon (5th, 6th)
 	{
-		BString theNick (GetWord (data, 4));
-
-		BString tempString("[x] ");
-		BString tempString2("[x] ");
-		BString theTime (GetWord(data, 5));
-		BString signOnTime (GetWord(data, 6));
+		BString theNick (GetWord (data, 4)),
+				tempString ("[x] "),
+				tempString2 ("[x] "),
+				theTime (GetWord (data, 5)),
+				signOnTime (GetWord (data, 6));
+				
 		int64 idleTime = strtoul(theTime.String(), NULL, 0);
 		tempString << "Idle: " << DurationString(idleTime * 1000 * 1000) << "\n";
 		
@@ -355,7 +350,6 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	if(secondWord == "319") // whois | channels
 	{
 		BString theChannels (RestOfString (data, 5));
-
 		theChannels.RemoveFirst(":");
 
 		BMessage display (M_DISPLAY);
@@ -383,10 +377,9 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	if (secondWord == "322") // List command return
 	{
 		BMessage msg (M_LIST_EVENT);
-		BString channel (GetWord (data, 4));
-		BString users (GetWord (data, 5));
-		BString topic (RestOfString (data, 6));
-
+		BString channel (GetWord (data, 4)),
+				users (GetWord (data, 5)),
+				topic (RestOfString (data, 6));
 		topic.RemoveFirst (":");
 		
 		msg.AddString ("server", serverName.String());
@@ -411,9 +404,9 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "324") // channel mode
 	{
-		BString theChan = GetWord(data, 4);
-		BString theMode = GetWord(data, 5);
-		BString tempStuff = RestOfString(data, 6);
+		BString theChan (GetWord (data, 4)),
+				theMode (GetWord (data, 5)),
+				tempStuff (RestOfString (data, 6));
 
 		if(tempStuff != "-9z99")
 		{
@@ -445,15 +438,15 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "329") // channel created
 	{
-		BString theChan = GetWord(data, 4);
-		BString theTime = GetWord(data, 5); // long time format
+		BString theChan (GetWord (data, 4)),
+				theTime (GetWord (data, 5)); // long time format
 		return true; // ignore, for now
 	}
 
 	if(secondWord == "331") // no topic set
 	{
-		BString theChan(GetWord(data, 4));
-		BString tempString("[x] No topic set in ");
+		BString theChan (GetWord (data, 4)),
+				tempString ("[x] No topic set in ");
 		tempString << theChan << '\n';
 
 		BMessage msg (M_DISPLAY);
@@ -465,8 +458,8 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if (secondWord == "332") // channel topic
 	{
-		BString theChannel (GetWord (data, 4));
-		BString theTopic (RestOfString (data, 5));
+		BString theChannel (GetWord (data, 4)),
+				theTopic (RestOfString (data, 5));
 		ClientWindow *client (Client (theChannel.String()));
 
 		theTopic.RemoveFirst (":");
@@ -490,8 +483,8 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	
 	if (secondWord == "333") // person who changed topic
 	{
-		BString channel (GetWord (data, 4));
-		BString user (GetWord (data, 5));
+		BString channel (GetWord (data, 4)),
+				user (GetWord (data, 5));
 		ClientWindow *client (Client (channel.String()));
 
 		if (client)
@@ -509,8 +502,8 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if (secondWord == "353") // names list
 	{
-		BString channel (GetWord (data, 5));
-		BString  names (RestOfString (data, 6));
+		BString channel (GetWord (data, 5)),
+				names (RestOfString (data, 6));
 		ClientWindow *client (Client (channel.String()));
 
 		names.RemoveFirst (":");
@@ -559,7 +552,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		}
 		else // not in the channel
 		{
-			BString tempString("*** Users in ");
+			BString tempString ("*** Users in ");
 			tempString << channel << ": " << names << '\n';
 			Display (tempString.String(), &textColor);
 			return true;
@@ -591,7 +584,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		if (!initialMotd
 		||  (initialMotd && motd))
 		{
-			BString tempString("- Server Message Of The Day:\n");
+			BString tempString ("- Server Message Of The Day:\n");
 			Display (tempString.String(), 0);
 		}
 		return true;
@@ -602,7 +595,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		if (!initialMotd
 		||  (initialMotd && motd))
 		{
-			BString tempString("- End of /MOTD command.\n");
+			BString tempString ("- End of /MOTD command.\n");
 
 			Display (tempString.String(), 0);
 			mServer->SetEnabled(true);
@@ -637,10 +630,10 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "381") // you are now irc op  
 	{
-		BString tempString("[x] ");
-		tempString << RestOfString(data, 4);
-		tempString.RemoveFirst(":");
-		tempString.Append("\n");
+		BString tempString ("[x] ");
+		tempString << RestOfString (data, 4);
+		tempString.RemoveFirst (":");
+		tempString.Append ("\n");
 		
 		BMessage msg (M_DISPLAY);
 		PackDisplay (&msg, tempString.String(), &quitColor, &serverFont);
@@ -650,10 +643,10 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "382") // (ircop) rehashing config  
 	{
-		BString tempString("[x] ");
-		tempString << RestOfString(data, 4);
-		tempString.RemoveFirst(":");
-		tempString.Append("\n");
+		BString tempString ("[x] ");
+		tempString << RestOfString (data, 4);
+		tempString.RemoveFirst (":");
+		tempString.Append ("\n");
 		
 		BMessage msg (M_DISPLAY);
 		PackDisplay (&msg, tempString.String(), &quitColor, &serverFont);
@@ -714,8 +707,8 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "403") // no such channel
 	{
-		BString theChannel = GetWord(data, 4);
-		BString tempString("[x] ");
+		BString theChannel (GetWord (data, 4)),
+				tempString ("[x] ");
 		tempString << theChannel << " does not exist.\n";
 
 		BMessage msg (M_DISPLAY);
@@ -727,8 +720,8 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "404") // cannot send to channel
 	{
-		BString theChannel = GetWord(data, 4);
-		BString tempString("[x] Cannot send data to ");
+		BString theChannel (GetWord (data, 4)),
+				tempString ("[x] Cannot send data to ");
 		tempString << theChannel << ".\n";
 
 		BMessage msg (M_DISPLAY);
@@ -740,8 +733,8 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "405") // too many channels
 	{
-		BString theChannel = GetWord(data, 4);
-		BString tempString("[x] Cannot join ");
+		BString theChannel (GetWord (data, 4)),
+				tempString ("[x] Cannot join ");
 		tempString << theChannel << " (you're in too many channels.)\n";
 
 		BMessage msg (M_DISPLAY);
@@ -753,8 +746,8 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "406") // whowas (not on irc)
 	{
-		BString theNick = GetWord(data, 4);
-		BString tempString("[x] ");
+		BString theNick (GetWord (data, 4)),
+				tempString ("[x] ");
 		tempString << theNick << " has not been on IRC recently.\n";
 
 		BMessage msg (M_DISPLAY);
@@ -766,8 +759,8 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "407") // duplicate recipients
 	{
-		BString theTarget = GetWord(data, 4);
-		BString tempString("[x] There is more than one ");
+		BString theTarget (GetWord (data, 4)),
+				tempString ("[x] There is more than one ");
 		tempString << theTarget << ".\n";
 
 		BMessage msg (M_DISPLAY);
@@ -778,27 +771,27 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "412") // no text to send 
 	{
-		BString tempString = RestOfString(data, 4);
-		tempString.RemoveFirst(":");
-		tempString.Append("\n");
+		BString tempString (RestOfString (data, 4));
+		tempString.RemoveFirst (":");
+		tempString.Append ("\n");
 		Display (tempString.String(), 0);
 		return true;
 	}
 	
 	if(secondWord == "421") // unknown command
 	{
-		BString tempString = RestOfString(data, 4);
-		tempString.RemoveFirst(":");
-		tempString.Append("\n");
+		BString tempString (RestOfString (data, 4));
+		tempString.RemoveFirst (":");
+		tempString.Append ("\n");
 		Display (tempString.String(), 0);
 		return true;
 	}
 
 	if(secondWord == "422") // motd file is missing
 	{
-		BString tempString = RestOfString(data, 4);
-		tempString.RemoveFirst(":");
-		tempString.Append("\n");
+		BString tempString (RestOfString (data, 4));
+		tempString.RemoveFirst (":");
+		tempString.Append ("\n");
 		Display (tempString.String(), 0);
 	
 		if (initialMotd && cmds.Length())
@@ -855,9 +848,8 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 			return true;
 		}
 
-		BString theNick (GetWord (data, 4));
-
-		BString tempString ("Nickname ");
+		BString theNick (GetWord (data, 4)),
+				tempString ("Nickname ");
 		tempString << "[x] " << theNick << " is already in use.\n";
 
 		BMessage display (M_DISPLAY);
@@ -868,9 +860,9 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "441") // user not on channel
 	{
-		BString theChannel = GetWord(data, 5);
-		BString theNick = GetWord(data, 4);
-		BString tempString("[x] ");
+		BString theChannel (GetWord (data, 5)),
+				theNick (GetWord (data, 4)),
+				tempString ("[x] ");
 		tempString << theNick << " is not in " << theChannel << ".\n";
 
 		BMessage msg (M_DISPLAY);
@@ -882,8 +874,8 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "442") // you're not on channel
 	{
-		BString theChannel = GetWord(data, 4);
-		BString tempString("[x] You're not in ");
+		BString theChannel (GetWord (data, 4)),
+				tempString ("[x] You're not in ");
 		tempString << theChannel << ".\n";
 
 		BMessage msg (M_DISPLAY);
@@ -895,9 +887,9 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "443") // already on channel
 	{
-		BString theChannel = GetWord(data, 5);
-		BString theNick = GetWord(data, 4);
-		BString tempString("[x] ");
+		BString theChannel (GetWord (data, 5)),
+				theNick (GetWord (data, 4)),
+				tempString ("[x] ");
 		tempString << theNick << " is already in " << theChannel << ".\n";
 
 		BMessage msg (M_DISPLAY);
@@ -909,8 +901,8 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "467") // key already set
 	{
-		BString theChannel = GetWord(data, 4);
-		BString tempString("[x] Channel key already set in ");
+		BString theChannel (GetWord (data, 4)),
+				tempString ("[x] Channel key already set in ");
 		tempString << theChannel << ".\n";
 
 		BMessage msg (M_DISPLAY);
@@ -922,8 +914,8 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "472") // unknown channel mode
 	{
-		BString theMode = GetWord(data, 4);
-		BString tempString("[x] Unknown channel mode: '");
+		BString theMode (GetWord (data, 4)),
+				tempString ("[x] Unknown channel mode: '");
 		tempString << theMode << "'\n";
 
 		BMessage msg (M_DISPLAY);
@@ -935,11 +927,11 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "473") // cannot join channel
 	{
-		BString theChan = GetWord(data, 4);
-		BString theReason = RestOfString(data, 5);
+		BString theChan (GetWord (data, 4)),
+				tempString ("[x] "),
+				theReason (RestOfString (data, 5));
 		theReason.RemoveFirst(":");
 		theReason.ReplaceLast("channel", theChan.String());
-		BString tempString("[x] ");
 		tempString << theReason << " (invite only)\n";
 
 		BMessage msg (M_DISPLAY);
@@ -951,11 +943,12 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if(secondWord == "474") // cannot join channel
 	{
-		BString theChan = GetWord(data, 4);
-		BString theReason = RestOfString(data, 5);
+		BString theChan (GetWord (data, 4)),
+				tempString ("[x] "),
+				theReason (RestOfString (data, 5));
 		theReason.RemoveFirst(":");
 		theReason.ReplaceLast("channel", theChan.String());
-		BString tempString("[x] ");
+
 		tempString << theReason << " (you're banned)\n";
 
 		BMessage msg (M_DISPLAY);
