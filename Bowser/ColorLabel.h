@@ -40,7 +40,7 @@ class ColorLabel : public BControl
 	virtual void		Draw (BRect);
 	virtual void		MessageReceived (BMessage *);
 	virtual void		MouseDown (BPoint);
-	virtual void		MouseMoved (BPoint, uint32, const BMessage *);
+//	virtual void		MouseMoved (BPoint, uint32, const BMessage *);
 	virtual void		MouseUp (BPoint);
 	virtual status_t	Invoke (BMessage * = 0);
 

@@ -7,6 +7,9 @@ http://bowser.sourceforge.net
  * Added /about command - opens About window
  * Added /preferences command - opens Preferences window
  * Added /visit command - /visit <url> loads URL in default text/html app.
+ * Fixed redraw bug in Channel List Window (thanks AnEvilYak)
+ * Fixed mouse over bug in Color preferences (thanks AnEvilYak)
+
 
 [d41a]
  * New CTCP options in nick list menu

@@ -1,6 +1,6 @@
 
-#define MAX_BYTES			15000
-#define REMOVE_BYTES		1000
+#define MAX_BYTES			2500
+#define REMOVE_BYTES		250
 
 #include <Alert.h>
 #include <TextControl.h>
@@ -227,8 +227,10 @@ IRCView::DisplayChunk (
 		Delete (0,bytes);
 	}
 
-	if (scrolling)
+	if (scrolling) {
+		printf ("***Scroll in IRCView::DisplayChunk -> %ld\n", TextLength());
 		ScrollToOffset (TextLength());
+	}
 
 	return TextLength();
 }
@@ -310,6 +312,7 @@ int32 IRCView::FirstMarker (const char *cData)
 void IRCView::ClearView()
 {
 	SetText("");
+	printf ("***Scroll in IRCView::ClearView -> 0\n");
 	ScrollToOffset(0);
 }
 
@@ -321,6 +324,7 @@ IRCView::FrameResized (float width, float height)
 	textrect.right  = textrect.left + width - 7;
 	textrect.bottom = textrect.top + height - 1;
 	SetTextRect(textrect);
+	printf ("***Scroll in IRCView::FrameResized -> %ld\n", TextLength());
 	ScrollToOffset (TextLength());
 }
 

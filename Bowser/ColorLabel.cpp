@@ -190,20 +190,20 @@ ColorLabel::MouseDown (BPoint point)
 	SetMouseEventMask (B_POINTER_EVENTS);
 }
 
-void
-ColorLabel::MouseMoved (BPoint point, uint32 transit, const BMessage *)
-{
-	if (tracking)
-		switch (transit)
-		{
-			case B_ENTERED_VIEW:
-				SetColor (Inverted());
-				break;
-			case B_EXITED_VIEW:
-				SetColor (saveColor);
-				break;
-		}
-}
+//void
+//ColorLabel::MouseMoved (BPoint point, uint32 transit, const BMessage *)
+//{
+//	if (tracking)
+//		switch (transit)
+//		{
+//			case B_ENTERED_VIEW:
+//				SetColor (Inverted());
+//				break;
+//			case B_EXITED_VIEW:
+//				SetColor (saveColor);
+//				break;
+//		}
+//}
 
 void
 ColorLabel::MouseUp (BPoint point)

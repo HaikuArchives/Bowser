@@ -625,7 +625,7 @@ ChannelItem::DrawItem (BView *owner, BRect frame, bool complete)
 		owner->SetLowColor (180, 180, 180, 255);
 		owner->FillRect (frame, B_SOLID_LOW);
 	}
-	else if (complete)
+	else //if (complete)
 	{
 		owner->SetLowColor (255, 255, 255, 255);
 		owner->FillRect (frame, B_SOLID_LOW);
