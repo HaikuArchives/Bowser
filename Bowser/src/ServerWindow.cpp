@@ -109,6 +109,7 @@ ServerWindow::ServerWindow (
 	status->SetItemValue (STATUS_NICK, myNick.String());
 	
 	SetPulseRate (0);
+	ClientWindow *client (ActiveClient());
 
 	// We pack it all up and ship it off to the
 	// the establish thread.  Establish can
@@ -122,6 +123,7 @@ ServerWindow::ServerWindow (
 	msg->AddString ("nick", myNick.String());
 	msg->AddBool ("identd", identd);
 	msg->AddPointer ("server", this);
+	msg->AddPointer ("client", client);
 
 	loginThread = spawn_thread (
 		Establish,
@@ -538,7 +540,6 @@ ServerWindow::MessageReceived (BMessage *msg)
 			break;
 		}
 
-
 		default:
 			ClientWindow::MessageReceived (msg);
 	}
@@ -612,6 +613,7 @@ ServerWindow::Establish (void *arg)
 	BMessage *msg (reinterpret_cast<BMessage *>(arg));
 	const char *id, *port, *ident, *name, *nick;
 	ServerWindow *server;
+	ClientWindow *client;
 	bool identd;
 	
 	if(bowser_app->GetHideSetupState())
@@ -626,6 +628,13 @@ ServerWindow::Establish (void *arg)
 	msg->FindString ("nick", &nick);
 	msg->FindBool ("identd", &identd);
 	msg->FindPointer ("server", reinterpret_cast<void **>(&server));
+	msg->FindPointer ("client", reinterpret_cast<void **>(&client));
+	
+	BMessage statusMsg0 (M_DISPLAY);
+	BString tempString0;
+	tempString0 << "[@] Attempting connection to " << id << ":" << port << "...\n";
+	server->PackDisplay (&statusMsg0, tempString0.String(), &(server->errorColor));
+	server->PostMessage(&statusMsg0);
 
 	BNetAddress address;
 	BMessenger msgr (server);
@@ -695,6 +704,10 @@ ServerWindow::Establish (void *arg)
 		delete endPoint;
 		return 0;
 	}
+	
+	BMessage statusMsg1 (M_DISPLAY);
+	server->PackDisplay (&statusMsg1, "[@] Established...\n", &(server->errorColor));
+	server->PostMessage(&statusMsg1);
 
 	identLock.Lock();
 	if (endPoint->Connect (address) == B_NO_ERROR)
@@ -710,6 +723,10 @@ ServerWindow::Establish (void *arg)
 
 		if (identd)
 		{
+			BMessage statusMsg1 (M_DISPLAY);
+			server->PackDisplay (&statusMsg1, "[@] Creating Identd on port 113...\n[@] Waiting for Identd request...\n", &(server->errorColor));
+			server->PostMessage(&statusMsg1);
+			
 			BNetEndpoint identPoint, *accepted;
 			BNetAddress identAddress (sin.sin_addr, 113);
 			BNetBuffer buffer;
@@ -740,6 +757,9 @@ ServerWindow::Establish (void *arg)
 
 				output.AppendString (string.String());
 				accepted->Send (output);
+				BMessage statusMsg2 (M_DISPLAY);
+				server->PackDisplay (&statusMsg2, "[@] Replied to Identd request...\n[@] Closing Identd...\n", &(server->errorColor));
+				server->PostMessage(&statusMsg2);
 				delete accepted;
 			}
 		}
