@@ -14,6 +14,8 @@
 #include <Messenger.h>
 #include <String.h>
 #include <Font.h>
+#include <File.h>
+//#include <Path.h>
 
 class BMenuBar;
 class BMenu;
@@ -69,17 +71,22 @@ class ClientWindow : public BWindow
 										ctcpReqColor,
 										nickColor,
 										quitColor,
+										errorColor,
+										joinColor,
 										whoisColor,
 										myNickColor,
 										actionColor,
-										opColor;
+										opColor,
+										inputbgColor,
+										inputColor;
 
 	BFont								myFont,
 										serverFont,
 										inputFont;
 	bool								timeStampState,
 										canNotify,
-										scrolling;
+										scrolling,
+										isLogging;
 
 	WindowSettings					*settings;
 
@@ -107,6 +114,9 @@ class ClientWindow : public BWindow
 	void								AddSend (BMessage *, const char *);
 	void								AddSend (BMessage *, const BString &);
 	void								AddSend (BMessage *, int32);
+
+	void								SetupLogging (void);
+	BFile								logFile;
 
 	static int32					TimedSubmit (void *);
 	void								PackDisplay (BMessage *,
@@ -235,7 +245,7 @@ class ClientWindow : public BWindow
 											theMsg);
 
 	private:
-
+	
 	void								Init (void);
 	void								NotifyRegister (void);
 };

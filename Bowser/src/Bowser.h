@@ -49,6 +49,11 @@ class BowserApp : public BApplication
 	bool						GetAltwServerState (void) const;
 	void						AutoRejoinState (bool);
 	bool						GetAutoRejoinState (void) const;
+	void						MasterLogState (bool);
+	bool						GetMasterLogState (void) const;
+	void						DateLogsState (bool);
+	bool						GetDateLogsState (void) const;
+
 
 	void						AlsoKnownAs (const char *);
 	BString					GetAlsoKnownAs (void) const;

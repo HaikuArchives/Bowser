@@ -107,18 +107,19 @@ DCCFileWindow::MessageReceived (BMessage *msg)
 		{
 			const char *nick;
 			const char *file;
+			const char *port;
 			bool hit (false);
 			off_t pos;
 
-			msg->FindString ("nick", &nick);
-			msg->FindString ("file", &file);
-			msg->FindInt64  ("pos", &pos);
-
+			msg->FindString ("bowser:nick", &nick);
+			msg->FindString ("bowser:file", &file);
+			msg->FindString ("bowser:port", &port);
+			msg->FindInt64  ("bowser:pos", &pos);
+			
 			for (int32 i = 0; i < CountChildren(); ++i)
 			{
 				DCCSend *view (dynamic_cast<DCCSend *>(ChildAt (i)));
-
-				if (view && view->IsMatch (nick, file))
+				if (view && view->IsMatch (nick, port))
 				{
 					view->SetResume (pos);
 					hit = true;

@@ -38,6 +38,7 @@
 #include "PrefEvent.h"
 #include "PrefCommand.h"
 #include "PrefDCC.h"
+#include "PrefLog.h"
 #include "PrefWindow.h"
 #include "ServerOptions.h"
 #include "IgnoreWindow.h"
@@ -222,7 +223,7 @@ SetupWindow::SetupWindow (
 	const BString *events)
 
 	: BWindow (frame,
-		(BString ("Bowser: Day ") << VERSION).String(),
+		"Bowser: Setup",
 		B_TITLED_WINDOW,
 		B_NOT_RESIZABLE
 			| B_ASYNCHRONOUS_CONTROLS
@@ -335,6 +336,7 @@ SetupWindow::MessageReceived (BMessage *msg)
 				prefsFrame->AddPreference ("Deskbar Icon", "Deskbar Icon", new PreferenceNotify);
 				prefsFrame->AddPreference ("Event", "Event", new PreferenceEvent);
 				prefsFrame->AddPreference ("Command", "Command", new PreferenceCommand);
+				prefsFrame->AddPreference ("Logging", "Logggin", new PreferenceLog);
 				//prefsFrame->AddPreference ("DCC", "DCC", new PreferenceDCC);
 				prefsFrame->AddPreference ("Window", "Window", new PreferenceWindow);
 				prefsFrame->Show();

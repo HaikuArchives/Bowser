@@ -380,12 +380,13 @@ ServerWindow::MessageReceived (BMessage *msg)
 				*ip,
 				*port;
 			BPath path;
-
+			int64 pos = 0;
+			
 			msg->FindString("bowser:nick", &nick);
 			msg->FindString("bowser:size", &size);
 			msg->FindString("bowser:ip", &ip);
 			msg->FindString("bowser:port", &port);
-
+			
 			if (msg->HasString ("path"))
 				path.SetTo (msg->FindString ("path"));
 			else
@@ -411,7 +412,7 @@ ServerWindow::MessageReceived (BMessage *msg)
 				ip,
 				port,
 				cont);
-
+			
 			BMessage aMsg (M_DCC_FILE_WIN);
 			aMsg.AddPointer ("view", view);
 			be_app->PostMessage (&aMsg);
@@ -537,6 +538,12 @@ ServerWindow::MessageReceived (BMessage *msg)
 			BMessage msg (M_DCC_FILE_WIN);
 			msg.AddPointer ("view", view);
 			be_app->PostMessage (&msg);
+			break;
+		}
+		
+		case M_ADD_RESUME_DATA:
+		{
+			AddResumeData (msg);
 			break;
 		}
 
@@ -1267,7 +1274,9 @@ ServerWindow::AddResumeData (BMessage *msg)
 	data->port   = msg->FindString ("bowser:port");
 	data->path   = msg->FindString ("path");
 	data->pos    = msg->FindInt64  ("pos");
-
+	
+	printf("%s %s %s %s %s", data->nick.String(), data->file.String(), 
+		data->size.String(), data->ip.String(), data->port.String());
 	resumes.AddItem (data);
 
 	BString buffer;

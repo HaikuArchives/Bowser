@@ -32,8 +32,10 @@
 #define C_CTCP_REQ										17
 #define C_CTCP_RPY										18
 #define C_IGNORE										19
+#define C_INPUT_BACKGROUND								20
+#define C_INPUT											21
 
-#define MAX_COLORS										20
+#define MAX_COLORS										22
 
 
 #define F_TEXT												0
@@ -72,7 +74,7 @@
 #define STATUS_NORMAL_BIT								0x0100
 #define STATUS_IGNORE_BIT								0x1000
 
-#define VERSION											"43"
+#define VERSION											"1.0"
 
 #include <GraphicsDefs.h>
 
@@ -229,7 +231,7 @@ const uint32 M_DCC_PORT								= 0x1209;
 const uint32 M_DCC_FILE_WIN							= 0x1210;
 const uint32 M_DCC_FILE_WIN_DONE					= 0x1211;
 const uint32 M_ADD_RESUME_DATA						= 0x1212;
-
+const uint32 M_DCC_MESSENGER						= 0x1213;
 #ifdef DEV_BUILD
 extern bool DumpReceived;
 extern bool DumpSent;

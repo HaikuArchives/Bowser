@@ -4,6 +4,8 @@
 #include <StringView.h>
 #include <ScrollView.h>
 #include <View.h>
+#include <Path.h>
+#include <Mime.h>
 #include <TextControl.h>
 #include <Roster.h>
 #include <FindDirectory.h>
@@ -211,7 +213,6 @@ ClientWindow::Init (void)
 		0,
 		B_FOLLOW_LEFT_RIGHT | B_FOLLOW_BOTTOM);
 	input->SetDivider (0);
-	input->TextView()->SetFontAndColor (&inputFont);
 	input->ResizeToPreferred();
 	input->MoveTo (
 		2,
@@ -258,11 +259,15 @@ ClientWindow::Init (void)
 	nickColor		= bowser_app->GetColor (C_NICK);
 	ctcpReqColor	= bowser_app->GetColor (C_CTCP_REQ);
 	quitColor		= bowser_app->GetColor (C_QUIT);
+	errorColor		= bowser_app->GetColor (C_ERROR);
 	whoisColor		= bowser_app->GetColor (C_WHOIS);
+	joinColor		= bowser_app->GetColor (C_JOIN);
 	myNickColor		= bowser_app->GetColor (C_MYNICK);
 	actionColor		= bowser_app->GetColor (C_ACTION);
 	opColor			= bowser_app->GetColor (C_OP);
-
+	inputColor		= bowser_app->GetColor (C_INPUT);
+	inputbgColor	= bowser_app->GetColor (C_INPUT_BACKGROUND);
+	
 	myFont			= *(bowser_app->GetClientFont (F_TEXT));
 	serverFont		= *(bowser_app->GetClientFont (F_SERVER));
 	canNotify		= bowser_app->CanNotify();
@@ -271,7 +276,15 @@ ClientWindow::Init (void)
 	autoNickTime	= bowser_app->GetAutoNickTime();
 	notifyMask		= bowser_app->GetNotificationMask();
 
-	scrolling    = true;
+	isLogging		= bowser_app->GetMasterLogState();
+	scrolling		= true;
+	
+	SetupLogging();
+
+	input->TextView()->SetViewColor(inputbgColor);
+	input->TextView()->SetFontAndColor (&inputFont, B_FONT_ALL, 
+			&inputColor);
+	input->TextView()->Invalidate();
 
 
 	cmdWrap = new CommandWrapper;
@@ -348,6 +361,9 @@ ClientWindow::~ClientWindow (void)
 {
 	if (settings) delete settings;
 	if (cmdWrap)  delete cmdWrap;
+	
+	isLogging = false;
+	SetupLogging();
 }
 
 bool
@@ -547,7 +563,7 @@ ClientWindow::MessageReceived (BMessage *msg)
 			}
 			else
 			{
-				BString buffer (input->Text());
+				BString buffer;
 				for (int32 i = 0; msg->HasString ("data", i); ++i)
 				{
 					const char *data;
@@ -555,9 +571,21 @@ ClientWindow::MessageReceived (BMessage *msg)
 					msg->FindString ("data", i, &data);
 					buffer << (i ? " " : "") << data;
 				}
-
-					input->TextView()->SetText(buffer.String());
-					input->TextView()->Select (buffer.Length(), buffer.Length());
+				int32 start, finish;
+				if (msg->FindInt32 ("selstart", &start) == B_OK)
+				{
+					msg->FindInt32 ("selend", &finish);
+					if (start != finish)
+							input->TextView()->Delete (start, finish);
+					input->TextView()->Insert (start, buffer.String(), buffer.Length());
+					input->TextView()->Select (start + buffer.Length(), start + buffer.Length()); 				
+				}
+				else
+				{
+					input->TextView()->Insert (buffer.String());
+					input->TextView()->Select (input->TextView()->TextLength(),
+						input->TextView()->TextLength());
+				}
 					input->TextView()->ScrollToSelection();
 			}
 
@@ -983,6 +1011,21 @@ ClientWindow::Display (
 	const BFont *font,
 	bool timeStamp)
 {
+
+	if (isLogging)
+	{
+		BString printbuf;
+		if (timeStamp)
+		{
+			printbuf << TimeStamp().String();
+		}
+		
+		printbuf << buffer;
+		
+		off_t len = strlen (printbuf.String());
+		logFile.Write (printbuf.String(), len);
+	}
+
 	if (timeStamp && timeStampState)
 		text->DisplayChunk (
 			TimeStamp().String(),
@@ -1397,7 +1440,7 @@ ClientWindow::DnsCmd (const char *data)
 	{
 		BString eid (id);
 		eid.RemoveLast (" [DCC]");
-		if (!ICompare(eid, parms))
+		if (!ICompare(eid, parms) || !ICompare(myNick, parms))
 		{
 			BMessage send (M_SERVER_SEND);
 			AddSend (&send, "USERHOST ");
@@ -2373,6 +2416,18 @@ ClientWindow::StateChange (BMessage *msg)
 				text->SetViewColor (*color);
 				text->Invalidate();
 				break;
+			
+			case C_INPUT_BACKGROUND:
+				input->TextView()->SetViewColor(*color);
+				input->TextView()->Invalidate();
+				break;
+			
+			case C_INPUT:
+				BFont current;
+				input->TextView()->GetFontAndColor(0, &current);
+				input->TextView()->SetFontAndColor(&current, B_FONT_ALL, color);
+				input->TextView()->Invalidate();
+				break; 
 		}
 	}
 
@@ -2585,9 +2640,93 @@ ClientWindow::DNSLookup (void *arg)
 	
 	BMessage dnsMsg (M_DISPLAY);
 	client->PackDisplay (&dnsMsg, output.String(), &(client->whoisColor));
-	client->PostMessage(&dnsMsg);	
+	client->PostMessage (&dnsMsg);	
 	
 	return 0;
 
+}
+
+void
+ClientWindow::SetupLogging (void)
+{
+	if (logFile.InitCheck() == B_NO_INIT && isLogging) {
+	
+		time_t myTime (time (0));
+		struct tm *ptr;
+		ptr = localtime(&myTime);
+		
+		app_info ai;
+		be_app->GetAppInfo (&ai);
+		
+		BEntry entry (&ai.ref);
+		BPath path;
+		entry.GetPath (&path);
+		path.GetParent (&path);
+
+		BDirectory dir (path.Path());
+		dir.CreateDirectory ("logs", &dir);
+		path.Append ("logs");
+		dir.SetTo (path.Path());
+		BString sName (serverName);
+		sName.ToLower();
+		dir.CreateDirectory (sName.String(), &dir);
+		path.Append (sName.String());
+		
+		BString wName (id);	// do some cleaning up
+		wName.ReplaceAll ("/", "_");
+		wName.ReplaceAll ("*", "_");
+		wName.ReplaceAll ("?", "_");
+		
+		if (bowser_app->GetDateLogsState())
+		{
+			char tempDate[16];
+			strftime (tempDate, 16, "_%Y%m%d", ptr);
+			wName << tempDate;
+		}
+		
+		wName << ".log";
+		wName.ToLower();
+		
+		path.Append (wName.String());
+		
+		printf ("filename: %s\n", path.Path());
+
+		
+		logFile.SetTo (path.Path(), B_READ_WRITE | B_CREATE_FILE | B_OPEN_AT_END);
+
+		if (logFile.InitCheck() == B_NO_ERROR)
+		{
+			char tempTime[96];
+			if (logFile.Position() == 0) // new file
+			{
+				strftime (tempTime, 96, "Session Start: %a %b %d %H:%M %Y\n", ptr);
+			}
+			else
+			{
+				strftime (tempTime, 96, "\n\nSession Start: %a %b %d %H:%M %Y\n", ptr);
+			}	
+			off_t len = strlen (tempTime);
+			logFile.Write (tempTime, len);
+			update_mime_info (path.Path(), false, false, true);
+		}
+		else
+		{
+			Display ("[@] Unable to make log file\n", &errorColor);
+			isLogging = false;
+			logFile.Unset();
+			return;
+		}
+	}
+	else if (isLogging == false && logFile.InitCheck() != B_NO_INIT) {
+		time_t myTime (time (0));
+		struct tm *ptr;
+		ptr = localtime (&myTime);
+		char tempTime[96];
+		strftime (tempTime, 96, "Session Close: %a %b %d %H:%M %Y\n", ptr);
+		off_t len = strlen (tempTime);
+		logFile.Write (tempTime, len);
+		logFile.Unset();
+	}
+	return;
 }
 

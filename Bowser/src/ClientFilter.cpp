@@ -6,10 +6,12 @@
 #include <TextView.h>
 #include <Clipboard.h>
 #include <Roster.h>
+#include <ScrollView.h>
 
 #include <stdio.h>
 #include <string.h>
 
+#include "IRCView.h"
 #include "IRCDefines.h"
 #include "ClientWindow.h"
 #include "ClientFilter.h"
@@ -201,6 +203,72 @@ ClientInputFilter::HandleKeys (BMessage *msg)
 	   			result = B_SKIP_MESSAGE;
 	   			break;
 			}
+			case B_UP_ARROW:
+			{
+				if ( window->scroll->ScrollBar(B_VERTICAL)->Value() != 0)
+				{
+					window->text->ScrollBy(0.0, window->text->LineHeight() * -1);
+					result = B_SKIP_MESSAGE;
+				}
+				break;
+			}
+			
+			case B_DOWN_ARROW:
+			{
+				float min, max;
+				window->scroll->ScrollBar(B_VERTICAL)->GetRange(&min, &max);
+				if ( window->scroll->ScrollBar(B_VERTICAL)->Value() != max)
+				{ 
+					window->text->ScrollBy(0.0, window->text->LineHeight());
+					result = B_SKIP_MESSAGE;
+				}
+				break;
+			}
+			
+			case B_HOME:
+			{
+				window->text->ScrollTo(0.0, 0.0);
+				result = B_SKIP_MESSAGE;
+				break;
+			}
+			
+			case B_END:
+			{
+				float min, max;
+				window->scroll->ScrollBar(B_VERTICAL)->GetRange(&min, &max);
+				window->text->ScrollTo(0.0, max);
+				result = B_SKIP_MESSAGE;
+				break;
+			}
+			
+			case B_PAGE_UP:
+			{
+				BRect myrect (window->text->Bounds());
+				float height = myrect.bottom - myrect.top;
+				
+				if ( window->scroll->ScrollBar(B_VERTICAL)->Value() > height)
+				{
+					window->text->ScrollBy(0.0, 
+						-1 * height);
+				}
+				else
+					window->text->ScrollTo(0.0, 0.0);
+				result = B_SKIP_MESSAGE;
+				break;
+			}
+			
+			case B_PAGE_DOWN:
+			{
+				BRect myrect (window->text->Bounds());
+				float height = myrect.bottom - myrect.top;
+			
+				float min, max;
+				window->scroll->ScrollBar(B_VERTICAL)->GetRange(&min, &max);
+				if ( window->scroll->ScrollBar(B_VERTICAL)->Value() != max)
+					window->text->ScrollBy(0.0, height);
+				result = B_SKIP_MESSAGE;
+				break;
+			}
 		}
 	}
 	return result;
@@ -253,6 +321,12 @@ ClientInputFilter::HandleDrop (const char *buffer)
 
 		result = alert->Go();
 	}
+	
+	int32 start, finish;
+	window->input->TextView()->GetSelection(&start, &finish);
+	msg.AddInt32 ("selstart", start);
+	msg.AddInt32 ("selend", finish);
+
 
 	if (result || lines == 1)
 	{

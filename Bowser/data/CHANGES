@@ -3,30 +3,40 @@ http://bowser.sourceforge.net
 
 [d43]
  * New DCC system
+    - Multi-tiered transfer window, ala Tracker
+    - DCC Resume support
  * Fixed crashing bug which happened on some server notices.
  * Tab completion now works in Query and DCC Chat windows
  * Fixed issue where Bowser wouldn't auto rejoin if the channel key
    was "-9z99"
- * Alt+W on the Server window now does a clean Quit
+ * Cmd+W on the Server window now does a clean Quit
  * /m command added. Used in server window it acts like /mode yournick <parms>,
    used in a channel it acts like /mode #channel <parms>
  * Modified Idle/SignOn time parsing for /whois
  * "/uptime -l" switch echos the uptime locally instead of sending to server
  * Channel topic is now shown in SatusView
  * StatusView items now autosize to their contents.
- * Added Lag Checker to StatusView
+ * Added Lag Meter to StatusView
  * Displayed cps rate for DCC xfers is averaged better now... not as erratic.
  * Added /dns command
  * Tab completion cycles through matching nicknames.
  * Names list is sent to Server Window instead of Channel Window
  * Now shows time Channel Topic was set
- * Alt+V (pasting) is handled by the Input Box's filter now... you have the option
+ * Cmd+V (pasting) is handled by the Input Box's filter now... you have the option
    of sending multiple lines now.
  * Having nicks in your Notify list doesn't lag you to death now
  * Fixed the Add... menu entry in the Notify Window
  * Window Titlebars are updated with an astrick (*) if they contain new content
  * Added status messages to the connection process
  * Fixed weird issues with Color Preferences Panel
+ * Handles server disconnects much better
+ * Keyboard scrolling:
+    - Cmd+Up_Arrow & Cmd+Down_Arrow move one line
+    - Cmd+Page_Up & Cmd+Page_Down move one screen
+    - Cmd+Home & Cmd+End move to the top or bottom
+ * Logging support!
+    - Separate folders for each server
+    - mIRC compliant time/date stamping 
 
 
 [d42b]
@@ -46,7 +56,7 @@ http://bowser.sourceforge.net
  * Responds to CTCP Uptime requests, output configurable from Prefs
  * Added /uptime command, output configurable from Prefs
  * Fixed DCC send issues with transfers dieing
- * Alt+P works in Setup Window now
+ * Cmd+P works in Setup Window now
  * Bowser now updates the mimetype of files after DCC Gets.
  * Fixed DCC get issues where the wrong sockets would get closed
  * Added sign on time information parsing to /whois
@@ -55,7 +65,7 @@ http://bowser.sourceforge.net
  * Can now choose point 15 fonts
  * Added compatablilty for some out of spec /me's from other clients 
  * Fixed some oddities in the Color Preferences panel
- * Added options to Window Preferences to disable Alt+W for Setup and Server
+ * Added options to Window Preferences to disable Cmd+W for Setup and Server
    windows
  * URL highlight & clicking is now case insensitive
  
@@ -135,7 +145,7 @@ http://bowser.sourceforge.net
     - /unnotify removes specified nickname from the notify list
  * Zooming now works on client windows
  * Added support for local-server &channels
- * Preferences window can be accessed via Alt+P
+ * Preferences window can be accessed via Cmd+P
  * Channel name can be tab-completed
  * You can now drop non-text files onto the input box of a Query window and Bowser
    will kick off a DCC send

@@ -280,7 +280,7 @@ DCCReceive::Transfer (void *arg)
 			B_WRITE_ONLY | B_OPEN_AT_END) == B_NO_ERROR
 		&&  view->file.GetSize (&file_size) == B_NO_ERROR
 		&&  file_size > 0LL)
-			view->UpdateBar (file_size, 0, 0, false);
+			view->UpdateBar (file_size, 0, 0, true);
 		else
 		{
 			view->resume = false;
@@ -306,10 +306,9 @@ DCCReceive::Transfer (void *arg)
 		while (view->running && bytes_received < size)
 		{
 			int read;
-
-			if ((read = recv (view->s, buffer, 8195, 0)) < 0)
+			if ((read = recv (view->s, buffer, 8196, 0)) < 0)
 				break;
-
+			
 			view->file.Write (buffer, read);
 			bytes_received += read;
 
@@ -322,7 +321,7 @@ DCCReceive::Transfer (void *arg)
 
 			if (now - last > 500000)
 			{
-				cps = (int)ceil (bytes_received / ((now - start) / 1000000.0));
+				cps = (int)ceil ((bytes_received - file_size) / ((now - start) / 1000000.0));
 				last = now;
 				period = 0;
 				hit = true;
@@ -358,12 +357,8 @@ DCCSend::DCCSend (
 	  addr (a)
 {
 	BMessage reply;
-	printf("sending M_DCC_PORT message\n");
 	be_app_messenger.SendMessage (M_DCC_PORT, &reply);
-	printf("message sent\n");
-	port << (1500 + (rand() % 5000)); // baxter's way of getting a port
-	printf("port = %s\n", port.String());
-//	reply.FindString ("port", &port);
+	port << (40000 + (rand() % 5000)); // baxter's way of getting a port
 	reply.FindInt32 ("sid", &sid);
 }
 
@@ -495,8 +490,8 @@ DCCSend::Transfer (void *arg)
 
 	if (view->pos)
 	{
-		view->file.Seek (view->pos + 1LL, SEEK_SET);
-		view->UpdateBar (view->pos, 0, 0, false);
+		view->file.Seek (view->pos, SEEK_SET);
+		view->UpdateBar (view->pos, 0, 0, true);
 		bytes_sent = view->pos;
 	}
 
@@ -537,7 +532,7 @@ DCCSend::Transfer (void *arg)
 
 			if (now - last > 500000)
 			{
-				cps = (int) ceil (bytes_sent / ((now - start) / 1000000.0));
+				cps = (int) ceil ((bytes_sent - view->pos) / ((now - start) / 1000000.0));
 				last = now;
 				period = 0;
 				hit = true;
@@ -571,15 +566,9 @@ DCCSend::Unlock (void)
 }
 
 bool
-DCCSend::IsMatch (const char *n, const char *f) const
+DCCSend::IsMatch (const char *n, const char *p) const
 {
-	BPath path (file_name.String());
-	BString buffer;
-
-	buffer.Append (path.Leaf());
-	buffer.ReplaceAll (" ", "_");
-
-	return nick == n && file_name == f;
+	return nick == n && port == p;
 }
 
 void

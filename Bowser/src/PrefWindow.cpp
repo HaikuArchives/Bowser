@@ -71,7 +71,7 @@ PreferenceWindow::PreferenceWindow (void)
 	AltWSetup = new BCheckBox (
 		BRect (0, 150, bounds.right, 174),
 		"altwsetup",
-		"Enable Alt+W for Setup Window",
+		"Enable Cmd+W for Setup Window",
 		new BMessage (M_ALTW_SETUP));
 	AltWSetup->SetValue (bowser_app->GetAltwSetupState()
 		? B_CONTROL_ON : B_CONTROL_OFF);
@@ -80,7 +80,7 @@ PreferenceWindow::PreferenceWindow (void)
 	AltWServer = new BCheckBox (
 		BRect (0, 175, bounds.right, 199),
 		"altwserver",
-		"Enable Alt+W for Server Windows",
+		"Enable Cmd+W for Server Windows",
 		new BMessage (M_ALTW_SERVER));
 	AltWServer->SetValue (bowser_app->GetAltwServerState()
 		? B_CONTROL_ON : B_CONTROL_OFF);

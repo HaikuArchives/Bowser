@@ -81,7 +81,7 @@ ServerWindow::ParseCTCP(BString theNick, BString theMsg)
 			sysInfoString = "BeOS : Because you don't eat cereal with a fork.";
 		}
 		BString tempString("NOTICE ");
-		tempString << theNick << " :\1VERSION Bowser[d" 
+		tempString << theNick << " :\1VERSION Bowser[" 
 			<< VERSION << "] : http://bowser.sourceforge.net : " << sysInfoString;
 			
 		#ifdef DEV_BUILD
@@ -131,7 +131,95 @@ ServerWindow::ParseCTCP(BString theNick, BString theMsg)
 			thePort.RemoveLast("\1");
 			DCCChatDialog(theNick, theIP, thePort);
 		}
+		else if (theType == "ACCEPT")
+		{
+			BString file (GetWord (theMsg.String(), 3));
+			BString port (GetWord (theMsg.String(), 4));
+			BString poss (GetWord (theMsg.String(), 5));
+			poss.RemoveLast("\1");
+
+			off_t pos (0LL);
+			for (int32 i = 0; i < poss.Length(); ++i)
+				pos = pos * 10 + poss[i] - '0';
+
+			for (int32 i = 0; i < resumes.CountItems(); ++i)
+			{
+				ResumeData *data ((ResumeData *)resumes.ItemAt (i));
+
+				if (data->nick == theNick
+				&&  data->pos  == pos
+				&&  data->port == port);
+				{
+					resumes.RemoveItem (i);
+
+					BMessage msg (DCC_ACCEPT);
+					msg.AddString ("bowser:nick", data->nick.String());
+					msg.AddString ("bowser:file", data->file.String());
+					msg.AddString ("bowser:size", data->size.String());
+					msg.AddString ("bowser:ip",   data->ip.String());
+					msg.AddString ("bowser:port", data->port.String());
+					msg.AddString ("path",        data->path.String());
+					msg.AddBool   ("continue",    true);
+
+					PostMessage(&msg);
+					printf("posted message\n");
+					delete data;
+					break;
+				}
+			}
+		}
+		else if (theType == "RESUME")
+		{
+			BString file (GetWord (theMsg.String(), 3));
+			BString port (GetWord (theMsg.String(), 4));
+			BString poss (GetWord (theMsg.String(), 5));
+			poss.RemoveLast("\1");
+
+			off_t pos (0LL);
+			for (int32 i = 0; i < poss.Length(); ++i)
+				pos = pos * 10 + poss[i] - '0';
+
+			// Have to tell the sender we can resume
+			BString tempString("PRIVMSG ");
+			tempString << theNick << " :\1DCC ACCEPT " << file << " "
+			           << port << " " << poss << "\1";
+			SendData (tempString.String());
+
+			BMessage bMsg (M_DCC_MESSENGER), bReply;
+			be_app_messenger.SendMessage (&bMsg, &bReply);
+
+			BMessenger msgr;
+			bReply.FindMessenger ("msgr", &msgr);
+			printf("messenger found\n");
+			BMessage msg (M_ADD_RESUME_DATA), reply;
+			msg.AddString ("bowser:nick", theNick.String());
+			msg.AddString ("bowser:port", port.String());
+			msg.AddString ("bowser:file", file.String());
+			msg.AddInt64 ("bowser:pos", pos);
+
+			// do sync.. we do not want to have the transfer
+			// start before we tell it okay
+			msgr.SendMessage (&msg, &reply);
+			if (reply.HasBool ("hit")
+			&&  reply.FindBool ("hit"))
+			{
+
+				BString buffer;
+
+				buffer << "PRIVMSG "
+					<< theNick
+					<< " :\1DCC ACCEPT "
+					<< file
+					<< " "
+					<< port
+					<< " "
+					<< poss
+					<< "\1";
+				SendData (buffer.String());
+			}
+		}
 	}
+	
 
 	BMessage display (M_DISPLAY);
 	BString buffer;

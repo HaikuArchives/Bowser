@@ -1,6 +1,7 @@
 
 #include <Window.h>
 #include <FindDirectory.h>
+#include <Directory.h>
 #include <DataIO.h>
 #include <File.h>
 #include <fs_attr.h>
@@ -36,7 +37,7 @@ Settings::Save (void)
 	SavePacked (&packed);
 	packed.Flatten (&mIO, &size);
 
-	BFile file (path.Path(), B_WRITE_ONLY | B_CREATE_FILE);
+	BFile file (path.Path(), B_WRITE_ONLY | B_CREATE_FILE | B_ERASE_FILE);
 
 	if (file.InitCheck() == B_NO_ERROR)
 	{

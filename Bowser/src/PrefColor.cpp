@@ -27,6 +27,8 @@ static const char *ControlLabels[] =
 	"CTCP Request:",
 	"CTCP Reply:",
 	"Ignore:",
+	"Input Background:",
+	"Input:",
 	0
 };
 

@@ -51,6 +51,5 @@ class GraphicView : public BView
 const uint32 M_ABOUT_CLOSE					= 'abcl'; // The party has to stop sometime
 const uint32 M_ABOUT_ORGY					= 'abor'; // Gummy Orgy
 const uint32 M_ABOUT_BUDDYJ					= 'abbj'; // Buddy Jesus!
-const uint32 M_ABOUT_ERIN					= 'abep'; // Erin and Patches
 
 #endif

@@ -27,7 +27,6 @@ AboutWindow::AboutWindow (void)
 	// what's a program without easter eggs?
 	AddShortcut('O', B_COMMAND_KEY, new BMessage(M_ABOUT_ORGY));
 	AddShortcut('J', B_COMMAND_KEY, new BMessage(M_ABOUT_BUDDYJ));
-	AddShortcut('E', B_COMMAND_KEY, new BMessage(M_ABOUT_ERIN));
 
 	background = new BView (
 		bounds,
@@ -106,6 +105,7 @@ AboutWindow::AboutWindow (void)
 		"Assistant to Baron Arnold: Ficus Kirkpatrick\n"
 		"Stunt Coordinator: Gilligan\n"
 		"Nude Scenes: Natalie Portman\n\n\n"
+		"Counselors: regurg and helix\n" 
 		"No animals were injured during the production of this IRC client\n\n\n"
 		"Soundtrack available on Catastrophe Records\n\n\n"
 		"Thanks\n\n"
@@ -114,7 +114,9 @@ AboutWindow::AboutWindow (void)
 		"Seth Flaxman\n"
 		"Olathe\n"
 		"Terminus\n"
+		"Bob Maple\n"
 		"Kurt von Finck\n"
+		"Kristine Gouveia\n"
 		"Jean-Baptiste Quéru\n"
 		"Be, Inc., Menlo Park, CA\n"
 		"Pizza Hut, Winter Haven, FL (now give me that free pizza Mike)\n\n\n"
@@ -144,7 +146,7 @@ AboutWindow::AboutWindow (void)
 	run.runs[0].font   = font;
 	run.runs[0].color  = black;
 
-	credits->Insert ("\n\n\n\n\n\n\n\n\nBowser Day ", &run);
+	credits->Insert ("\n\n\n\n\n\n\n\n\nBowser ", &run);
 	credits->Insert (VERSION, &run);
 	credits->Insert ("\n", &run);
 
@@ -226,22 +228,6 @@ AboutWindow::MessageReceived (BMessage *msg)
 			}
 			break;
 		}
-
-		case M_ABOUT_ERIN:
-		{		
-			if (EasterEggOn)
-			{
-				ResetImage();
-			}
-			else
-			{
-				char eggName[25];
-				sprintf(eggName, "Erin and Patches");
-				EggImage (eggName);
-			}
-			break;
-		}
-
 	
 	};		
 }

@@ -44,7 +44,7 @@ ChannelWindow::ChannelWindow (
 		opsCount (0)
 
 {
-	SetSizeLimits(300,2000,150,2000);
+	SetSizeLimits (300,2000,150,2000);
 
 	scroll->ResizeTo (
 		scroll->Frame().Width() - 100,
@@ -102,7 +102,13 @@ ChannelWindow::ChannelWindow (
 	status->SetItemValue (STATUS_LAG, "0.000");
 	status->SetItemValue (STATUS_NICK, myNick.String());
 		
-	bgView->AddChild(namesScroll);
+	bgView->AddChild (namesScroll);
+
+	rgb_color joinColor = bowser_app->GetColor (C_JOIN);
+	Display ("*** Now talking in ", &joinColor);
+	Display (id.String(), &joinColor);
+	Display ("\n", &joinColor);
+
 }
 
 ChannelWindow::~ChannelWindow()
@@ -522,14 +528,14 @@ ChannelWindow::MessageReceived (BMessage *msg)
 		{
 			char theChannel[1024];
 			char theNick[512];
-			memset(theChannel, 0, 1024); // be safe
-			memset(theNick, 0, 512); // ditto
-			sprintf(theChannel, "%s", id.String());
+			memset (theChannel, 0, 1024); // be safe
+			memset (theNick, 0, 512); // ditto
+			sprintf (theChannel, "%s", id.String());
 			const char *action;
 			msg->FindString("action", &action);
-			BString theAction(action);
-			BString myNick(myNick);
-			BString targetNick;
+			BString theAction (action),
+					myNick (myNick),
+					targetNick;
 			theAction.ReplaceFirst("-9y99", theChannel);
 			NameItem *myUser;
 			int32 pos = namesList->CurrentSelection();
@@ -539,8 +545,8 @@ ChannelWindow::MessageReceived (BMessage *msg)
 				targetNick = myUser->Name();
 			}
 
-			sprintf(theNick, "%s", targetNick.String());
-			theAction.ReplaceFirst("-9x99", theNick);
+			sprintf (theNick, "%s", targetNick.String());
+			theAction.ReplaceFirst ("-9x99", theNick);
 
 			if (GetWord(theAction.String(), 3) == ":\1PING")
 			{
@@ -565,14 +571,14 @@ ChannelWindow::MessageReceived (BMessage *msg)
 				targetNick = myUser->Name();
 			}
 			BFilePanel *myPanel = new BFilePanel;
-			BString myTitle("Sending a file to ");
-			myTitle.Append(targetNick);
-			myPanel->Window()->SetTitle(myTitle.String());
-			BMessage *myMessage = new BMessage(CHOSE_FILE);
-			myMessage->AddString("nick", targetNick.String());
-			myPanel->SetMessage(myMessage);
-			myPanel->SetButtonLabel(B_DEFAULT_BUTTON, "Send");
-			myPanel->SetTarget(sMsgr);
+			BString myTitle ("Sending a file to ");
+			myTitle.Append (targetNick);
+			myPanel->Window()->SetTitle (myTitle.String());
+			BMessage *myMessage = new BMessage (CHOSE_FILE);
+			myMessage->AddString ("nick", targetNick.String());
+			myPanel->SetMessage (myMessage);
+			myPanel->SetButtonLabel (B_DEFAULT_BUTTON, "Send");
+			myPanel->SetTarget (sMsgr);
 			myPanel->Show();
 			break;
 		}
@@ -581,7 +587,7 @@ ChannelWindow::MessageReceived (BMessage *msg)
 			BString targetNick;
 			NameItem *myUser;
 			int32 pos = namesList->CurrentSelection();
-			if(pos >= 0)
+			if (pos >= 0)
 			{
 				myUser = static_cast<NameItem *>(namesList->ItemAt(pos));
 				targetNick = myUser->Name();
@@ -597,7 +603,7 @@ ChannelWindow::MessageReceived (BMessage *msg)
 		{
 			const char *theNick;
 			msg->FindString("nick", &theNick);
-			if(theNick == NULL)
+			if (theNick == NULL)
 			{
 				NameItem *myUser;
 				int32 pos = namesList->CurrentSelection();
@@ -605,7 +611,7 @@ ChannelWindow::MessageReceived (BMessage *msg)
 				{
 					myUser = static_cast<NameItem *>(namesList->ItemAt(pos));
 					BString targetNick = myUser->Name();
-					msg->AddString("nick", targetNick.String());
+					msg->AddString ("nick", targetNick.String());
 				}
 			}
 			sMsgr.SendMessage (msg);
@@ -615,11 +621,11 @@ ChannelWindow::MessageReceived (BMessage *msg)
 		case M_LAG_CHANGED:
 		{
 			BString lag;
-			msg->FindString("lag", &lag);
-			status->SetItemValue(STATUS_LAG, lag.String());
+			msg->FindString ("lag", &lag);
+			status->SetItemValue (STATUS_LAG, lag.String());
 			break;
 		}
-		
+				
 		default:
 			ClientWindow::MessageReceived (msg);
 			break;

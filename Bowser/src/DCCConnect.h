@@ -78,7 +78,7 @@ class DCCSend : public DCCConnect
 {
 	BMessenger			caller;
 	sem_id				sid;
-	off_t					pos;
+	int64				pos;
 	struct in_addr		addr;
 	
 

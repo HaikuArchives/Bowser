@@ -49,7 +49,6 @@ ServerWindow::DCCGetDialog (
 	BString port)
 {
 	BMessage msg (DCC_ACCEPT), reply;
-//	const char *directory;
 	
 	msg.AddString ("bowser:nick", nick.String());
 	msg.AddString ("bowser:file", file.String());
@@ -61,16 +60,14 @@ ServerWindow::DCCGetDialog (
 	bool handled (false);
 
 // ignore this part until some minor details with DCC Prefs are worked out
-
-/*	if (*directory)  			
-	{
-		printf("directory passed\n");
+/*
+		const char *directory = "/boot/home/";
 		entry_ref ref;
 		BEntry entry;
 
 		create_directory (directory, 0777);
-		if (entry.SetTo (directory) == B_NO_ERROR
-		&&  entry.GetRef (&ref)     == B_NO_ERROR)
+		if (entry.SetTo (directory) == B_NO_ERROR 
+		if (entry.GetRef (&ref)     == B_NO_ERROR)
 		{
 			BDirectory dir (&ref);
 			BEntry file_entry; 
@@ -127,37 +124,34 @@ ServerWindow::DCCGetDialog (
 		}
 	}
 */
-	if (!handled)
+	BFilePanel *panel;
+	BString text;
+
+	text << nick
+		<< ": "
+		<< file
+		<< " ("
+		<< size
+		<< " bytes)";
+
+	panel = new BFilePanel (
+		B_SAVE_PANEL,
+		&sMsgr,
+		0,
+		0,
+		false,
+		&msg);
+	panel->SetButtonLabel (B_DEFAULT_BUTTON, "Accept");
+	panel->SetButtonLabel (B_CANCEL_BUTTON, "Refuse");
+	panel->SetSaveText (file.String());
+
+	if (panel->Window()->Lock())
 	{
-		BFilePanel *panel;
-		BString text;
-
-		text << nick
-			<< ": "
-			<< file
-			<< " ("
-			<< size
-			<< " bytes)";
-
-		panel = new BFilePanel (
-			B_SAVE_PANEL,
-			&sMsgr,
-			0,
-			0,
-			false,
-			&msg);
-		panel->SetButtonLabel (B_DEFAULT_BUTTON, "Accept");
-		panel->SetButtonLabel (B_CANCEL_BUTTON, "Refuse");
-		panel->SetSaveText (file.String());
-
-		if (panel->Window()->Lock())
-		{
-			panel->Window()->SetTitle (text.String());
-			panel->Window()->AddFilter (new DCCFileFilter (panel, msg));
-			panel->Window()->Unlock();
-		}
-		panel->Show();
+		panel->Window()->SetTitle (text.String());
+		panel->Window()->AddFilter (new DCCFileFilter (panel, msg));
+		panel->Window()->Unlock();
 	}
+	panel->Show();
 }
 
 void ServerWindow::DCCChatDialog(BString theNick, BString theIP, BString thePort)

@@ -47,7 +47,9 @@ class AppSettings : public Settings
 									statusTopicState,
 									altwSetupState,
 									altwServerState,
-									autoRejoinState;
+									autoRejoinState,
+									masterLogState,
+									dateLogsState;
 	BString						alsoKnownAs,
 									otherNick,
 									autoNickTime;
@@ -1126,6 +1128,18 @@ BowserApp::MessageReceived (BMessage *msg)
 
 			break;
 		}
+		
+		case M_DCC_MESSENGER:
+
+		if (msg->IsSourceWaiting())
+		{
+			BMessenger msgr (dccFileWin);
+			BMessage reply;
+
+			reply.AddMessenger ("msgr", msgr);
+			msg->SendReply (&reply);
+		}
+		break;
 
 		case M_DCC_FILE_WIN_DONE:
 		{
@@ -1473,6 +1487,39 @@ BowserApp::GetAltwServerState (void) const
 }
 
 void
+BowserApp::MasterLogState (bool state)
+{
+	settings->masterLogState = state;
+
+	BMessage msg (M_STATE_CHANGE);
+
+	msg.AddBool ("Master Log", state);
+	Broadcast (&msg);
+}
+
+bool
+BowserApp::GetMasterLogState (void) const
+{
+	return settings->masterLogState;
+}
+
+void
+BowserApp::DateLogsState (bool state)
+{
+	settings->dateLogsState = state;
+
+	BMessage msg (M_STATE_CHANGE);
+
+	msg.AddBool ("Date Logs", state);
+	Broadcast (&msg);
+}
+
+bool
+BowserApp::GetDateLogsState (void) const
+{
+	return settings->dateLogsState;
+}
+void
 BowserApp::AutoRejoinState (bool state)
 {
 	settings->autoRejoinState = state;
@@ -1797,6 +1844,8 @@ AppSettings::AppSettings (void)
 	  altwSetupState (true),
 	  altwServerState (true),
 	  autoRejoinState (false),
+	  masterLogState (false),
+	  dateLogsState (false),
 	  alsoKnownAs ("bowserUser beosUser"),
 	  otherNick ("tlair"),
 	  autoNickTime ("10"),
@@ -1845,6 +1894,8 @@ AppSettings::AppSettings (void)
 	const rgb_color CTCP_REQ_COLOR	= {10,10,180, 255};
 	const rgb_color CTCP_RPY_COLOR	= {10,40,180, 255};
 	const rgb_color IGNORE_COLOR		= {100, 100, 100, 255};
+	const rgb_color INPUT_COLOR		= {0, 0, 0, 255};
+	const rgb_color	INPUT_BG_COLOR	= {255, 255, 255, 255};
 
 	colors[C_TEXT]							= myBlack;
 	colors[C_BACKGROUND]					= myWhite;
@@ -1866,6 +1917,8 @@ AppSettings::AppSettings (void)
 	colors[C_CTCP_REQ]					= CTCP_REQ_COLOR;
 	colors[C_CTCP_RPY]					= CTCP_RPY_COLOR;
 	colors[C_IGNORE]						= IGNORE_COLOR;
+	colors[C_INPUT]						= INPUT_COLOR;
+	colors[C_INPUT_BACKGROUND]			= INPUT_BG_COLOR;
 
 	events[E_JOIN]							= "*** $N ($I@$A) has joined the channel.";
 	events[E_PART]							= "*** $N has left the channel.";
@@ -1879,7 +1932,7 @@ AppSettings::AppSettings (void)
 	events[E_NOTIFY_OFF]					= "*** $N has left IRC.";
 
 	commands[CMD_KICK]					= "Ouch!";
-	commands[CMD_QUIT]					= "Bowser [d$V]: server window terminating...";
+	commands[CMD_QUIT]					= "Bowser[$V]: server window terminating...";
 	commands[CMD_IGNORE]				= "*** $N is now ignored ($i).";
 	commands[CMD_UNIGNORE]				= "*** $N is no longer ignored.";
 	commands[CMD_AWAY]					= "is idle: $R";
@@ -2005,6 +2058,12 @@ AppSettings::RestorePacked (BMessage *msg)
 		
 	if (msg->HasBool ("Auto Rejoin"))
 		msg->FindBool ("Auto Rejoin", &autoRejoinState);
+
+	if (msg->HasBool ("Master Log"))
+		msg->FindBool ("Master Log", &masterLogState);
+
+	if (msg->HasBool ("Date Logs"))
+		msg->FindBool ("Date Logs", &dateLogsState);
 
 
 	for (int32 i = 0; i < MAX_FONTS; ++i)
@@ -2264,6 +2323,8 @@ AppSettings::SavePacked (BMessage *msg)
     msg->AddBool ("AltW Setup", altwSetupState);
     msg->AddBool ("AltW Server", altwServerState);
     msg->AddBool ("Auto Rejoin", autoRejoinState);
+    msg->AddBool ("Master Log", masterLogState);
+    msg->AddBool ("Date Logs", dateLogsState);
 	msg->AddInt32 ("NotificationMask", notificationMask);
 
 	msg->AddString ("AlsoKnownAs", alsoKnownAs.String());

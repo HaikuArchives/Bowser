@@ -227,14 +227,14 @@ IRCView::DisplayChunk (
                 
                 ClientWindow *parent = (ClientWindow *)Window(); 
                 float scrollMin, scrollMax; 
-                parent->ScrollRange(&scrollMin, &scrollMax); 
+                parent->ScrollRange (&scrollMin, &scrollMax); 
                 
                 float scrollVal = parent->ScrollPos(); 
                 int32 curLine = (int32) ((scrollMax/LineHeight()) * (scrollVal/scrollMax)); 
                 
                 Delete (0,bytes); 
                 if (!scrolling) 
-                        parent->SetScrollPos(TextHeight(0, curLine));           
+                        parent->SetScrollPos (TextHeight(0, curLine));           
         } 
 
         if (scrolling && !tracking)
@@ -248,7 +248,7 @@ IRCView::DisplayChunk (
 int32
 IRCView::URLLength (const char *outTemp) 
 { 
-        int32 x = 0; 
+        int32 x = 0;
 
         while (outTemp[x] 
         &&    (isdigit (outTemp[x])             // do these first! 
