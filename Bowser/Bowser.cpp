@@ -24,6 +24,7 @@ class BowserApp * bowser_app;
 #include "ListWindow.h"
 #include "StringManip.h"
 #include "Bowser.h"
+#include "AboutWindow.h"
 
 class AppSettings : public Settings
 {
@@ -92,7 +93,8 @@ main()
 }
 
 BowserApp::BowserApp()
-	: BApplication("application/x-vnd.Ink-Bowser")
+	: BApplication("application/x-vnd.Ink-Bowser"),
+	  aboutWin (0)
 {
 	settings = new AppSettings;
 }
@@ -161,18 +163,28 @@ BowserApp::QuitRequested (void)
 void
 BowserApp::AboutRequested()
 {
-	BString buffer;
-
-	buffer << "Bowser[d" << VERSION
-		<< "] for BeOS R4.5+: Copyright 1999, 2000\n\n";
-	buffer << "by Andrew Bazan (abazan@berbee.com),\n";
-	buffer << "Todd Lair (bowser@tvl-p.com),\n";
-	buffer << "Jamie Wilkinson (jamie@tave.com),\n";
-	buffer << "and Wade Majors (guru@startrek.com)\n";
-
-	BAlert *aboutAlert = new BAlert("About", buffer.String(),
-		"Cool", NULL, NULL, B_WIDTH_AS_USUAL, B_INFO_ALERT);
-	aboutAlert->Go();
+//	BString buffer;
+//
+//	buffer << "Bowser[d" << VERSION
+//		<< "] for BeOS R4.5+: Copyright 1999, 2000\n\n";
+//	buffer << "by Andrew Bazan (abazan@berbee.com),\n";
+//	buffer << "Todd Lair (bowser@tvl-p.com),\n";
+//	buffer << "Jamie Wilkinson (jamie@tave.com),\n";
+//	buffer << "and Wade Majors (guru@startrek.com)\n";
+//
+//	BAlert *aboutAlert = new BAlert("About", buffer.String(),
+//		"Cool", NULL, NULL, B_WIDTH_AS_USUAL, B_INFO_ALERT);
+//	aboutAlert->Go();
+	BString version;
+	version = "Bowser d";
+	version << VERSION;
+	if (aboutWin)
+		aboutWin->Activate();
+	else
+	{
+		aboutWin = new AboutWindow (version.String());
+		aboutWin->Show();
+	}
 }
 
 void
@@ -1079,6 +1091,12 @@ BowserApp::MessageReceived (BMessage *msg)
 			if ((sd = FindServerData (serverName)) != 0)
 				sd->notifyWindow = 0;
 
+			break;
+		}
+		
+		case M_ABOUT_CLOSE:
+		{
+			aboutWin = 0;
 			break;
 		}
 

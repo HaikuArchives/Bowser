@@ -1,5 +1,6 @@
 
-SRC=Bowser.cpp \
+SRC=AboutWindow.cpp \
+	Bowser.cpp \
 	ChannelWindow.cpp \
 	ClientFilter.cpp \
 	ClientWindow.cpp \
@@ -79,7 +80,7 @@ clean:
 	@[ -d objs ] && rm -r objs/* > /dev/null
 
 
-
+objs/AboutWindow.o : AboutWindow.cpp AboutWindow.h
 objs/Bowser.o: Bowser.cpp ServerWindow.h ClientWindow.h Settings.h Notify.h \
  SetupWindow.h IgnoreWindow.h Prompt.h Bowser.h IRCDefines.h
 objs/ChannelWindow.o: ChannelWindow.cpp Names.h Bowser.h IRCDefines.h \

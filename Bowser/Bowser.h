@@ -11,11 +11,13 @@
 class AppSettings;
 class SetupWindow;
 class ServerData;
+class AboutWindow;
 
 extern class BowserApp * bowser_app;
 
 class BowserApp : public BApplication
 {
+
 	public:
 
 								BowserApp (void);
@@ -87,6 +89,7 @@ class BowserApp : public BApplication
 
 	AppSettings				*settings;
 	SetupWindow				*setupWindow;
+	AboutWindow				*aboutWin;
 };
 
 

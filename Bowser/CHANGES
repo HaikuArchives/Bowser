@@ -1,6 +1,11 @@
-Bowser d41
+Bowser d41a
 http://bowser.sourceforge.net
 
+
+[d41a]
+ * New CTCP options in nick list menu
+ * New about window
+ 
 
 [d41]
  * Miscelanious source code improvements
@@ -11,7 +16,6 @@ http://bowser.sourceforge.net
    yourself a psuedo-tab view)
  * If you get kicked the message is actually shown in the channel now
  * Option to automatically rejoin a channel if kicked
- * New CTCP options in nick list menu
  
  
 
