@@ -10,13 +10,12 @@ class PreferenceGeneral : public BView
 {
 	BCheckBox					*stampBox,
 									*paranoidBox,
-									*messageBox,
-									*messageFocus,
+									//*messageBox,
+								//	*messageFocus,
 									*nickBindBox,
-									*windowFollows,
-									*hideServer,
-									*showServer,
-									*showTopic,
+									//*hideServer,
+									//*showServer,
+									//*showTopic,
 									*autoRejoin;
 
 	public:
