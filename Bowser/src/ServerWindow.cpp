@@ -205,7 +205,7 @@ ServerWindow::QuitRequested()
 
 	// Don't kill login thread.. it will figure
 	// things out for itself and very quickly
-
+	kill_thread(loginThread);
 	// Tell the app about our death, he may care
 	BMessage aMsg (M_SERVER_SHUTDOWN);
 	aMsg.AddString ("server", serverName.String());
@@ -809,7 +809,6 @@ ServerWindow::Establish (void *arg)
 				break;
 			}
 		}
-
 		server->Unlock();
 
 		// take a nap, so the ServerWindow can do things

@@ -4,6 +4,7 @@
 #include <Window.h>
 #include <Path.h>
 #include <File.h>
+#include <Mime.h>
 
 #include <stdlib.h>
 #include <net/netdb.h>
@@ -144,7 +145,7 @@ DCCConnect::Stopped (bool forced)
 {
 	running = false;
 
-	if (s >= 0) closesocket (s);
+	if (s > 0) closesocket (s);
 
 	BMessage msg (M_DCC_FINISH);
 
@@ -152,6 +153,7 @@ DCCConnect::Stopped (bool forced)
 	msg.AddPointer ("source", this);
 	msg.AddBool ("stopped", true);
 	Window()->PostMessage (&msg);
+	exit_thread(0);
 }
 
 void
@@ -328,9 +330,11 @@ DCCReceive::Transfer (void *arg)
 	{
 		view->success = bytes_received == size;
 		view->Stopped (false);
+		update_mime_info(path.Path(), false, false, true);
 	}
-
-	return 0;
+	
+	
+	exit_thread(0);
 }
 
 DCCSend::DCCSend (
@@ -375,6 +379,7 @@ DCCSend::AttachedToWindow (void)
 int32
 DCCSend::Transfer (void *arg)
 {
+	printf("made Transfer call\n");
 	DCCSend *view ((DCCSend *)arg);
 	BPath path (view->file_name.String());
 	BString file_name, status;
@@ -385,6 +390,7 @@ DCCSend::Transfer (void *arg)
 	file_name.ReplaceAll (" ", "_");
 
 	view->Lock();
+	printf("view locked\n");
 	if ((sd = socket (AF_INET, SOCK_STREAM, 0)) < 0)
 	{
 		view->UpdateStatus ("Unable to establish connection.");
@@ -394,13 +400,13 @@ DCCSend::Transfer (void *arg)
 	}
 
 	memset (&sin, 0, sizeof (struct sockaddr_in));
-
+	printf("after memset\n");
 	sin.sin_family      = AF_INET;
 	sin.sin_addr.s_addr = INADDR_ANY;
 	sin.sin_port        = htons (atoi (view->port.String()));
 
 	int sin_size = (sizeof (struct sockaddr_in));
-	
+		
 	if (!view->running || bind (sd, (sockaddr *)&sin, sin_size) < 0)
 	{
 		view->UpdateStatus ("Unable to establish connection.");
@@ -409,11 +415,12 @@ DCCSend::Transfer (void *arg)
 		view->Stopped (false);
 		return 0;
 	}
-	
+	printf("bind call made\n");
 	view->UpdateStatus ("Waiting for acceptance.");
 
 	if (view->running)
 	{
+		printf("sending privmsg\n");
 		status = "PRIVMSG ";
 		status << view->nick
 			<< " :\1DCC SEND "
@@ -429,7 +436,7 @@ DCCSend::Transfer (void *arg)
 		BMessage msg (M_SERVER_SEND);
 		msg.AddString ("data", status.String());
 		view->caller.SendMessage (&msg);
-
+		printf("message sent\n");
 		view->UpdateStatus ("Doing listen call.");
 		if (listen (sd, 1) < 0)
 		{
