@@ -1,6 +1,6 @@
 
-#define MAX_BYTES			2500
-#define REMOVE_BYTES		250
+#define MAX_BYTES			15000
+#define REMOVE_BYTES		1000
 
 #include <Alert.h>
 #include <TextControl.h>
