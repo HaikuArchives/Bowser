@@ -1070,7 +1070,8 @@ ClientWindow::ExecPipe (void *arg)
 
 	char read[768]; // should be long enough for any line...
 		
-	while (fgets(read, 768, fp)) {
+	while (fgets(read, 768, fp))
+	{
 		read[strlen(read)-1] = '\0'; // strip newline		
 		
 		BMessage msg (M_SUBMIT_RAW);

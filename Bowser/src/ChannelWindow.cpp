@@ -936,12 +936,22 @@ ChannelWindow::ModeEvent (BMessage *msg)
 	char theOperator (0);
 	bool hit (false);
 	bool timeStamp = bowser_app->GetStampState();
+	
 
 	// TODO Change Status to bitmask -- Too hard this way
 	msg->FindString ("mode", &mode);
 	msg->FindString ("target", &target);
 	msg->FindString ("nick", &theNick);
 
+	BString buffer;
+		
+	buffer << "*** " << theNick << " set mode: " << mode << " " << target << "\n";
+
+	BMessage modeMsg (M_DISPLAY);
+	PackDisplay (&modeMsg, buffer.String(), &opColor, 0, timeStamp);
+	PostMessage(&modeMsg);
+	
+	
 	// at least one
 	if (mode && *mode && *(mode + 1))
 		theOperator = mode[modPos++];
@@ -968,13 +978,13 @@ ChannelWindow::ModeEvent (BMessage *msg)
 
 			if (theOperator == '+' && theModifier == 'o')
 			{
-				BString buffer;
-				
-				buffer << "*** " << theNick << " has opped " << myTarget << ".\n";
-				
-				BMessage msg (M_DISPLAY);
-				PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
-				PostMessage(&msg);
+//				BString buffer;
+//				
+//				buffer << "*** " << theNick << " has opped " << myTarget << ".\n";
+//				
+//				BMessage msg (M_DISPLAY);
+//				PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
+//				PostMessage(&msg);
 				
 				hit = true;
 
@@ -991,13 +1001,13 @@ ChannelWindow::ModeEvent (BMessage *msg)
 
 			else if (theModifier == 'o')
 			{
-				BString buffer;
-						
-				buffer << "*** " << theNick << " has deopped " << myTarget << ".\n";
-				
-				BMessage msg (M_DISPLAY);
-				PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
-				PostMessage(&msg);
+//				BString buffer;
+//						
+//				buffer << "*** " << theNick << " has deopped " << myTarget << ".\n";
+//				
+//				BMessage msg (M_DISPLAY);
+//				PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
+//				PostMessage(&msg);
 				
 				hit = true;
 
@@ -1017,13 +1027,13 @@ ChannelWindow::ModeEvent (BMessage *msg)
 
 			if (theOperator == '+' && theModifier == 'v')
 			{
-				BString buffer;
-				
-				buffer << "*** " << theNick << " has voiced " << myTarget << ".\n";
-
-				BMessage msg (M_DISPLAY);
-				PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
-				PostMessage(&msg);
+//				BString buffer;
+//				
+//				buffer << "*** " << theNick << " has voiced " << myTarget << ".\n";
+//
+//				BMessage msg (M_DISPLAY);
+//				PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
+//				PostMessage(&msg);
 
 				hit = true;
 				
@@ -1031,13 +1041,13 @@ ChannelWindow::ModeEvent (BMessage *msg)
 			}
 			else if (theModifier == 'v')
 			{
-				BString buffer;
-			
-				buffer << "*** " << theNick << " has de-voiced " << myTarget << ".\n";
-
-				BMessage msg (M_DISPLAY);
-				PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
-				PostMessage(&msg);
+//				BString buffer;
+//			
+//				buffer << "*** " << theNick << " has de-voiced " << myTarget << ".\n";
+//
+//				BMessage msg (M_DISPLAY);
+//				PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
+//				PostMessage(&msg);
 
 				hit = true;
 
@@ -1051,104 +1061,104 @@ ChannelWindow::ModeEvent (BMessage *msg)
 		else if (theModifier == 'l' && theOperator == '-')
 		{
 			BString myTarget (GetWord (target, targetPos++));
-			BString buffer;
-			
-				
-			buffer << "*** " << theNick << " has removed the channel limit.\n";
+//			BString buffer;
+//			
+//				
+//			buffer << "*** " << theNick << " has removed the channel limit.\n";
 			UpdateMode('-', 'l');
 			chanLimit = "";
 
-			BMessage msg (M_DISPLAY);
-			PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
-			PostMessage(&msg);
+//			BMessage msg (M_DISPLAY);
+//			PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
+//			PostMessage(&msg);
 		}
 
 		else if (theModifier == 'l')
 		{
 			BString myTarget (GetWord (target, targetPos++));
-			BString buffer;
-			
-			buffer << "*** " << theNick << " has set the channel limit to "
-				<< myTarget << ".\n";
+//			BString buffer;
+//			
+//			buffer << "*** " << theNick << " has set the channel limit to "
+//				<< myTarget << ".\n";
 
 			chanLimitOld = chanLimit;
 			chanLimit = myTarget;
 
 			UpdateMode('+', 'l');
-			BMessage msg (M_DISPLAY);
-			PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
-			PostMessage(&msg);		
+//			BMessage msg (M_DISPLAY);
+//			PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
+//			PostMessage(&msg);		
 		}
 
 		else if (theModifier == 'k' && theOperator == '-')
 		{
-			BString myTarget (GetWord (target, targetPos++));
-			BString buffer;
-			
-
-			buffer << "*** " << theNick << " has removed the channel key.\n";
+//			BString myTarget (GetWord (target, targetPos++));
+//			BString buffer;
+//			
+//
+//			buffer << "*** " << theNick << " has removed the channel key.\n";
 			UpdateMode('-', 'k');
 			chanKey = "";
 
-			BMessage msg (M_DISPLAY);
-			PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
-			PostMessage(&msg);
+//			BMessage msg (M_DISPLAY);
+//			PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
+//			PostMessage(&msg);
 		}
 
 		else if (theModifier == 'k')
 		{
 			BString myTarget (GetWord (target, targetPos++));
-			BString buffer;
-
-			buffer << "*** " << theNick << " has set the channel key to '"
-				<< myTarget << "'.\n";
+//			BString buffer;
+//
+//			buffer << "*** " << theNick << " has set the channel key to '"
+//				<< myTarget << "'.\n";
 
 			chanKeyOld = chanKey;
 			chanKey = myTarget;
 			UpdateMode('+', 'k');
 
-			BMessage msg (M_DISPLAY);
-			PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
-			PostMessage(&msg);
+//			BMessage msg (M_DISPLAY);
+//			PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
+//			PostMessage(&msg);
 		}
 
 		else if (theModifier == 'b' && theOperator == '-')
 		{
-			BString myTarget (GetWord (target, targetPos++));
-			BString buffer;
+//			BString myTarget (GetWord (target, targetPos++));
+//			BString buffer;
 
-			buffer << "*** " << theNick << " has removed the ban on "
-				<< myTarget << ".\n";
-			
-			BMessage msg (M_DISPLAY);
-			PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
-			PostMessage(&msg);
+//			buffer << "*** " << theNick << " has removed the ban on "
+//				<< myTarget << ".\n";
+//			
+//			BMessage msg (M_DISPLAY);
+//			PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
+//			PostMessage(&msg);
 		}
 
 		else if (theModifier == 'b')
 		{		
-			BString myTarget (GetWord (target, targetPos++));
-			BString buffer;
-
-			buffer << "*** " << theNick << " has banned " << myTarget << ".\n";
-			
-			BMessage msg (M_DISPLAY);
-			PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
-			PostMessage(&msg);
+//			BString myTarget (GetWord (target, targetPos++));
+//			BString buffer;
+//
+//			buffer << "*** " << theNick << " has banned " << myTarget << ".\n";
+//			
+//			BMessage msg (M_DISPLAY);
+//			PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
+//			PostMessage(&msg);
 		}
 
 		else
 		{
-			BString buffer;
-			
-			buffer << "*** " << theNick << " has set mode " << theOperator
-				<< theModifier << '\n';
+//			BString buffer;
+//			
+//			buffer << "*** " << theNick << " has set mode " << theOperator
+//				<< theModifier << '\n';
 
 			UpdateMode (theOperator, theModifier);
 
-			BMessage msg (M_DISPLAY);
-			PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
-			PostMessage(&msg);
+//			BMessage msg (M_DISPLAY);
+//			PackDisplay (&msg, buffer.String(), &opColor, 0, timeStamp);
+//			PostMessage(&msg);
 		}
 
 		++modPos;
