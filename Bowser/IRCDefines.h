@@ -70,7 +70,7 @@
 #define STATUS_NORMAL_BIT								0x0100
 #define STATUS_IGNORE_BIT								0x1000
 
-#define VERSION											"42a"
+#define VERSION											"42b"
 
 #include <GraphicsDefs.h>
 
