@@ -23,7 +23,10 @@ ServerWindow::ParseEvents (const char *data)
 		theServer.RemoveFirst(":");
 		
 		tempString << "PONG " << myNick << " " << theServer;
-		SendData(tempString.String());
+		SendData (tempString.String());
+		tempString = "";
+		tempString << "PONG " << theServer;
+		SendData (tempString.String());
 		return true;
 	}
 
