@@ -727,6 +727,8 @@ ChannelWindow::MessageReceived (BMessage *msg)
 			rgb_color errorColor = bowser_app->GetColor (C_ERROR);
 			Display ("[@] Attempting to rejoin...\n", &errorColor, &serverFont);
 		
+			namesList->ClearList();
+		
 			BMessage send (M_SERVER_SEND);	
 			AddSend (&send, "JOIN ");
 			AddSend (&send, id);	
@@ -1170,6 +1172,11 @@ ChannelWindow::ModeEvent (BMessage *msg)
 			chanKeyOld = chanKey;
 			chanKey = myTarget;
 			UpdateMode('+', 'k');
+		}
+
+		else if (theModifier == 'b') 
+		{
+			// dont do anything else
 		}
 
 		else

@@ -269,3 +269,16 @@ NamesView::SetFont (int32 which, const BFont *font)
 		Invalidate();
 	}
 }
+
+void
+NamesView::ClearList (void)
+{
+	int32 i,
+	      all (CountItems()),
+	      first (0);
+	
+	for (i = 0; i <= all; i++)
+	{
+		RemoveItem (first);
+	}
+}

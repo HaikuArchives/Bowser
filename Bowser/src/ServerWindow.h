@@ -105,7 +105,9 @@ class ServerWindow : public ClientWindow
 									hasWarned,			// warn about quitting
 									isQuitting,			// look out, going down
 									checkingLag;		// waiting for a lag_check reply
-	int32						lagCheck,			// system_time()
+	int32						retry,				// what retry # we're on
+								retryLimit,			// connect retry limit	
+								lagCheck,			// system_time()
 								lagCount;			// passes made waiting
 
 	BNetEndpoint				*endPoint;			// socket class

@@ -46,6 +46,7 @@ class NamesView : public BListView
 	void								SetColor (int32, rgb_color);
 	rgb_color						GetColor (int32) const;
 	void								SetFont (int32, const BFont *);
+	void							ClearList (void);
 	
 	private:
 

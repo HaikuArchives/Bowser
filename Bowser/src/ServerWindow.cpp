@@ -62,6 +62,8 @@ ServerWindow::ServerWindow (
 		hasWarned (false),
 		isQuitting (false),
 		checkingLag (false),
+		retry (0),
+		retryLimit (20),
 		lagCheck (0),
 		lagCount (0),
 		endPoint (0),
@@ -289,6 +291,7 @@ ServerWindow::MessageReceived (BMessage *msg)
 		case M_SERVER_DISCONNECT:
 		{
 			// update lag meter
+			SetPulseRate (0);
 			myLag = "CONNECTION PROBLEM";
 			PostMessage (M_LAG_CHANGED);
 		
@@ -762,6 +765,9 @@ ServerWindow::Establish (void *arg)
 	BMessage statusMsgO (M_DISPLAY);
 	server->PackDisplay (&statusMsgO, "[@] Connection open, waiting for reply from server\n", &(server->errorColor));
 	server->PostMessage(&statusMsgO);
+
+	server->myLag = "0.000";
+	server->PostMessage (M_LAG_CHANGED);
 
 	identLock.Lock();
 	if (endPoint->Connect (address) == B_NO_ERROR)

@@ -47,7 +47,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		title += id;
 		SetTitle (title.String());
 		
-		SetPulseRate (10000000);
+		SetPulseRate (10000000); // 10 secs
 		
 		return true;
 	}
