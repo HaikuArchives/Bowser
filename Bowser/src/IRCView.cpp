@@ -85,6 +85,7 @@ IRCView::IRCView (
         settings->urlFont  = *(bowser_app->GetClientFont (F_URL)); 
         settings->urlColor = bowser_app->GetColor (C_URL); 
 
+		tracking = false;
         MakeEditable (false); 
         MakeSelectable (true); 
         SetStylable (true); 
@@ -151,16 +152,17 @@ void
 IRCView::MouseMoved (BPoint point, uint32 transit, const BMessage *)
 {
 	if (tracking)
-	{
-//		switch (transit)
-//			{
-//				case B_ENTERED_VIEW:
-//					break;
-//				case B_EXITED_VIEW:
-//					break;
-//			}
-	
-		float movetoy = point.y - lasty;
+	{	
+		float movetoy;
+		if (point.y > lasty)
+		{
+			movetoy = (point.y - lasty);
+		}
+		else
+		{
+			movetoy = (point.y - lasty - lasty);  // make negative?
+		}
+			
 		ScrollBy (0, movetoy);
 		//ScrollTo (point.x, point.y);
 	}
