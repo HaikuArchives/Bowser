@@ -66,7 +66,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	||  secondWord == "255"  // current/max local users
 	||  secondWord == "265"  // current/max global users
 	||  secondWord == "250"  // "highest connection count" info
-	||  secondWord == "253"  // unknown connects (UltimateIRCd)
+	||  secondWord == "253"  // unknowxn connects (UltimateIRCd)
 	||  secondWord == "266")
 	{
 		ParseENums(data, "001");
@@ -106,6 +106,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	||  secondWord == "352"  // who info
 	||  secondWord == "371"  // info info
 	||  secondWord == "374"  // end of info
+	||  secondWord == "391"  // server time
 	||  secondWord == "432"  // erroneus nickname
 	||  secondWord == "438"  // nick change too fast
 	||  secondWord == "445"  // summon disabled

@@ -26,47 +26,27 @@ ClientWindow::ParseCmd (const char *data)
 {
 	BString firstWord (GetWord(data, 1).ToUpper());
 		
-//	if (firstWord == "/INFO"    // commands we dont need to do any processing
-//	||  firstWord == "/KILL"    // on; ship them off to the server
-//	||  firstWord == "/MOTD"
-//	||  firstWord == "/NAMES"
-//	||  firstWord == "/OPER"
-//	||  firstWord == "/REHASH"
-//	||  firstWord == "/STATS"
-//	||  firstWord == "/TRACE"
-//	||  firstWord == "/USERHOST"
-//	||  firstWord == "/WALLOPS"
-//	||  firstWord == "/WHO"
-//	||  firstWord == "/WHOIS"
-//	||  firstWord == "/W"
-//	||  firstWord == "/WHOWAS"
-//	||  firstWord == "/HELP"
-//	||  firstWord == "/ADMIN")
-//	{
-//		BString theCmd (firstWord.RemoveFirst ("/")),
-//		        theRest (RestOfString (data, 2));
-//		BMessage send (M_SERVER_SEND);
-//	
-//		if (theCmd == "W")
-//			theCmd = "WHOIS";
-//		
-//		AddSend (&send, theCmd);
-//	
-//		if (theRest != "-9z99")
-//		{
-//			AddSend (&send, " :");
-//			AddSend (&send, theRest);
-//		}
-//		AddSend (&send, endl);	
-//	
-//		return true;
-//	}
-	
-	
-	
-	// *cracks knuckles*
-	// lets do some processin'
 
+
+	if (firstWord == "/KILL"	// we need to insert a ':' before parm2
+	||  firstWord == "/SQUIT"   // for the user
+	||  firstWord == "/PRIVMSG"
+	||  firstWord == "/WALLOPS")
+	{
+		BString theCmd (firstWord.RemoveAll ("/")),
+	            theRest (RestOfString (data, 2));
+		
+		BMessage send (M_SERVER_SEND);
+		AddSend (&send, theCmd);
+		if (theRest != "-9z99")
+		{
+			AddSend (&send, " :");
+			AddSend (&send, theRest);
+		}
+		AddSend (&send, endl);	
+
+		return true;
+	}
 
 
 	// some quick aliases for scripts, these will of course be
@@ -113,6 +93,7 @@ ClientWindow::ParseCmd (const char *data)
 		
 		return true;
 	}
+	
 	
 	if (firstWord == "/AWAY")
 	{
@@ -485,7 +466,7 @@ ClientWindow::ParseCmd (const char *data)
 		return true;
 	}	
 	
-	if (firstWord == "/INVITE")
+	if (firstWord == "/INVITE" || firstWord == "/I")
 	{
 
 		BString theUser (GetWord (data, 2));
@@ -645,8 +626,7 @@ ClientWindow::ParseCmd (const char *data)
 		BString theRest (RestOfString (data, 3));
 		BString theNick (GetWord (data, 2));
 	
-		if (theNick != "-9z99"
-		&&  theRest != "-9z99"
+		if (theRest != "-9z99"
 		&&  myNick.ICompare (theNick))
 		{
 			if (bowser_app->GetMessageOpenState())
@@ -948,19 +928,19 @@ ClientWindow::ParseCmd (const char *data)
 	if (firstWord == "/UPTIME")
 	{
 		BString parms (GetWord(data, 2));
+		
+		BString uptime (DurationString(system_time()));
+		BString expandedString;
+		const char *expansions[1];
+		expansions[0] = uptime.String();
+		expandedString = ExpandKeyed (bowser_app->GetCommand (CMD_UPTIME).String(), "U",
+			expansions);
+		expandedString.RemoveFirst("\n");
 	
 		if ((id != serverName) && (parms == "-9z99"))
 		{
-			BString uptime (DurationString(system_time()));
-			BString expandedString;
-			
-			const char *expansions[1];
-			expansions[0] = uptime.String();
-			expandedString = ExpandKeyed (bowser_app->GetCommand (CMD_UPTIME).String(), "U",
-				expansions);
-			expandedString.RemoveFirst("\n");
-			
 			BMessage send (M_SERVER_SEND);
+			
 			AddSend (&send, "PRIVMSG ");
 			AddSend (&send, id);
 			AddSend (&send, " :");
@@ -971,15 +951,6 @@ ClientWindow::ParseCmd (const char *data)
 		}
 		else if ((parms == "-l") || (id == serverName)) // echo locally
 		{
-			BString uptime (DurationString(system_time()));
-			BString expandedString;
-			
-			const char *expansions[1];
-			expansions[0] = uptime.String();
-			expandedString = ExpandKeyed (bowser_app->GetCommand (CMD_UPTIME).String(), "U",
-				expansions);
-			expandedString.RemoveFirst("\n");
-			
 			BString tempString;
 				
 			tempString << "Uptime: " << expandedString << "\n";
@@ -991,22 +962,34 @@ ClientWindow::ParseCmd (const char *data)
 	}
 	
 	
-	if (firstWord == "/VERSION")
+	if (firstWord == "/VERSION"
+	||  firstWord == "/TIME")
 	{
-		BString theNick (GetWord (data, 2));
+		BString theCmd (firstWord.RemoveFirst ("/")),
+				theNick (GetWord (data, 2));
+		theCmd.ToUpper();
 	
-		if (theNick != "-9z99")
+		// the "." check is because the user might specify a server name
+		
+		if (theNick != "-9z99" && theNick.FindFirst(".") < 0)
 		{
 			BString tempString ("/CTCP ");
 	
-			tempString << theNick << " VERSION";
+			tempString << theNick << " " << theCmd;
 			SlashParser (tempString.String());
 		}
 		else
 		{
 		  	BMessage send (M_SERVER_SEND);
 	
-			AddSend (&send, "VERSION");
+			AddSend (&send, theCmd);
+			
+			if (theNick != "-9z99")
+			{
+				AddSend (&send, " ");
+				AddSend (&send, theNick);
+			}
+						
 			AddSend (&send, endl);
 		}
 		
@@ -1045,15 +1028,14 @@ ClientWindow::ParseCmd (const char *data)
 	            theRest (RestOfString (data, 2));
 		
 		BMessage send (M_SERVER_SEND);
-
+		
 		if (theCmd == "W")
 			theCmd = "WHOIS";
-	
+
 		AddSend (&send, theCmd);
 	
 		if (theRest != "-9z99")
 		{
-			//AddSend (&send, " :");
 			AddSend (&send, " ");
 			AddSend (&send, theRest);
 		}
