@@ -17,7 +17,7 @@
 # the file name, ...
 
 BINARY := Bowser
-VTOP := 1.1
+VTOP := 1.1.1
 VDATE := $(shell date +%Y%m%d)
 VERSION := $(VTOP)-$(VDATE)
 LIBS := -lbe -lnet -lnetapi -ltextencoding -ltranslation -ltracker

@@ -28,16 +28,35 @@ ClientWindow::ParseCmd (const char *data)
 		
 
 
-	if (firstWord == "/KILL"	// we need to insert a ':' before parm2
+	if (firstWord == "/WALLOPS"	// we need to insert a ':' before parm2
 	||  firstWord == "/SQUIT"   // for the user
-	||  firstWord == "/PRIVMSG"
-	||  firstWord == "/WALLOPS")
+	||  firstWord == "/PRIVMSG")
 	{
 		BString theCmd (firstWord.RemoveAll ("/")),
 	            theRest (RestOfString (data, 2));
 		
 		BMessage send (M_SERVER_SEND);
 		AddSend (&send, theCmd);
+		if (theRest != "-9z99")
+		{
+			AddSend (&send, " :");
+			AddSend (&send, theRest);
+		}
+		AddSend (&send, endl);	
+
+		return true;
+	}
+
+	if (firstWord == "/KILL")	// we need to insert a ':' before parm3
+	{                           // for the user
+		BString theCmd (firstWord.RemoveAll ("/")),
+				theTarget (GetWord (data, 2)),
+	            theRest (RestOfString (data, 3));
+		
+		BMessage send (M_SERVER_SEND);		
+		AddSend (&send, theCmd);
+		AddSend (&send, " ");
+		AddSend (&send, theTarget);
 		if (theRest != "-9z99")
 		{
 			AddSend (&send, " :");

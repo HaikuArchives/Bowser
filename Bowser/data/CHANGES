@@ -1,5 +1,13 @@
-Bowser 1.1
+Bowser 1.1.2
 http://bowser.sourceforge.net
+
+[1.1.2]
+ * Fix a problem with the /kill command (for irc ops)
+ 
+
+[1.1.1]
+ * Fix ping reply incompatibility with some noncompliant servers
+ 
 
 [1.1]
  * Fixed issue with using fonts larger than the default for the input box.
