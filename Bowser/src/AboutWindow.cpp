@@ -144,7 +144,7 @@ AboutWindow::AboutWindow (void)
 	run.runs[0].font   = font;
 	run.runs[0].color  = black;
 
-	credits->Insert ("\n\n\n\n\n\n\n\n\nBowser ", &run);
+	credits->Insert ("\n\n\n\n\n\n\n\n\nBowser Day ", &run);
 	credits->Insert (VERSION, &run);
 	credits->Insert ("\n", &run);
 
