@@ -8,7 +8,8 @@
 #include "StringManip.h"
 #include "ServerWindow.h"
 
-void ServerWindow::ParseCTCP(BString theNick, BString theMsg)
+void
+ServerWindow::ParseCTCP(BString theNick, BString theMsg)
 {
 	BString theCTCP = GetWord(theMsg.String(), 1).ToUpper();
 	BString theRest = RestOfString(theMsg.String(), 2);
@@ -42,16 +43,44 @@ void ServerWindow::ParseCTCP(BString theNick, BString theMsg)
 		}
 		else
 		{
-			sysInfoString = "BeOS : don't think twice.";
+			sysInfoString = "BeOS : Because you don't eat cereal with a fork.";
 		}
 		BString tempString("NOTICE ");
 		tempString << theNick << " :\1VERSION Bowser[d" 
 			<< VERSION << "] : " << sysInfoString;
-		#ifdef DEV_BUILD
-		tempString << " (development build)";
-		#endif
 		tempString << '\1';
 		SendData (tempString.String());
+	}
+	else if(theCTCP == "UPTIME")
+	{
+		bigtime_t micro = system_time();
+		bigtime_t milli = micro/1000;
+		bigtime_t sec = milli/1000;
+		bigtime_t min = sec/60;
+		bigtime_t hours = min/60;
+		bigtime_t days = hours/24;
+	
+		char message[1024] = "";
+		BString uptime = "BeOS system was booted ";
+
+		if (days)
+			sprintf(message, "%Ld day%s, ",days,days!=1?"s":"");
+		
+		if (hours%24)
+			sprintf(message, "%s%Ld hour%s, ",message, hours%24,(hours%24)!=1?"s":"");
+		
+		if (min%60)
+			sprintf(message, "%s%Ld minute%s, ",message, min%60, (min%60)!=1?"s":"");
+
+		sprintf(message, "%s%Ld second%s ago.",message, sec%60,(sec%60)!=1?"s":"");
+
+		uptime << message;
+		BString tempString("NOTICE ");
+		tempString << theNick << " :\1UPTIME " 
+			<< uptime;
+		tempString << '\1';
+		SendData (tempString.String());
+
 	}
 	else if(theCTCP == "DCC")
 	{
@@ -97,7 +126,8 @@ void ServerWindow::ParseCTCP(BString theNick, BString theMsg)
 	PostActive (&display);
 }
 
-void ServerWindow::ParseCTCPResponse(BString theNick, BString theMsg)
+void
+ServerWindow::ParseCTCPResponse(BString theNick, BString theMsg)
 {
 	BString theResponse(theMsg);
 	if(theResponse[0] == '\1')

@@ -1,5 +1,5 @@
 
-#define MAX_BYTES			15000
+#define MAX_BYTES			32000
 #define REMOVE_BYTES		1000
 
 #include <Alert.h>

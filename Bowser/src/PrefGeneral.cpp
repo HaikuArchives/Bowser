@@ -26,7 +26,7 @@ PreferenceGeneral::PreferenceGeneral (void)
 	paranoidBox = new BCheckBox (
 		BRect (0, 25, bounds.right, 49),
 		"paranoid",
-		"Omit processor info from version reply",
+		"Omit processor info from CTCP Version reply",
 		new BMessage (M_STAMP_PARANOID));
 	paranoidBox->SetValue (bowser_app->GetParanoidState()
 		? B_CONTROL_ON : B_CONTROL_OFF);

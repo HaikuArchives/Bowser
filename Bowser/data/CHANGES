@@ -13,6 +13,9 @@ http://bowser.sourceforge.net
    		/j #channel
  * Various prompts are now non-modal windows, and look a little better
  * Fixed "Add Nickname" prompt dimensions in Notify window
+ * Fixed "Find" and "Filter" prmopt dimensions in List window
+ * Don't show processor info in CTCP Version reply should work all the time now.
+ * Responds to CTCP Uptime requests.
 
 [d42a]
  * Improved DCC Send performance dramatically for users on fast pipes
