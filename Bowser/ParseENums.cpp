@@ -782,6 +782,32 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		tempString.RemoveFirst(":");
 		tempString.Append("\n");
 		Display (tempString.String(), 0);
+	
+		if (initialMotd && cmds.Length())
+		{
+			BMessage msg (M_SUBMIT_RAW);
+			const char *place (cmds.String()), *eol;
+
+			msg.AddBool ("lines", true);
+
+			while ((eol = strchr (place, '\n')) != 0)
+			{
+				BString line;
+				
+				line.Append (place, eol - place);
+				msg.AddString ("data", line.String());
+
+				place = eol + 1;
+			}
+
+			if (*place)
+				msg.AddString ("data", place);
+
+			PostMessage (&msg);
+		}
+
+		initialMotd = false;	
+	
 		return true;
 	}
 

@@ -6,6 +6,7 @@ http://bowser.sourceforge.net
  * New CTCP options in nick list menu
  * New about window
  * Fixed case where "Show topic in titlebar" option would get ignored
+ * Connect Commands now work on servers that don't have an MOTD
  
 
 [d41]
