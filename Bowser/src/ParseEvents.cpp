@@ -292,18 +292,12 @@ ServerWindow::ParseEvents (const char *data)
 			buffer = "*** Attempting to automagically rejoin ";
 			buffer << channel << "...\n";
 			PackDisplay (&display2, buffer.String(), &quitColor, 0, true);
-			
-			BMessage display3 (M_DISPLAY); // "type /join" (autorejoin off)
-			buffer = "*** Type /join ";
-			buffer << channel << " to rejoin channel.\n";
-			PackDisplay (&display3, buffer.String(), &quitColor, 0, true);
 						
 
 			BMessage msg (M_CHANNEL_GOT_KICKED);
 			msg.AddString ("channel", channel.String());
 			msg.AddMessage ("display", &display);  // "you were kicked"
 			msg.AddMessage ("display2", &display2); // "attempting auto rejoin"
-			msg.AddMessage ("display3", &display3); // "type /join" (autorejoin off)
 			client->PostMessage (&msg);
 		}
 

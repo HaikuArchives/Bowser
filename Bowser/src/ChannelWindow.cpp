@@ -447,35 +447,29 @@ ChannelWindow::MessageReceived (BMessage *msg)
 		    
 			BMessage display; // "you were kicked"
 			if (msg->FindMessage ("display", &display) == B_NO_ERROR)
+			{
 				ClientWindow::MessageReceived (&display);
+			}
 				
-		    if(bowser_app->GetAutoRejoinState())
-			{
-			    const char *theChannel;
-				msg->FindString ("channel", &theChannel);			    
+			const char *theChannel;
+			msg->FindString ("channel", &theChannel);			    
 			    
-				BMessage display; // "attempting auto rejoin"
-				if (msg->FindMessage ("display2", &display) == B_NO_ERROR)
-					ClientWindow::MessageReceived (&display);
-				
-				BMessage send (M_SERVER_SEND);	
-				AddSend (&send, "JOIN ");
-				AddSend (&send, theChannel);	
-				if (chanKey != "")
-				{
-					AddSend (&send, " ");
-					AddSend (&send, chanKey);
-				}
-				AddSend (&send, endl);
-			}
-			else
+			BMessage display2; // "attempting auto rejoin"
+			if (msg->FindMessage ("display2", &display2) == B_NO_ERROR)
 			{
-				BMessage display; // "type /join" (autorejoin off)
-				if (msg->FindMessage ("display3", &display) == B_NO_ERROR)
-					ClientWindow::MessageReceived (&display);
-			   
+				ClientWindow::MessageReceived (&display2);
 			}
-			
+				
+			BMessage send (M_SERVER_SEND);	
+			AddSend (&send, "JOIN ");
+			AddSend (&send, theChannel);	
+			if (chanKey != "")
+			{
+				AddSend (&send, " ");
+				AddSend (&send, chanKey);
+			}
+			AddSend (&send, endl);
+					
 			break;			
 		}		
 		

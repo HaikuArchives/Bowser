@@ -47,7 +47,6 @@ class AppSettings : public Settings
 									statusTopicState,
 									altwSetupState,
 									altwServerState,
-									autoRejoinState,
 									masterLogState,
 									dateLogsState;
 	BString						alsoKnownAs,
@@ -1547,22 +1546,7 @@ BowserApp::GetDateLogsState (void) const
 {
 	return settings->dateLogsState;
 }
-void
-BowserApp::AutoRejoinState (bool state)
-{
-	settings->autoRejoinState = state;
 
-	BMessage msg (M_STATE_CHANGE);
-
-	msg.AddBool ("autorejoin", state);
-	Broadcast (&msg);
-}
-
-bool
-BowserApp::GetAutoRejoinState (void) const
-{
-	return settings->autoRejoinState;
-}
 bool
 BowserApp::GetMessageOpenState (void) const
 {
@@ -1871,7 +1855,6 @@ AppSettings::AppSettings (void)
 	  statusTopicState (false),
 	  altwSetupState (true),
 	  altwServerState (true),
-	  autoRejoinState (false),
 	  masterLogState (false),
 	  dateLogsState (false),
 	  alsoKnownAs ("bowserUser beosUser"),
@@ -2083,9 +2066,6 @@ AppSettings::RestorePacked (BMessage *msg)
 		
 	if (msg->HasBool ("AltW Server"))
 		msg->FindBool ("AltW Server", &altwServerState);
-		
-	if (msg->HasBool ("Auto Rejoin"))
-		msg->FindBool ("Auto Rejoin", &autoRejoinState);
 
 	if (msg->HasBool ("Master Log"))
 		msg->FindBool ("Master Log", &masterLogState);
@@ -2350,7 +2330,6 @@ AppSettings::SavePacked (BMessage *msg)
     msg->AddBool ("Status Topic", statusTopicState);
     msg->AddBool ("AltW Setup", altwSetupState);
     msg->AddBool ("AltW Server", altwServerState);
-    msg->AddBool ("Auto Rejoin", autoRejoinState);
     msg->AddBool ("Master Log", masterLogState);
     msg->AddBool ("Date Logs", dateLogsState);
 	msg->AddInt32 ("NotificationMask", notificationMask);
