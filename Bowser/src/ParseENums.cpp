@@ -34,9 +34,14 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		msg.AddString ("server", serverName.String());
 		bowser_app->PostMessage (&msg);
 
+
 		BString theNick (GetWord (data, 3));
 		myNick = theNick;
-		status->SetItemValue (STATUS_NICK, myNick.String());
+		//BMessage nickMsg (M_CHANGE_NICK);
+		//nickMsg.AddString ("oldnick", myNick.String());
+		//nickMsg.AddString ("newnick", theNick.String());
+		//Broadcast (&nickMsg);
+		status->SetItemValue (STATUS_NICK, theNick.String());
 
 		BString theMsg (RestOfString (data, 4));
 		theMsg.RemoveFirst (":");

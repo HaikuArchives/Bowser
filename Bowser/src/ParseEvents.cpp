@@ -18,9 +18,11 @@ ServerWindow::ParseEvents (const char *data)
 
 	if(firstWord == "PING")
 	{
-		BString tempString;
-		BString theServer = GetWord(data, 2);
-		tempString << "PONG " << theServer;
+		BString tempString,
+		        theServer (GetWord(data, 2));
+		theServer.RemoveFirst(":");
+		
+		tempString << "PONG " << myNick << " " << theServer;
 		SendData(tempString.String());
 		return true;
 	}
@@ -201,12 +203,12 @@ ServerWindow::ParseEvents (const char *data)
 	
 	if (secondWord == "NICK")
 	{
-		BString oldNick (GetNick (data));
-		BString ident (GetIdent (data));
-		BString address (GetAddress (data));
-		BString newNick (GetWord (data, 3));
+		BString oldNick (GetNick (data)),
+		        ident (GetIdent (data)),
+		        address (GetAddress (data)),
+		        newNick (GetWord (data, 3)),
+		        buffer;
 		const char *expansions[4];
-		BString buffer;
 
 		newNick.RemoveFirst (":");
 
@@ -242,12 +244,12 @@ ServerWindow::ParseEvents (const char *data)
 
 	if (secondWord == "QUIT")
 	{
-		BString theNick (GetNick (data).String());
-		BString theRest (RestOfString (data, 3));
-		BString ident (GetIdent (data));
-		BString address (GetAddress (data));
+		BString theNick (GetNick (data).String()),
+		        theRest (RestOfString (data, 3)),
+		        ident (GetIdent (data)),
+		        address (GetAddress (data)),
+		        theMsg;
 		const char *expansions[4];
-		BString theMsg;
 
 		theRest.RemoveFirst (":");
 
@@ -270,10 +272,10 @@ ServerWindow::ParseEvents (const char *data)
 
 	if (secondWord == "KICK")
 	{
-		BString kicker (GetNick (data));
-		BString kickee (GetWord (data, 4));
-		BString rest (RestOfString (data, 5));
-		BString channel (GetWord (data, 3));
+		BString kicker (GetNick (data)),
+		        kickee (GetWord (data, 4)),
+		        rest (RestOfString (data, 5)),
+		        channel (GetWord (data, 3));
 		ClientWindow *client (Client (channel.String()));
 
 		rest.RemoveFirst (":");
@@ -326,9 +328,9 @@ ServerWindow::ParseEvents (const char *data)
 
 	if(secondWord == "TOPIC")
 	{
-		BString theNick (GetNick (data));
-		BString theChannel (GetWord (data, 3));
-		BString theTopic (RestOfString (data, 4));
+		BString theNick (GetNick (data)),
+		        theChannel (GetWord (data, 3)),
+		        theTopic (RestOfString (data, 4));
 		ClientWindow *client (Client (theChannel.String()));
 
 		theTopic.RemoveFirst (":");
@@ -375,10 +377,10 @@ ServerWindow::ParseEvents (const char *data)
 
 	if (secondWord == "MODE")
 	{
-		BString theNick (GetNick (data));
-		BString theChannel (GetWord (data, 3));
-		BString theMode (GetWord (data, 4));
-		BString theTarget (RestOfString (data, 5));
+		BString theNick (GetNick (data)),
+		        theChannel (GetWord (data, 3)),
+		        theMode (GetWord (data, 4)),
+		        theTarget (RestOfString (data, 5));
 		ClientWindow *client (Client (theChannel.String()));
 
 		if (client)

@@ -199,7 +199,12 @@ ChannelWindow::MessageReceived (BMessage *msg)
 
 			msg->FindString ("oldnick", &oldNick);
 			msg->FindString ("newnick", &newNick);
+			
+			//printf ("oldnick: %s\n", oldNick);
+			//printf ("newnick: %s\n", newNick);
 
+			//myNick = newNick;
+			
 			if ((thePos = FindPosition (oldNick)) < 0
 			||  (item = (static_cast<NameItem *>(namesList->ItemAt (thePos)))) == 0)
 				return;
@@ -209,6 +214,7 @@ ChannelWindow::MessageReceived (BMessage *msg)
 
 			if (myNick.ICompare (oldNick) == 0)
 				status->SetItemValue (STATUS_NICK, newNick);
+			
 
 			ClientWindow::MessageReceived (msg);
 			break;

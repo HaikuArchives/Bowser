@@ -59,7 +59,6 @@ ServerWindow::ServerWindow (
 		isConnected (false),
 		isConnecting (true),
 		reconnecting (false),
-		hasWarned (false),
 		isQuitting (false),
 		checkingLag (false),
 		retry (0),
@@ -678,6 +677,7 @@ ServerWindow::Pulse (void)
 int32
 ServerWindow::Establish (void *arg)
 {
+	snooze (2000000);
 	BMessage *msg (reinterpret_cast<BMessage *>(arg));
 	const char *id, *port, *ident, *name, *nick;
 	ServerWindow *server;
@@ -969,7 +969,10 @@ ServerWindow::Establish (void *arg)
 		
 
 				// tell the user all about it
-				//server->isConnected = false;				
+				//server->isConnected = false;
+				endPoint->Close();
+				delete endPoint;
+							
 				server->PostMessage (M_SERVER_DISCONNECT);
 				
 				server->Unlock();
@@ -1349,6 +1352,7 @@ ServerWindow::HandleReconnect (void)
 	if (retry < retryLimit) {
 		reconnecting = true;
 		isConnecting = true;
+		nickAttempt = 0;
 			
 		BMessage *msg (new BMessage);
 		msg->AddString ("id", id.String());
