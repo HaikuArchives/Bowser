@@ -120,7 +120,7 @@ AboutWindow::AboutWindow (void)
 		"Be, Inc., Menlo Park, CA\n"
 		"Pizza Hut, Winter Haven, FL (now give me that free pizza Mike)\n\n\n"
 		"http://bowser.sourceforge.net\n\n\n\n"
-		""A human being should be able to change "
+		"\"A human being should be able to change "
 		"a diaper, plan an invasion, butcher a "
 		"hog, conn a ship, design a building, "
 		"write a sonnet, balance accounts, build "
