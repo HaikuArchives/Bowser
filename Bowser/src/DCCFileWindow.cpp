@@ -9,7 +9,7 @@
 DCCFileWindow::DCCFileWindow (DCCConnect *view, bool windowfollows)
 	: ObserverWindow (
 		BRect (50, 50, 100, 100),
-		"DCC Status",
+		"DCC Transfers",
 		windowfollows,
 		B_TITLED_WINDOW_LOOK)
 {

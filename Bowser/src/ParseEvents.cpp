@@ -367,12 +367,17 @@ ServerWindow::ParseEvents (const char *data)
 				client->SetTitle (buffer.String());
 				client->Unlock();
 			}
-
+			
+			BMessage topic (M_CHANNEL_TOPIC);
+			
+			topic.AddString("topic", theTopic.String());
+						
 			BMessage display (M_DISPLAY);
 
 			buffer = ExpandKeyed (events[E_TOPIC], "NTCIA", expansions);
 			PackDisplay (&display, buffer.String(), &whoisColor, 0, true);
-			client->PostMessage (&display);
+			topic.AddMessage("display", &display);
+			client->PostMessage (&topic);
 		}
 		return true;
 	}

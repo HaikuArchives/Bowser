@@ -329,8 +329,9 @@ DCCReceive::Transfer (void *arg)
 	if (view->running)
 	{
 		view->success = bytes_received == size;
-		view->Stopped (false);
 		update_mime_info(path.Path(), false, false, true);
+		
+		view->Stopped (false);
 	}
 	
 	

@@ -70,21 +70,26 @@ ChannelWindow::ChannelWindow (
 		true);
 
 	status->AddItem (new StatusItem (
-		"Users:", "@@@"),
-		true);
-
-	status->AddItem (new StatusItem (
-		"Ops:", "@@@"),
-		true);
-
-	status->AddItem (new StatusItem (
-		"Modes:",
-		"@@@@@@@@@"),
-		true);
-
-	status->AddItem (new StatusItem (
 		0,
-		"@@@@@@@@@@@@@@@@@",
+		"",
+		STATUS_ALIGN_LEFT),
+		true);
+
+	status->AddItem (new StatusItem (
+		"Users: ", "@@"),
+		true);
+
+	status->AddItem (new StatusItem (
+		"Ops: ", ""),
+		true);
+
+	status->AddItem (new StatusItem (
+		"Modes: ",
+		""),
+		true);
+
+	status->AddItem (new StatusItem (
+		"", "", 
 		STATUS_ALIGN_LEFT),
 		true);
 	status->SetItemValue (STATUS_NICK, myNick.String());
@@ -406,11 +411,12 @@ ChannelWindow::MessageReceived (BMessage *msg)
 			const char *theTopic;
 			BString buffer;
 
+			msg->FindString ("topic", &theTopic);
+			status->SetItemValue(STATUS_TOPIC, theTopic);
+			
 			if(bowser_app->GetShowTopicState())
 			{
 			    //show topic
-				msg->FindString ("topic", &theTopic);
-
 				buffer << id << " : " << theTopic;
 				SetTitle (buffer.String());
 			}
@@ -420,7 +426,7 @@ ChannelWindow::MessageReceived (BMessage *msg)
 			    buffer << id;
 			    SetTitle (buffer.String());
 			}
-			
+				
 
 			BMessage display;
 			if (msg->FindMessage ("display", &display) == B_NO_ERROR)
@@ -479,7 +485,7 @@ ChannelWindow::MessageReceived (BMessage *msg)
 			msg->FindString("mode", &mode);
 			msg->FindString("chan", &chan);
 			msg->FindString("msgz", &msgz);
-
+						
 			if (id.ICompare (chan) == 0)
 			{
 				BString realMode (GetWord (mode, 1));
@@ -844,21 +850,21 @@ void ChannelWindow::UpdateMode(char theSign, char theMode)
 	{
 		BString theReal = GetWord(chanMode.String(), 1);
 		BString theRest = RestOfString(chanMode.String(), 2);
+		if (theMode == 'k' || theMode == 'l')
+			theReal.RemoveFirst(modeString);
 		theReal.Append(modeString);
 		BString tempString(theReal);
 		if(theRest != "-9z99")
 		{
 			tempString << " " << theRest;
 		}
+		
 		if(theMode == 'l')
 		{
-			BString theOld = theReal;
-			theReal.RemoveFirst("l");
-			if(theReal != theOld)
+			if (chanLimitOld != "")
 			{
-				tempString.RemoveFirst("l");
-				theOld = " ";
-				theOld.Append(chanLimitOld);
+				BString theOld(" ");
+				theOld << chanLimitOld;
 				tempString.RemoveFirst(theOld);
 			}
 			tempString.Append(" ");
@@ -866,13 +872,10 @@ void ChannelWindow::UpdateMode(char theSign, char theMode)
 		}
 		else if(theMode == 'k')
 		{
-			BString theOld = theReal;
-			theReal.RemoveFirst("k");
-			if(theReal != theOld)
+			if (chanKeyOld != "")
 			{
-				tempString.RemoveFirst("k");
-				theOld = " ";
-				theOld.Append(chanKeyOld);
+				BString theOld(" ");
+				theOld << chanKeyOld;
 				tempString.RemoveFirst(theOld);
 			}
 			tempString.Append(" ");

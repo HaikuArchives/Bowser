@@ -532,6 +532,23 @@ ServerWindow::MenusBeginning (void)
 	ClientWindow::MenusBeginning();
 }
 
+//void
+//ServerWindow::DispatchMessage (BMessage *msg, BHandler *handler)
+//{
+//	if (msg->what == B_PULSE)
+//		Pulse();
+//
+//	BWindow::DispatchMessage (msg, handler);
+//}
+
+//void
+//ServerWindow::Pulse (void)
+//{
+//	Display ("* test\n", 0);
+//}
+
+
+
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////// PROGRAM FUNCTIONS ///////////////////////////
 ///////////////////////////////////////////////////////////////////////////

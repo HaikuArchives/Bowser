@@ -80,11 +80,18 @@ void
 StatusView::SetItemValue (int32 which, const char *value)
 {
 	StatusItem *item (ItemAt (which));
-
+	StatusItem *nextitem;
 	if (item)
 	{
 		item->value = value;
-		Invalidate (item->frame);
+		item->frame.right = item->frame.left + StringWidth(value);
+		for (int32 i = which+1; (nextitem = ItemAt(i)) != NULL ; i++)
+		{
+			nextitem->frame.left = item->frame.right + 8.0 + StringWidth(nextitem->label.String());
+			nextitem->frame.right = nextitem->frame.left + StringWidth(nextitem->value.String());
+			item = nextitem;
+		}
+		Invalidate ();
 	}
 }
 
@@ -129,7 +136,7 @@ StatusView::Draw (BRect update)
 			width = item->frame.right - StringWidth (item->value.String());
 		else
 			width = item->frame.left;
-		
+				
 		DrawString (item->value.String(),
 			BPoint (width, fh.ascent + fh.leading + 2));
 		width = item->frame.right;
