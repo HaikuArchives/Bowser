@@ -792,6 +792,9 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 			{
 				int32 secs (difference / 1000000);
 				int32 milli (difference / 1000);
+				printf ("  difference: %ld\n", difference);
+				printf ("milliseconds: %ld\n", milli);
+				printf ("     seconds: %ld\n", secs);
 				char lag[15] = "";
 				sprintf (lag, "%ld.%03ld", secs, milli);
 				myLag = lag;

@@ -147,6 +147,8 @@ DCCConnect::Stopped (bool forced)
 
 	if (s > 0) closesocket (s);
 
+	Unlock();
+
 	BMessage msg (M_DCC_FINISH);
 
 	msg.AddBool ("success", true);
@@ -235,11 +237,11 @@ DCCReceive::Transfer (void *arg)
 
 	if ((view->s = socket (AF_INET, SOCK_STREAM, 0)) < 0)
 	{
-		view->UpdateStatus ("Unable to estalish connection.");
+		view->UpdateStatus ("Unable to establish connection.");
 		view->running = false;
 		return 0;
 	}
-
+	
 	sin.sin_family = AF_INET;
 	sin.sin_port   = htons (atoi (view->port.String()));
 	sin.sin_addr.s_addr = htonl (strtoul (view->ip.String(), 0, 10));
@@ -309,8 +311,8 @@ DCCReceive::Transfer (void *arg)
 			file.Write (buffer, read);
 			bytes_received += read;
 
-//			uint32 feed_back (htonl (bytes_received));
-//			send (view->s, &feed_back, sizeof (uint32), 0);
+			uint32 feed_back (htonl (bytes_received));
+			send (view->s, &feed_back, sizeof (uint32), 0);
 
 			now = system_time();
 			period += read;
@@ -338,7 +340,7 @@ DCCReceive::Transfer (void *arg)
 	
 	
 	
-	exit_thread(0);
+	return 0;
 }
 
 DCCSend::DCCSend (
@@ -384,7 +386,6 @@ DCCSend::AttachedToWindow (void)
 int32
 DCCSend::Transfer (void *arg)
 {
-	printf("made Transfer call\n");
 	DCCSend *view ((DCCSend *)arg);
 	BPath path (view->file_name.String());
 	BString file_name, status;
@@ -395,7 +396,6 @@ DCCSend::Transfer (void *arg)
 	file_name.ReplaceAll (" ", "_");
 
 	view->Lock();
-	printf("view locked\n");
 	if ((sd = socket (AF_INET, SOCK_STREAM, 0)) < 0)
 	{
 		view->UpdateStatus ("Unable to establish connection.");
@@ -405,7 +405,6 @@ DCCSend::Transfer (void *arg)
 	}
 
 	memset (&sin, 0, sizeof (struct sockaddr_in));
-	printf("after memset\n");
 	sin.sin_family      = AF_INET;
 	sin.sin_addr.s_addr = INADDR_ANY;
 	sin.sin_port        = htons (atoi (view->port.String()));
@@ -420,12 +419,10 @@ DCCSend::Transfer (void *arg)
 		view->Stopped (false);
 		return 0;
 	}
-	printf("bind call made\n");
 	view->UpdateStatus ("Waiting for acceptance.");
 
 	if (view->running)
 	{
-		printf("sending privmsg\n");
 		status = "PRIVMSG ";
 		status << view->nick
 			<< " :\1DCC SEND "
@@ -441,7 +438,6 @@ DCCSend::Transfer (void *arg)
 		BMessage msg (M_SERVER_SEND);
 		msg.AddString ("data", status.String());
 		view->caller.SendMessage (&msg);
-		printf("message sent\n");
 		view->UpdateStatus ("Doing listen call.");
 		if (listen (sd, 1) < 0)
 		{
@@ -487,7 +483,8 @@ DCCSend::Transfer (void *arg)
 		status << try_count << ".";
 		view->UpdateStatus (status.String());
 	};
-
+	char set[4];
+	memset(set, 1, sizeof(set));
 	closesocket (sd);
 	view->Unlock();
 	
@@ -511,13 +508,13 @@ DCCSend::Transfer (void *arg)
 	if (file.InitCheck() == B_NO_ERROR)
 	{
 		bigtime_t last (system_time()), now;
-		char buffer[1024];
+		char buffer[1400];
 		int period (0), cps (0);
 		ssize_t count;
 		bigtime_t start = system_time();
 
 		while (view->running
-		&&    (count = file.Read (buffer, 1024)) > 0)
+		&&    (count = file.Read (buffer, 1400)) > 0)
 		{
 			int sent;
 
@@ -528,8 +525,8 @@ DCCSend::Transfer (void *arg)
 			}
 
 			bytes_sent += sent;
-//			uint32 confirm;
-//			recv (view->s, &confirm, sizeof (confirm), 0);
+			uint32 confirm;
+			recv (view->s, &confirm, sizeof (confirm), 0);
 
 			now = system_time();
 			period += sent;
