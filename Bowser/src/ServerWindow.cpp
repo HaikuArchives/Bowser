@@ -341,6 +341,7 @@ ServerWindow::MessageReceived (BMessage *msg)
 				if (!channelOnly || dynamic_cast<ChannelWindow *>(client))
 				{
 					BMessage msg (M_REJOIN);
+					msg.AddString ("nickname", myNick.String());
 					client->PostMessage (&msg);
 				}
 			}
@@ -677,7 +678,6 @@ ServerWindow::Pulse (void)
 int32
 ServerWindow::Establish (void *arg)
 {
-	snooze (2000000);
 	BMessage *msg (reinterpret_cast<BMessage *>(arg));
 	const char *id, *port, *ident, *name, *nick;
 	ServerWindow *server;

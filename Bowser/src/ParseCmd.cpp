@@ -820,7 +820,7 @@ ClientWindow::ParseCmd (const char *data)
 	}
 	
 	
-	if (firstWord == "/RAW")
+	if (firstWord == "/RAW" || firstWord == "/QUOTE")
 	{
 
 		BString theRaw (RestOfString (data, 2));

@@ -37,10 +37,6 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 		BString theNick (GetWord (data, 3));
 		myNick = theNick;
-		//BMessage nickMsg (M_CHANGE_NICK);
-		//nickMsg.AddString ("oldnick", myNick.String());
-		//nickMsg.AddString ("newnick", theNick.String());
-		//Broadcast (&nickMsg);
 		status->SetItemValue (STATUS_NICK, theNick.String());
 
 		BString theMsg (RestOfString (data, 4));

@@ -725,6 +725,11 @@ ChannelWindow::MessageReceived (BMessage *msg)
 
 		case M_REJOIN:
 		{
+			const char *newNick;
+			msg->FindString ("nickname", &newNick);
+			myNick = newNick;	// update nickname (might have changed
+			                    //                  on reconnect)
+						
 			rgb_color errorColor = bowser_app->GetColor (C_ERROR);
 			Display ("[@] Attempting to rejoin...\n", &errorColor, &serverFont);
 		

@@ -17,7 +17,9 @@
 # the file name, ...
 
 BINARY := Bowser
-VERSION := 1.1
+VTOP := 1.1
+VDATE := $(shell date +%Y%m%d)
+VERSION := $(VTOP)-$(VDATE)
 LIBS := -lbe -lnet -lnetapi -ltextencoding -ltranslation -ltracker
 
 ################################################
@@ -35,10 +37,10 @@ CC := g++ -c -pipe
 CFLAGS :=
 CFLAGS += -O3
 CFLAGS += -fno-pic
-#CFLAGS += -fomit-frame-pointer
 CFLAGS += -ffast-math
 CFLAGS += -Wall -W -Wno-multichar -Wp,-Wall
 #CFLAGS += -Werror
+CFLAGS += -DVERSION=\"$(VERSION)\"
 CFLAGS += -DVERSION_STRING=\"$(VERSION)\" -DBINARY_NAME=\"$(BINARY)\"
 
 LD := g++
