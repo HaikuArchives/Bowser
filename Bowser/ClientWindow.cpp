@@ -1771,14 +1771,25 @@ ClientWindow::DccCmd (const char *data)
 			}
 			strcat(filePath, theFile.LockBuffer(0));
 			theFile.UnlockBuffer();
+
+			// use BPath to resolve relative pathnames, above code forces it
+			// to use /boot/home as a working dir as opposed to the app path
+
 			BPath sendPath(filePath, NULL, true);
+			
+			// the BFile is used to verify if the file exists
+			// based off the documentation get_ref_for_path *should*
+			// return something other than B_OK if the file doesn't exist
+			// but that doesn't seem to be working correctly
+			
 			BFile sendFile(sendPath.Path(), B_READ_ONLY);
+			
+			// if the file exists, send, otherwise drop to the file panel
 			
 			if (sendFile.InitCheck() == B_OK)
 			{
 				entry_ref ref;
 				get_ref_for_path(sendPath.Path(), &ref);
-				printf("sending %s\n", sendPath.Path());
 				msg->AddRef("refs", &ref);
 				sMsgr.SendMessage(msg);	
 				return;	
