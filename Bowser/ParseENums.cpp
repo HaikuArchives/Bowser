@@ -17,7 +17,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 {
 	BString secondWord (sWord);
 
-	if (secondWord == "001") // welcome to irc
+	if (secondWord == "001") // welcome to irc messages
 	{
 		Lock();
 		isConnected  = true;
