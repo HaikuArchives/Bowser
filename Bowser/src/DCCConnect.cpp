@@ -130,12 +130,16 @@ DCCConnect::MessageReceived (BMessage *msg)
 	switch (msg->what)
 	{
 		case M_STOP_BUTTON:
+		{
 			Stopped();
 			break;
+		}
 
 		case M_UPDATE_STATUS:
+		{
 			label->SetText (msg->FindString ("text"));
 			break;
+		}
 
 		default:
 			BView::MessageReceived (msg);
@@ -147,7 +151,10 @@ DCCConnect::Stopped (void)
 {
 	running = false;
 
-	if (s > 0) closesocket (s);
+	if (s > 0)
+	{
+		closesocket (s);
+	}
 
 	Unlock();
 	if (file.InitCheck() == B_OK)
@@ -242,7 +249,7 @@ DCCReceive::DCCReceive (
 
 DCCReceive::~DCCReceive (void)
 {
-	kill_thread(tid);
+	kill_thread (tid);
 }
 
 void
@@ -306,7 +313,9 @@ DCCReceive::Transfer (void *arg)
 			B_WRITE_ONLY | B_OPEN_AT_END) == B_NO_ERROR
 		&&  view->file.GetSize (&file_size) == B_NO_ERROR
 		&&  file_size > 0LL)
+		{
 			view->UpdateBar (file_size, 0, 0, true);
+		}
 		else
 		{
 			view->resume = false;
@@ -314,9 +323,11 @@ DCCReceive::Transfer (void *arg)
 		}
 	}
 	else if (view->running)
+	{
 		view->file.SetTo (
 			view->file_name.String(),
 			B_WRITE_ONLY | B_CREATE_FILE | B_ERASE_FILE);
+	}
 	
 	int32 bytes_received (file_size);
 	int32 size (atol (view->size.String()));
@@ -334,7 +345,9 @@ DCCReceive::Transfer (void *arg)
 		{
 			int read;
 			if ((read = recv (view->s, buffer, 8196, 0)) < 0)
+			{
 				break;
+			}
 			
 			view->file.Write (buffer, read);
 			bytes_received += read;
@@ -579,7 +592,10 @@ DCCSend::Transfer (void *arg)
 	}
 	
 	view->file.Unset();	
-	if (view->running) view->Stopped();	
+	if (view->running)
+	{
+		view->Stopped();
+	}
 	return 0;
 }
 

@@ -49,15 +49,19 @@ DCCFileWindow::MessageReceived (BMessage *msg)
 			DCCConnect *view;
 
 			if (ChildAt (0))
+			{
 				point.y = bounds.bottom + 1;
-
+			}
+						
 			msg->FindPointer ("view", reinterpret_cast<void **>(&view));
 			view->MoveTo (point);
 			AddChild (view);
 			ResizeTo (bounds.Width(), view->Frame().bottom);
 
 			if (IsHidden())
+			{
 				Show();
+			}
 			break;
 		}
 
@@ -93,9 +97,13 @@ DCCFileWindow::MessageReceived (BMessage *msg)
 						}
 
 						if (CountChildren() == 0)
+						{
 							Hide();
+						}
 						else
+						{
 							ResizeBy (0.0, -(height + 1));
+						}
 						break;
 					}
 				}
