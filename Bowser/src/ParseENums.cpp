@@ -23,8 +23,8 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		Lock();
 		isConnected  = true;
 		isConnecting = false;
+		retry = 0;
 		Unlock();
-		
 
 		myLag = "0.000";
 		PostMessage (M_LAG_CHANGED);

@@ -12,6 +12,7 @@
 #include "IRCDefines.h"
 #include "ChannelWindow.h"
 #include "MessageWindow.h"
+#include "ServerWindow.h"
 #include "StringManip.h"
 #include "Names.h"
 #include "IgnoreWindow.h"
@@ -861,6 +862,16 @@ ClientWindow::ParseCmd (const char *data)
 		
 		return true;
 	}
+	
+	
+	if (firstWord == "/RECONNECT")
+	{
+		BMessage msg (M_SLASH_RECONNECT);
+		msg.AddString ("server", serverName.String());
+		bowser_app->PostMessage (&msg);
+		return true;
+	}
+	
 	
 	if (firstWord == "/SLEEP")
 	{

@@ -63,7 +63,7 @@ ServerWindow::ServerWindow (
 		isQuitting (false),
 		checkingLag (false),
 		retry (0),
-		retryLimit (20),
+		retryLimit (25),
 		lagCheck (0),
 		lagCount (0),
 		endPoint (0),
@@ -288,42 +288,44 @@ ServerWindow::MessageReceived (BMessage *msg)
 			break;
 		}
 		
+		case M_SLASH_RECONNECT:
+		{
+			printf ("here too\n");
+		
+			if (!isConnected && !isConnecting)
+			{
+				printf ("sent message\n");
+				PostMessage (M_SERVER_DISCONNECT);
+			}
+			
+			break;
+		
+		}
+		
 		case M_SERVER_DISCONNECT:
 		{
 			// update lag meter
 			SetPulseRate (0);
 			myLag = "CONNECTION PROBLEM";
 			PostMessage (M_LAG_CHANGED);
+			checkingLag = false;
 		
 			// let the user know
-			BString tempString;
-			tempString << "[@] Disconnected from " << serverName << "\n";
-			Display (tempString.String(), &errorColor);
-			DisplayAll (tempString.String(), false, &errorColor, &serverFont);
+			if (isConnected)
+			{
+				BString tempString;
+				tempString << "[@] Disconnected from " << serverName << "\n";
+				Display (tempString.String(), &errorColor);
+				DisplayAll (tempString.String(), false, &errorColor, &serverFont);
+			}
 			
+			isConnected = false;
+			isConnecting = false;		
 			
-			
+						
 			// setup reconnect
-			reconnecting = true;
-			isConnecting = true;
 			
-			BMessage *msg (new BMessage);
-			msg->AddString ("id", id.String());
-			msg->AddString ("port", lport.String());
-			msg->AddString ("ident", lident.String());
-			msg->AddString ("name", lname.String());
-			msg->AddString ("nick", myNick.String());
-			msg->AddBool ("identd", identd);
-			msg->AddBool ("reconnecting", reconnecting);
-			msg->AddPointer ("server", this);
-
-			loginThread = spawn_thread (
-				Establish,
-				"complimentary_tote_bag",
-				B_NORMAL_PRIORITY,
-				msg);
-	
-			resume_thread (loginThread);
+			HandleReconnect();
 			
 			break;
 			
@@ -675,17 +677,11 @@ ServerWindow::Pulse (void)
 int32
 ServerWindow::Establish (void *arg)
 {
-	printf ("Establish\n");
 	BMessage *msg (reinterpret_cast<BMessage *>(arg));
 	const char *id, *port, *ident, *name, *nick;
 	ServerWindow *server;
 	bool identd, reconnecting (false);
 	
-	if(bowser_app->GetHideSetupState())
-	{
-		bowser_app->PostMessage (M_SETUP_HIDE);
-	}
-
 	msg->FindString ("id", &id);
 	msg->FindString ("port", &port);
 	msg->FindString ("ident", &ident);
@@ -699,9 +695,10 @@ ServerWindow::Establish (void *arg)
 	if (reconnecting)
 	{
 		snooze (2000000); // wait 2 seconds
+		server->retry++;
 		BMessage statusMsgR (M_DISPLAY);
 		BString tempStringR;
-		tempStringR << "[@] Attempting to reconnect\n";
+		tempStringR << "[@] Attempting to reconnect (Retry " << server->retry << " of " << server->retryLimit << ")\n";
 		server->PackDisplay (&statusMsgR, tempStringR.String(), &(server->errorColor));
 		server->PostMessage (&statusMsgR);
 		server->DisplayAll (tempStringR.String(), false, &(server->errorColor), &(server->serverFont));
@@ -720,16 +717,16 @@ ServerWindow::Establish (void *arg)
 	if (address.SetTo (id, atoi (port)) != B_NO_ERROR)
 	{
 		BMessage statusMsgI (M_DISPLAY);
-		BString tempStringI ("[@] The address \"");
-		tempStringI << id << "\" and port \"" << port << "\" seem to be invalid. Make sure your Internet connection is operational.\n";
-		server->PackDisplay (&statusMsgI, tempStringI.String(), &(server->errorColor));
+		server->PackDisplay (&statusMsgI, "[@] The address and port seem to be invalid. Make sure your Internet connection is operational.\n", &(server->errorColor));
 		server->PostMessage (&statusMsgI);
 
 		if (msgr.LockTarget())
 		{
-			server->isConnecting = false;
+			//server->isConnecting = false;
 			server->Unlock();
 		}
+						
+		server->PostMessage (M_SERVER_DISCONNECT);
 		
 		return 0;
 	}
@@ -739,9 +736,7 @@ ServerWindow::Establish (void *arg)
 	if (!endPoint || endPoint->InitCheck() != B_NO_ERROR)
 	{
 		BMessage statusMsgC (M_DISPLAY);
-		BString tempStringC ("[@] Could not create connection to address \"");
-		tempStringC << id << "\" and port \"" << port << "\". Make sure your Internet connection is operational.\n";
-		server->PackDisplay (&statusMsgC, tempStringC.String(), &(server->errorColor));
+		server->PackDisplay (&statusMsgC, "[@] Could not create connection to address and port. Make sure your Internet connection is operational.\n", &(server->errorColor));
 		server->PostMessage (&statusMsgC);
 
 		if (msgr.LockTarget())
@@ -760,6 +755,11 @@ ServerWindow::Establish (void *arg)
 	{
 		delete endPoint;
 		return 0;
+	}
+
+	if(bowser_app->GetHideSetupState())
+	{
+		bowser_app->PostMessage (M_SETUP_HIDE);
 	}
 	
 	BMessage statusMsgO (M_DISPLAY);
@@ -869,9 +869,11 @@ ServerWindow::Establish (void *arg)
 
 		if (msgr.LockTarget())
 		{
-			server->isConnecting = false;
+			//server->isConnecting = false;
 			server->Unlock();
 		}
+		
+		server->PostMessage (M_SERVER_DISCONNECT);
 
 		delete endPoint;
 
@@ -964,7 +966,7 @@ ServerWindow::Establish (void *arg)
 		
 
 				// tell the user all about it
-				server->isConnected = false;				
+				//server->isConnected = false;				
 				server->PostMessage (M_SERVER_DISCONNECT);
 				
 				server->Unlock();
@@ -1015,8 +1017,6 @@ ServerWindow::SendData (const char *cData)
 	|| (length = endPoint->Send (send_buffer, strlen (send_buffer))) < 0)
 	{
 		// doh, we aren't even connected.
-		
-		isConnected = false; // get the most important bool out of the way
 		
 		PostMessage (M_SERVER_DISCONNECT);
 		
@@ -1221,7 +1221,6 @@ ServerWindow::FilterCrap (const char *data)
 void
 ServerWindow::StateChange (BMessage *msg)
 {
-	printf ("ServerWindow::StateChange %s\n", id.String());
 	// Important to call ClientWindow's State change first
 	// We correct some things it sets
 	ClientWindow::StateChange (msg);
@@ -1338,3 +1337,36 @@ ServerWindow::LocalAddress (void) const
 	return localAddress;
 }
 
+
+void
+ServerWindow::HandleReconnect (void)
+{
+	if (retry < retryLimit) {
+		reconnecting = true;
+		isConnecting = true;
+			
+		BMessage *msg (new BMessage);
+		msg->AddString ("id", id.String());
+		msg->AddString ("port", lport.String());
+		msg->AddString ("ident", lident.String());
+		msg->AddString ("name", lname.String());
+		msg->AddString ("nick", myNick.String());
+		msg->AddBool ("identd", identd);
+		msg->AddBool ("reconnecting", reconnecting);
+		msg->AddPointer ("server", this);
+	
+		loginThread = spawn_thread (
+			Establish,
+			"complimentary_tote_bag",
+			B_NORMAL_PRIORITY,
+			msg);
+	
+		resume_thread (loginThread);
+	}
+	else
+	{
+		reconnecting = false;
+		retry = 0;
+		Display ("[@] Giving up. Type /reconnect when you get your act together... or your ISP doesn't stink. Whatever.\n", &errorColor);
+	}
+}

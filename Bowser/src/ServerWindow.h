@@ -55,7 +55,7 @@ class ServerWindow : public ClientWindow
 	void							PostActive (BMessage *);
 	void							Broadcast (BMessage *);
 	void							RepliedBroadcast (BMessage *);
-	
+
 	protected:
 
 	virtual void				StateChange (BMessage *msg);
@@ -78,12 +78,13 @@ class ServerWindow : public ClientWindow
 
 	bool							ParseENums (const char *, const char *);
 
-	void							ParseCTCP(BString theNick, BString theMsg);
-	void							ParseCTCPResponse(BString theNick, BString theMsg);
-	void							DCCGetDialog(BString theNick, BString theFile, BString theSize,
+	void							ParseCTCP (BString theNick, BString theMsg);
+	void							ParseCTCPResponse (BString theNick, BString theMsg);
+	void							DCCGetDialog (BString theNick, BString theFile, BString theSize,
 										BString theIP, BString thePort);
-	void							DCCChatDialog(BString theNick, BString theIP, BString thePort);
-	void							AddResumeData(BMessage *);
+	void							DCCChatDialog (BString theNick, BString theIP, BString thePort);
+	void							AddResumeData (BMessage *);
+	void							HandleReconnect (void);
 
 	// Locked accessors:
 

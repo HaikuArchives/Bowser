@@ -340,6 +340,28 @@ BowserApp::MessageReceived (BMessage *msg)
 
 			break;
 		}
+		
+		case M_SLASH_RECONNECT:
+		{
+			printf ("M_SLASH_RECONNECT\n");
+			const char *serverName;
+
+			msg->FindString ("server", &serverName);
+
+			for (int32 i = 0; i < CountWindows(); ++i)
+			{
+				ServerWindow *serverWindow (dynamic_cast<ServerWindow *>(WindowAt (i)));
+
+				if (serverWindow && serverWindow->Id().ICompare (serverName) == 0)
+				{
+					printf ("found it!\n");
+					serverWindow->PostMessage (M_SLASH_RECONNECT);
+					break;
+				}
+			}
+
+			break;
+		}
 
 		case M_SETUP_ACTIVATE:
 		case M_SETUP_HIDE:

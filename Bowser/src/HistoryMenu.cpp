@@ -5,6 +5,7 @@
 #include <PopUpMenu.h>
 #include <MenuItem.h>
 //#include <Font.h>
+#include <stdio.h>
 
 #include "IRCDefines.h"
 #include "HistoryMenu.h"
@@ -153,6 +154,13 @@ HistoryMenu::PreviousBuffer (BTextControl *input)
 {
 	if (bufferPos)
 	{
+		if (input->TextView()->TextLength() > 0  && 
+			bufferFree < BACK_BUFFER_SIZE &&
+			bufferPos == bufferFree)
+		{
+			backBuffer[bufferFree++] = input->Text();
+		}
+			
 		--bufferPos;
 
 		input->SetText (backBuffer[bufferPos].String());
@@ -173,8 +181,11 @@ HistoryMenu::NextBuffer (BTextControl *input)
 		buffer = backBuffer[bufferPos].String();
 	}
 	else
-		buffer = "";
-
+	{
+		if (backBuffer[bufferFree] == input->Text())
+			buffer = "";
+		else buffer = input->Text();
+	}
 	input->SetText (buffer.String());
 	input->TextView()->Select (
 		input->TextView()->TextLength(),

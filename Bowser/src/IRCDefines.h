@@ -141,6 +141,7 @@ const uint32 M_IGNORED_PRIVMSG						= 0x1704;
 const uint32 M_LAG_CHANGED							= 0x1705;
 const uint32 M_SERVER_DISCONNECT					= 0x1706;
 const uint32 M_REJOIN_ALL							= 0x1707;
+const uint32 M_SLASH_RECONNECT						= 0x1708;
 
 // List Messages
 const uint32 M_SORT_CHANNEL							= 0x1800;
