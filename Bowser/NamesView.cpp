@@ -48,6 +48,24 @@ NamesView::NamesView(BRect frame)
 	myMessage->AddString("action", "PRIVMSG -9x99 :\1VERSION\1");
 	CTCPPopUp->AddItem(new BMenuItem("VERSION", myMessage));
 	
+	CTCPPopUp->AddSeparatorItem();
+	
+	myMessage = new BMessage(POPUP_ACTION);
+	myMessage->AddString("action", "PRIVMSG -9x99 :\1FINGER\1");
+	CTCPPopUp->AddItem(new BMenuItem("FINGER", myMessage));
+
+	myMessage = new BMessage(POPUP_ACTION);
+	myMessage->AddString("action", "PRIVMSG -9x99 :\1TIME\1");
+	CTCPPopUp->AddItem(new BMenuItem("TIME", myMessage));
+
+	myMessage = new BMessage(POPUP_ACTION);
+	myMessage->AddString("action", "PRIVMSG -9x99 :\1CLIENTINFO\1");
+	CTCPPopUp->AddItem(new BMenuItem("CLIENTINFO", myMessage));
+
+	myMessage = new BMessage(POPUP_ACTION);
+	myMessage->AddString("action", "PRIVMSG -9x99 :\1USERINFO\1");
+	CTCPPopUp->AddItem(new BMenuItem("USERINFO", myMessage));
+
 	myPopUp->AddSeparatorItem();
 	
 	myMessage = new BMessage(POPUP_ACTION);

@@ -193,6 +193,22 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 	
+	if(secondWord == "307") // whois | user has identified
+	{
+		BString theInfo (RestOfString (data, 5));
+
+		theInfo.RemoveFirst (":");
+
+		BMessage display (M_DISPLAY);
+		BString buffer;
+
+		buffer << "[x] " << theInfo << "\n";
+		PackDisplay (&display, buffer.String(), &whoisColor, &serverFont);
+		PostActive (&display);
+
+		return true;
+	}
+	
 	if (secondWord == "311") // start of whois
 	{
 		BString theNick (GetWord (data, 4));

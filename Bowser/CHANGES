@@ -1,5 +1,10 @@
-Bowser d41
+Bowser d41a
 http://bowser.sourceforge.net
+
+
+[d41a]
+ * New CTCP options in nick list menu
+ * Supports /whois numeric 307 (used by UltimateIRCd) (fixed)
 
 [d41]
  * Miscelanious source code improvements
