@@ -548,7 +548,6 @@ ClientWindow::MessageReceived (BMessage *msg)
 			else
 			{
 				BString buffer (input->Text());
-
 				for (int32 i = 0; msg->HasString ("data", i); ++i)
 				{
 					const char *data;
@@ -557,10 +556,9 @@ ClientWindow::MessageReceived (BMessage *msg)
 					buffer << (i ? " " : "") << data;
 				}
 
-				input->SetText (buffer.String());
-
-				input->TextView()->Select (buffer.Length(), buffer.Length());
-				input->TextView()->ScrollToSelection();
+					input->TextView()->SetText(buffer.String());
+					input->TextView()->Select (buffer.Length(), buffer.Length());
+					input->TextView()->ScrollToSelection();
 			}
 
 			break;
@@ -882,6 +880,13 @@ ClientWindow::WindowActivated (bool active)
 
 	if (active)
 	{
+		BString newTitle (Title());
+		if (newTitle.ByteAt(0) == '*')
+		{
+			newTitle.Remove(0,1);
+			SetTitle(newTitle.String());
+		}
+		
 		input->MakeFocus (true);
 		input->TextView()->Select (
 			input->TextView()->TextLength(),
@@ -988,7 +993,15 @@ ClientWindow::Display (
 		buffer,
 		color ? color : &textColor,
 		font  ? font  : &myFont);
-
+	
+	if (!IsActive())
+	{
+		BString newTitle (Title ());
+		if (newTitle.ByteAt (0) != '*')
+			newTitle.Prepend ("*");
+		SetTitle (newTitle.String());
+	}
+	
 	// Deskbar notification only if inactive
 	if (!IsActive()
 	&&  settings
@@ -1053,6 +1066,35 @@ ClientWindow::SlashParser (const char *data)
 
 	return false;
 }
+
+//bool
+//ClientWindow::AcceptsPaste(BClipboard *clipboard)
+//{
+//	printf("called AcceptsPaste\n");
+//	const char *text;
+//
+//	int32 textLen;
+//
+//	BMessage *clip = (BMessage *)NULL;
+//
+//	if (clipboard->Lock()) {
+//
+//	   if ((clip = clipboard->Data()))
+//	    if (clip->FindData("text/plain", B_MIME_TYPE, 
+//	    	(const void **)&text, &textLen) != B_OK)
+//	    	{
+//	    		clipboard->Unlock();
+//	    		return false;
+//	    	}
+//	   	clipboard->Unlock();
+//	   	BMessage mimeMsg(B_MIME_TYPE);
+//	   	mimeMsg.AddData("text/plain", B_MIME_TYPE,
+//	   		(const void *)&text, textLen, true);
+//	   	PostMessage(&mimeMsg);
+//	   	return true;
+//	}
+//	return false;
+//}
 
 void
 ClientWindow::ChannelMessage (

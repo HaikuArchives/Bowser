@@ -152,23 +152,19 @@ NotifyWindow::MessageReceived (BMessage *msg)
 		}
 
 		case M_NOTIFY_ADD:
-		printf("here\n");
 			if (msg->HasString ("text"))
-			{
-				printf("here hasstring\n");
+			{ 
 				BString serverName (GetWord (Title(), 2));
-				printf("servernamegotword\n");
 				BMessage reply;
-				printf("created reply\n");
-
-				msg->AddString ("server", serverName.String());
-				printf("added servername string\n");
-				be_app_messenger.SendMessage (msg, &reply);
-				printf("sent message\n");
+				BMessage notifyMsg(M_NOTIFY_ADD);
+				BString text("");
+				msg->FindString("text", &text);
+				notifyMsg.AddString ("text", text.String());
+				notifyMsg.AddString ("server", serverName.String());
+				be_app_messenger.SendMessage (&notifyMsg, &reply);
 
 				if (reply.HasPointer ("item"))
 				{
-				printf("if haspointer true\n");
 					BListItem *item;
 
 					reply.FindPointer (
@@ -185,7 +181,7 @@ NotifyWindow::MessageReceived (BMessage *msg)
 					"Notify",
 					"",
 					this,
-					new BMessage (M_IGNORE_ADD),
+					new BMessage (M_NOTIFY_ADD),
 					0));
 				prompt->Show();
 			}

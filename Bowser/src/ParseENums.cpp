@@ -173,22 +173,30 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	
 	if (secondWord == "302") // userhost and usrip reply
 	{
-		BString tempString (GetAddress (GetWord (data, 4).String()));
-		BMessage *msg (new BMessage);
-		msg->AddString ("lookup", tempString.String());
-		ClientWindow *client (ActiveClient());
-		if (client)
-			msg->AddPointer("client", client);
-		else
-			msg->AddPointer("client", this);
+		BString theHost (GetWord (data, 4));
+		theHost.RemoveFirst (":");
+		
+		if (theHost != "-9z99" && theHost != "")
+		{
+			BString tempString (GetAddress (theHost.String()));
+		
+			BMessage *msg (new BMessage);
+			msg->AddString ("lookup", tempString.String());
+			ClientWindow *client (ActiveClient());
+			if (client)
+				msg->AddPointer("client", client);
+			else
+				msg->AddPointer("client", this);
 		 
-		thread_id lookupThread = spawn_thread (
-			DNSLookup,
-			"dns_lookup",
-			B_LOW_PRIORITY,
-			msg);
+			thread_id lookupThread = spawn_thread (
+				DNSLookup,
+				"dns_lookup",
+				B_LOW_PRIORITY,
+				msg);
 
-		resume_thread (lookupThread);
+			resume_thread (lookupThread);
+		}
+		
 		return true;
 	}  
 	
