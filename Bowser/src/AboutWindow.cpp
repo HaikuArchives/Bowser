@@ -89,8 +89,8 @@ AboutWindow::AboutWindow (const char *version)
 		"Andrew Bazan (Hiisi),\nRene Gollent (AnEvilYak)\nTodd Lair (tlair),\nBrian Luft (Electroly),\nWade Majors (kurros),\n and Jamie Wilkinson (project).\n\n"
 		"Thanks\n\n"
 		"Special thanks go out to: "
-		"Gord McLeod, Flax, BeTika, Resartus, "
-		"mneptok, AnEvilYak, and Be, Inc.\n\n"
+		"Gord McLeod, Seth Flaxman, BeTika, Resartus, "
+		"John Kurt von Finck, Jean-Baptiste Quéru, and Be, Inc.\n\n"
 		"http://bowser.sourceforge.net\n\n\n\n\n\n\n\n"
 		"So, like, two guys walk into a bar.\n\n\n\n\nAnd they fell down.\n\n\n\n\nHAW!"
 		"\n\n\n";

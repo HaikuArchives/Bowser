@@ -179,7 +179,7 @@ ClientWindow::Init (void)
 
 	mHelp = new BMenu ("Help");
 	mHelp->AddItem (item = new BMenuItem ("About Bowser",
-		new BMessage (B_ABOUT_REQUESTED)));
+		new BMessage (B_ABOUT_REQUESTED), 'A', B_SHIFT_KEY));
 	item->SetTarget (bowser_app);
 	menubar->AddItem (mHelp);
 	AddChild (menubar);
