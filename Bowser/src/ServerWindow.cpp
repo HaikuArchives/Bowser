@@ -107,6 +107,8 @@ ServerWindow::ServerWindow (
 		STATUS_ALIGN_LEFT),
 		true);
 	status->SetItemValue (STATUS_NICK, myNick.String());
+	
+	SetPulseRate (0);
 
 	// We pack it all up and ship it off to the
 	// the establish thread.  Establish can
