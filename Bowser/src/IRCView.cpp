@@ -8,7 +8,7 @@
 #include <Roster.h>
 
 #include <list.h>
-//#include <stdio.h>
+#include <stdio.h>
 #include <ctype.h>
 
 #include "Bowser.h"
@@ -247,29 +247,32 @@ IRCView::DisplayChunk (
 
 int32
 IRCView::URLLength (const char *outTemp) 
-{ 
-        int32 x = 0;
-
-        while (outTemp[x] 
-        &&    (isdigit (outTemp[x])             // do these first! 
-        ||     isalpha (outTemp[x]) 
-        ||     outTemp[x] == '.'
-        ||     outTemp[x] == ','
-        ||     outTemp[x] == '-'
-        ||     outTemp[x] == '/'
-        ||     outTemp[x] == ':'
-        ||     outTemp[x] == '~'
-        ||     outTemp[x] == '%'
-        ||     outTemp[x] == '+'
-        ||     outTemp[x] == '&'
-        ||     outTemp[x] == '_'
-        ||     outTemp[x] == '?'
-        ||     outTemp[x] == '('
-        ||     outTemp[x] == ')'
-        ||     outTemp[x] == '=')) 
-                ++x; 
-
-        return x; 
+{
+		BString data (outTemp);
+		int32 urlEnd = data.FindFirst(" ");
+		
+		if (urlEnd > 0)
+		{
+			// spaces! argh!
+			data.Truncate (urlEnd);
+		}
+		
+        while(data.Length() > 1)
+        {
+        	char last = data.ByteAt (data.Length()-1);
+        	if (isdigit (last)
+        	||  isalpha (last)
+        	||  last == '/')
+			{
+				break;
+			}
+			else
+			{
+				data.Truncate (data.Length()-1);
+			}
+		}
+		
+		return data.Length();
 } 
 
 int32
