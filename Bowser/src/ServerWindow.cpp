@@ -469,7 +469,7 @@ ServerWindow::MessageReceived (BMessage *msg)
 			{
 				sMsgr = BMessenger (this);
 				BMessage msg (B_QUIT_REQUESTED);
-				msg.AddString ("bowser:quit", "not_needed_in_this_case");
+				msg.AddString ("bowser:quit", "");
 				sMsgr.SendMessage (&msg);
 			}
 			
@@ -859,7 +859,9 @@ ServerWindow::SendData (const char *cData)
 			PostMessage (B_QUIT_REQUESTED);
 	
 	#ifdef DEV_BUILD
-	if (DumpSent) printf("SENT: (%ld) %s", length, data.String());
+	data.RemoveAll ("\n");
+	data.RemoveAll ("\r");
+	if (DumpSent) printf("SENT: (%ld) \"%s\"\n", length, data.String());
 	#endif
 }
 

@@ -5,6 +5,11 @@ http://bowser.sourceforge.net
  * New DCC system
  * Fixed crashing bug which happened on some server notices.
  * Tab completion now works in Query and DCC Chat windows
+ * Fixed issue where Bowser wouldn't auto rejoin if the channel key
+   was "-9z99"
+ * Alt+W on the Server window now does a clean Quit
+ * /m command added. Used in server window it acts like /mode yournick <parms>,
+   used in a channel it acts like /mode #channel <parms>
 
 [d42b]
  * Source changes (new makefile, etc)

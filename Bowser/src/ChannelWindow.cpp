@@ -447,7 +447,7 @@ ChannelWindow::MessageReceived (BMessage *msg)
 				BMessage send (M_SERVER_SEND);	
 				AddSend (&send, "JOIN ");
 				AddSend (&send, theChannel);	
-				if (chanKey != "-9z99")
+				if (chanKey != "")
 				{
 					AddSend (&send, " ");
 					AddSend (&send, chanKey);

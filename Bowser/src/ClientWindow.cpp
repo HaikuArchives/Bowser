@@ -1526,22 +1526,25 @@ ClientWindow::ModeCmd (const char *data)
 void
 ClientWindow::Mode2Cmd (const char *data)
 {
-	BString theMode (RestOfString (data, 3));
-	BString theTarget (GetWord (data, 2));
+	BString theMode (RestOfString (data, 2));
+	
+	BMessage send (M_SERVER_SEND);
+	AddSend (&send, "MODE ");
 
-	if (theTarget != "-9z99")
+	if (id == serverName)
+		AddSend (&send, myNick);
+	else if (id[0] == '#' || id[0] == '&')
+		AddSend (&send, id);
+	else
+		AddSend (&send, myNick);
+	 
+	if (theMode != "-9z99")
 	{
-		BMessage send (M_SERVER_SEND);
-
-		AddSend (&send, "MODE ");
-
-		if (theMode == "-9z99")
-			AddSend (&send, theTarget);
-		else
-			AddSend (&send, theTarget << " " << theMode);
-
-		AddSend (&send, endl);
+			AddSend (&send, " ");
+			AddSend (&send, theMode);
 	}
+
+	AddSend (&send, endl);
 }
 	
 void
