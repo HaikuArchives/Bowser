@@ -12,7 +12,9 @@ class PreferenceWindow : public BView
 									*windowFollows,
 									*hideSetup,
 									*showSetup,
-									*showTopic;
+									*showTopic,
+									*SetupAltW,
+									*altwServer;
 
 	public:
 
@@ -27,5 +29,7 @@ const uint32 M_MESSAGE_FOCUS						= 'pwmf';
 const uint32 M_HIDE_SETUP							= 'pwhs';
 const uint32 M_ACTIVATE_SETUP						= 'pwas';
 const uint32 M_SHOW_TOPIC							= 'pwst';
+const uint32 M_ALTW_SETUP							= 'pwwp';
+const uint32 M_ALTW_SERVER							= 'pwwr';
 
 #endif

@@ -105,7 +105,7 @@ bool DCCFileWindow::QuitRequested()
 {
 	// make sure all sockets are closed
 	closesocket(mySocket);
-	closesocket(acceptSocket);
+	if (dType == "SEND") closesocket(acceptSocket); 
 	return true;
 }
 

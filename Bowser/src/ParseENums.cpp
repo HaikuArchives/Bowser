@@ -10,6 +10,8 @@
 #include "ServerWindow.h"
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
 
 bool
 ServerWindow::ParseENums (const char *data, const char *sWord)
@@ -259,12 +261,16 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	if (secondWord == "313") // IRC operator (uh oh)
 	{
 		BString theNick (GetWord (data, 4));
-
+		
+		BString tempString("[x] ");
+		BString info = RestOfString(data, 5);
+		info.Remove(0, 1);
+		tempString << info << '\n';
 		BMessage msg (M_DISPLAY);
 
 		PackDisplay (
 			&msg,
-			"[x] Special user mode: IRC operator\n",
+			tempString.String(),
 			&whoisColor,
 			&serverFont);
 		PostActive (&msg);
@@ -303,12 +309,53 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		BString theNick (GetWord (data, 4));
 
 		BString tempString("[x] ");
+		BString tempString2("[x] ");
 		BString theTime = GetWord(data, 5);
+		BString signOnTime(GetWord(data, 6));
 		tempString << "Idle time: " << theTime << " seconds\n";
-
+		
+		tempString2 << "Signon: ";
+		
+		
+		int32 myTime = (int32)time(NULL);
+		int32 serverTime = strtoul(signOnTime.String(), NULL, 0);
+		if ((myTime - serverTime) < 0)
+			tempString2 << theNick << " is a time traveler, or your clock is wrong\n";
+		else
+		{
+			myTime = abs(myTime - serverTime);
+		
+			int32 curr = myTime / (3600 * 24); 
+			if (curr)
+			{
+				tempString2 << curr << " day";
+				if (curr > 1) tempString2 << "s";
+				tempString2 << ", ";
+			}
+			myTime %= (3600 * 24);
+			curr = myTime / 3600;
+			if (curr)
+			{
+				tempString2 << curr << " hour";
+				if (curr > 1) tempString2 << "s";
+				tempString2 << ", ";
+			}
+			myTime %= 3600;
+			curr = myTime / 60;
+			if (curr)
+			{
+				tempString2 << curr << " minute";
+				if (curr > 1) tempString2 << "s";
+				tempString2 << ", ";
+			}
+			tempString2 << myTime % 60 << " second";
+			if ((myTime % 60) != 1) tempString2 << "s";
+			tempString2 << "\n";
+		}
+		
 		BMessage msg (M_DISPLAY);
 		PackDisplay (&msg, tempString.String(), &whoisColor, &serverFont);
-		msg.AddString ("msgz", tempString.String());
+		PackDisplay (&msg, tempString2.String(), &whoisColor, &serverFont);
 		PostActive (&msg);
 
 		return true;
@@ -388,12 +435,12 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 			theMode.Append(tempStuff); // avoid extra space w/o params
 		}
 
-		ClientWindow *aClient (ActiveClient()),
-			*theClient (Client (theChan.String()));
+		ClientWindow *aClient (ActiveClient()), 
+			*theClient (Client (theChan.String())); 
 
 		BString tempString("*** Channel mode for ");
 		tempString << theChan << ": " << theMode << '\n';
-
+		
 		BMessage msg (M_CHANNEL_MODES);
 
 		msg.AddString ("msgz", tempString.String());
@@ -405,8 +452,8 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		else if (aClient)
 			aClient->PostMessage (&msg);
 		else
-			Display (tempString.String(), 0);
-
+			Display (tempString.String(), &opColor);
+			
 		return true;
 	}
 
@@ -444,7 +491,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 			BString buffer;
 
 			buffer << "*** Topic: " << theTopic << "\n";
-			PackDisplay (&display, buffer.String(), &whoisColor);
+			PackDisplay (&display, buffer.String(), &whoisColor, 0, bowser_app->GetStampState());
 
 			BMessage msg (M_CHANNEL_TOPIC);
 
@@ -467,7 +514,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 			BString buffer;
 
 			buffer << "*** (Topic set by " << user << ")\n";
-			PackDisplay (&display, buffer.String(), &whoisColor);
+			PackDisplay (&display, buffer.String(), &whoisColor, 0, bowser_app->GetStampState());
 			client->PostMessage (&display);
 		}
 

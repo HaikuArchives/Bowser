@@ -39,6 +39,8 @@ class AppSettings : public Settings
 									hideSetupState,
 									showSetupState,
 									showTopicState,
+									altwSetupState,
+									altwServerState,
 									autoRejoinState;
 	BString						alsoKnownAs,
 									otherNick,
@@ -1385,6 +1387,40 @@ BowserApp::GetShowTopicState (void) const
 }
 
 void
+BowserApp::AltwSetupState (bool state)
+{
+	settings->altwSetupState = state;
+
+	BMessage msg (M_STATE_CHANGE);
+
+	msg.AddBool ("altwsetup", state);
+	Broadcast (&msg);
+}
+
+bool
+BowserApp::GetAltwSetupState (void) const
+{
+	return settings->altwSetupState;
+}
+
+void
+BowserApp::AltwServerState (bool state)
+{
+	settings->altwServerState = state;
+
+	BMessage msg (M_STATE_CHANGE);
+
+	msg.AddBool ("altwserver", state);
+	Broadcast (&msg);
+}
+
+bool
+BowserApp::GetAltwServerState (void) const
+{
+	return settings->altwServerState;
+}
+
+void
 BowserApp::AutoRejoinState (bool state)
 {
 	settings->autoRejoinState = state;
@@ -1705,6 +1741,8 @@ AppSettings::AppSettings (void)
 	  hideSetupState (false),
 	  showSetupState (false),
 	  showTopicState (true),
+	  altwSetupState (true),
+	  altwServerState (true),
 	  autoRejoinState (false),
 	  alsoKnownAs ("bowserUser beosUser"),
 	  otherNick ("tlair"),
@@ -1901,6 +1939,12 @@ AppSettings::RestorePacked (BMessage *msg)
 		
 	if (msg->HasBool ("Show Topic"))
 		msg->FindBool ("Show Topic", &showTopicState);
+
+	if (msg->HasBool ("AltW Setup"))
+		msg->FindBool ("AltW Setup", &altwSetupState);
+		
+	if (msg->HasBool ("AltW Server"))
+		msg->FindBool ("AltW Server", &altwServerState);
 		
 	if (msg->HasBool ("Auto Rejoin"))
 		msg->FindBool ("Auto Rejoin", &autoRejoinState);
@@ -2159,6 +2203,8 @@ AppSettings::SavePacked (BMessage *msg)
 	msg->AddBool ("Hide Setup", hideSetupState);
 	msg->AddBool ("Show Setup", showSetupState);
     msg->AddBool ("Show Topic", showTopicState);
+    msg->AddBool ("AltW Setup", altwSetupState);
+    msg->AddBool ("AltW Server", altwServerState);
     msg->AddBool ("Auto Rejoin", autoRejoinState);
 	msg->AddInt32 ("NotificationMask", notificationMask);
 

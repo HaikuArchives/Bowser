@@ -41,6 +41,10 @@ class BowserApp : public BApplication
 	bool						GetShowSetupState (void) const;
 	void						ShowTopicState (bool);
 	bool						GetShowTopicState (void) const;
+	void						AltwSetupState (bool);
+	bool						GetAltwSetupState (void) const;
+	void						AltwServerState (bool);
+	bool						GetAltwServerState (void) const;
 	void						AutoRejoinState (bool);
 	bool						GetAutoRejoinState (void) const;
 

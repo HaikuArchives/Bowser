@@ -217,7 +217,7 @@ ServerWindow::ParseEvents (const char *data)
 
 		buffer = ExpandKeyed (events[E_NICK], "NnIA", expansions);
 		BMessage display (M_DISPLAY);
-		PackDisplay (&display, buffer.String(), &nickColor);
+		PackDisplay (&display, buffer.String(), &nickColor, 0, bowser_app->GetStampState());
 
 		BMessage msg (M_CHANGE_NICK);
 		msg.AddString ("oldnick", oldNick.String());

@@ -19,6 +19,11 @@ http://bowser.sourceforge.net
  * Fixed DCC send issues with transfers dieing
  * Alt+P works in Setup Window now
  * Bowser now updates the mimetype of files after DCC Gets.
+ * Fixed DCC get issues where the wrong sockets would get closed
+ * Added sign on time information parsing to /whois
+ * Channel modes are now timestamped
+ * Nick changes are now timestamped
+ * Can now choose point 15 fonts
  
 
 [d42a]

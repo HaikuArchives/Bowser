@@ -58,6 +58,24 @@ PreferenceWindow::PreferenceWindow (void)
 		? B_CONTROL_ON : B_CONTROL_OFF);
 	AddChild (showTopic);
 
+//	SetupAltW = new BCheckBox (
+//		BRect (0, 150, bounds.right, 174),
+//		"setupaltw",
+//		"Enable AltW for Setup Window",
+//		new BMessage (M_SHOW_TOPIC));
+//	SetupAltW->SetValue (bowser_app->GetShowTopicState()
+//		? B_CONTROL_ON : B_CONTROL_OFF);
+//	AddChild (SetupAltW);
+//
+//	altwServer = new BCheckBox (
+//		BRect (0, 175, bounds.right, 199),
+//		"altwserver",
+//		"Enable AltW for Server Windows",
+//		new BMessage (M_SHOW_TOPIC));
+//	altwServer->SetValue (bowser_app->GetShowTopicState()
+//		? B_CONTROL_ON : B_CONTROL_OFF);
+//	AddChild (altwServer);
+
 }
 
 
@@ -78,17 +96,23 @@ PreferenceWindow::AttachedToWindow (void)
 	hideSetup->SetTarget (this);
 	showSetup->SetTarget (this);
 	showTopic->SetTarget (this);
+//	altwSetup->SetTarget (this);
+//	altwServer->SetTarget (this);
 
 	messageBox->ResizeToPreferred();
 	windowFollows->ResizeToPreferred();
 	hideSetup->ResizeToPreferred();
 	showSetup->ResizeToPreferred();
 	showTopic->ResizeToPreferred();
+//	altwSetup->ResizeToPreferred();
+//	altwServer->ResizeToPreferred();
 
 	windowFollows->MoveTo (0, messageBox->Frame().bottom + 1);
 	hideSetup->MoveTo (0, windowFollows->Frame().bottom + 1);
 	showSetup->MoveTo (0, hideSetup->Frame().bottom + 1);
 	showTopic->MoveTo (0, showSetup->Frame().bottom + 1);
+//	altwSetup->MoveTo (0, showTopic->Frame().bottom + 1);
+//	altwServer->MoveTo (0, altwSetup->Frame().bottom + 1);
 
 	float biggest (messageBox->Frame().right);
 
@@ -103,6 +127,12 @@ PreferenceWindow::AttachedToWindow (void)
 	
 	if (showTopic->Frame().right > biggest)
 		biggest = showTopic->Frame().right;
+	
+//	if (altwSetup->Frame().right > biggest)
+//		biggest = altwSetup->Frame().right;
+//
+//	if (altwServer->Frame().right > biggest)
+//		biggest = altwServer->Frame().right;
 	
 	ResizeTo (biggest, showTopic->Frame().bottom);
 }
@@ -135,6 +165,16 @@ PreferenceWindow::MessageReceived (BMessage *msg)
 		case M_SHOW_TOPIC:
 			bowser_app->ShowTopicState (
 				showTopic->Value() == B_CONTROL_ON);
+			break;
+			
+		case M_ALTW_SETUP:
+			bowser_app->AltwSetupState (
+				SetupAltW->Value() == B_CONTROL_ON);
+			break;
+			
+		case M_ALTW_SERVER:
+			bowser_app->AltwServerState (
+				altwServer->Value() == B_CONTROL_ON);
 			break;
 
 		default:

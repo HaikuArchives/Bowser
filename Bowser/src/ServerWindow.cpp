@@ -84,7 +84,7 @@ ServerWindow::ServerWindow (
 	noticeColor  = bowser_app->GetColor (C_NOTICE);
 	textColor    = bowser_app->GetColor (C_SERVER);
 	
-	AddShortcut('W', B_COMMAND_KEY, new BMessage(M_HIDE_SERVER)); 
+	AddShortcut('W', B_COMMAND_KEY, new BMessage(M_SERVER_ALTW)); 
 
 	status->AddItem (new StatusItem (
 		serverName.String(), 0),
@@ -462,9 +462,13 @@ ServerWindow::MessageReceived (BMessage *msg)
 			break;
 		}
 
-		case M_HIDE_SERVER:
+		case M_SERVER_ALTW:
 		{
-			Minimize(true);
+		
+//			if (bowser_app->GetAltwServerState())
+//			{
+//				ServerWindow::QuitRequested
+//			}
 
 			break;
 		}

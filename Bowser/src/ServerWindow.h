@@ -119,6 +119,6 @@ class ServerWindow : public ClientWindow
 
 };
 
-const uint32 M_HIDE_SERVER					= 'swhw'; // Erin and Patches
+const uint32 M_SERVER_ALTW					= 'swhw'; // Erin and Patches
 
 #endif

@@ -281,10 +281,11 @@ NotifyView::MessageReceived (BMessage *msg)
 			int32 sid;
 			bool active;
 
-			msg->FindString ("id", &id);
-			msg->FindInt32 ("sid", &sid);
-			msg->FindBool ("active", &active);
-
+			if (msg->FindString ("id", &id) != B_OK
+			 || msg->FindInt32 ("sid", &sid) != B_OK
+			 || msg->FindBool ("active", &active) != B_OK)
+						break;
+						
 			if (servers[sid]->name == id)
 				// the server has activation
 				nData = servers[sid];
@@ -315,8 +316,9 @@ NotifyView::MessageReceived (BMessage *msg)
 			const char *id;
 			int32 sid;
 
-			msg->FindString ("id", &id);
-			msg->FindInt32 ("sid", &sid);
+			if (msg->FindString ("id", &id) != B_OK
+				|| msg->FindInt32 ("sid", &sid) != B_OK)
+					break;
 
 			map<BString, NotifyData *>::iterator it;
 

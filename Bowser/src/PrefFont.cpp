@@ -29,7 +29,7 @@ static const char *ControlLabels[] =
 
 static const int32 FontSizes[] =
 {
-	6, 8, 9, 10, 11, 12, 14, 16, 18, 24, 36, 48, 72, 0
+	6, 8, 9, 10, 11, 12, 14, 15, 16, 18, 24, 36, 48, 72, 0
 };
 
 PreferenceFont::PreferenceFont (void)
