@@ -1,0 +1,92 @@
+Bowser d42a
+http://bowser.sourceforge.net
+
+[d42a]
+ * Improved DCC Send performance dramatically for users on fast pipes
+ * Fixed DCC Send/Get crasher bug (would sometimes crash net_server on
+   abort, eek.)
+
+
+[d42]
+ * Support for new numerics: 105, 253, 328, 352, 412
+ * Added /about command - opens About window
+ * Added /preferences command - opens Preferences window
+ * Added /visit command - /visit <url> loads URL in default text/html app.
+ * Fixed redraw bug in Channel List Window (thanks AnEvilYak)
+ * Fixed mouse over bug in Color preferences (thanks AnEvilYak)
+ * Can now specify a file directly in /dcc send <nick> <file>
+ * Fixed bug where there was no linefeed after the "You are not an IRC
+   operator" warning
+ * Added /nickserv command - alias to /msg nickserv
+ * Added /chanserv command - alias to /msg chanserv
+ * Added /memoserv command - alias to /msg memoserv
+ * Added support for /userhost command
+ * Improved scrolling logic during buffer clip (ooh, geeky!) (thanks AnEvilYak)
+
+
+[d41a]
+ * New CTCP options in nick list menu
+ * New about window
+ * Fixed case where "Show topic in titlebar" option would get ignored
+ * Connect Commands now work on servers that don't have an MOTD
+ 
+
+[d41]
+ * Miscelanious source code improvements
+ * Compiles under BeOS R5
+ * Supports /whois numeric 307 (used by UltimateIRCd)
+ * Option to not show the topic in the Titlebar
+   (useful for shift+dragging the tabs of channel windows and giving
+   yourself a psuedo-tab view)
+ * If you get kicked the message is actually shown in the channel now
+ * Option to automatically rejoin a channel if kicked
+ 
+ 
+
+[d40]
+ * "Notification" prefs panel renamed to "Deskbar Icon"
+ * Original Deskbar icon has returned
+ * Can specify alternate words for the Deskbar icon notification to flash for,
+   aside from just your nickname (e.g: "mneptok" or "mnep")
+ * New option to hide the setup window when a server connection is successful,
+   and to show it again when you disconnect
+ * Expanded IRCDd numeric support
+ * New & updated commands:
+    - /t alias for /topic
+    - /deop alias for /dop
+    - /q alias for /query
+    - /wi has been changed to /whois
+    - /w alias for /whois
+    - /version - used by itself sends shows the server's version, used
+      with a nickname sends a CTCP VERSION request to that nickname.
+    - /motd command will pass parameters now
+    - commands for IRC operators
+       - /oper
+       - /rehash
+       - /stats
+       - /admin
+       - /info
+       - /kill
+       - /trace
+       - /wallops
+    - /raw command now echos the string to the display
+    - /away sets yourself as away (you can specifify your own reason)
+    - /back sets yourself as back
+    - /notify adds specified nickname to the notify list
+    - /unnotify removes specified nickname from the notify list
+ * Zooming now works on client windows
+ * Added support for local-server &channels
+ * Preferences window can be accessed via Alt+P
+ * Channel name can be tab-completed
+ * You can now drop non-text files onto the input box of a Query window and Bowser
+   will kick off a DCC send
+ * More things are timestamped now
+ * Fixed bug with status bar's op count when a user got oped or deoped more than
+   once.
+   
+[39b]
+ * New deskbar icon
+ * Servers can be configured to connect on startup
+ * Connection to multiple servers at once should work
+ * Input box now regains focus if you type while it doesn't have focus
+ * Window switching crash bug fixed
