@@ -381,7 +381,6 @@ ServerWindow::ParseEvents (const char *data)
 
 	if (secondWord == "MODE")
 	{
-		printf ("why did i just get triggered?\n");
 		BString theNick (GetNick (data));
 		BString theChannel (GetWord (data, 3));
 		BString theMode (GetWord (data, 4));

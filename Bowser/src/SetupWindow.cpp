@@ -256,6 +256,7 @@ SetupWindow::SetupWindow (
 bool
 SetupWindow::QuitRequested (void)
 {
+	printf ("SetupWindow::QuitRequested\n");
 	// We must ask the servers to shutdown.
 	// They will, but things need to happen
 	// in a certain order

@@ -126,6 +126,7 @@ ChannelWindow::~ChannelWindow (void)
 bool
 ChannelWindow::QuitRequested()
 {
+	printf ("ChannelWindow::QuitRequested, %s\n", id.String());
 	BMessage *msg (CurrentMessage());
 	
 	if (!msg->HasBool ("bowser:part")
@@ -1062,9 +1063,18 @@ ChannelWindow::ModeEvent (BMessage *msg)
 	msg->FindString ("target", &target);
 	msg->FindString ("nick", &theNick);
 
-	BString buffer;
+
+	BString buffer,
+	        targetS (target);
 		
-	buffer << "*** " << theNick << " set mode: " << mode << " " << target << "\n";
+	buffer << "*** " << theNick << " set mode: " << mode;
+	
+	if (targetS != "-9z99")
+	{
+		buffer << " " << targetS;
+	}
+			
+	buffer << "\n";
 
 	BMessage modeMsg (M_DISPLAY);
 	PackDisplay (&modeMsg, buffer.String(), &opColor, 0, timeStamp);
@@ -1073,7 +1083,9 @@ ChannelWindow::ModeEvent (BMessage *msg)
 	
 	// at least one
 	if (mode && *mode && *(mode + 1))
+	{
 		theOperator = mode[modPos++];
+	}
 
 	while (theOperator && mode[modPos])
 	{
