@@ -74,7 +74,7 @@
 #define STATUS_NORMAL_BIT								0x0100
 #define STATUS_IGNORE_BIT								0x1000
 
-#define VERSION											"1.0.1"
+#define VERSION											"1.1"
 
 #include <GraphicsDefs.h>
 

@@ -1,4 +1,5 @@
 #include <Application.h>
+#include "Bowser.h"
 //#include <StringView.h>
 
 //#include "IRCView.h"
@@ -43,8 +44,6 @@ MessageWindow::MessageWindow (
 {
 	if (dChat)
 	{
-		id.Append (" [DCC]");
-
 		if (dInitiate)
 		{
 			DCCServerSetup();
@@ -72,7 +71,7 @@ MessageWindow::MessageWindow (
 		STATUS_ALIGN_LEFT),
 		true);
 	
-	BMessage reply(B_REPLY);
+	//BMessage reply(B_REPLY);
 	status->SetItemValue (STATUS_LAG, "0.000");	
 	status->SetItemValue (STATUS_NICK, myNick.String());
 
@@ -142,7 +141,7 @@ MessageWindow::MessageReceived (BMessage *msg)
 
 				if (dChat)
 				{
-					id.Append (" [DCC]");
+					id.Append(" [DCC]");
 				}
 				
 				// SEND NOTIFY -- We could crash the deskbar
@@ -320,11 +319,12 @@ MessageWindow::Parser (const char *buffer)
 	{
 		return;
 	}
-
-	Display ("<", 0);
+	
+	BFont myFont (bowser_app->GetClientFont (F_TEXT));
+	Display ("<", &textColor, &myFont, bowser_app->GetStampState());
 	Display (myNick.String(), &myNickColor);
 	Display ("> ", 0);
-
+	
 	BString sBuffer (buffer);
 
 	int32 place;

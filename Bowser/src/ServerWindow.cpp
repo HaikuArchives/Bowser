@@ -536,7 +536,7 @@ ServerWindow::MessageReceived (BMessage *msg)
 					sid,
 					serverName.String(),
 					sMsgr,
-					myNick.String(),
+					theId.String(),
 					"",
 					true,
 					true);

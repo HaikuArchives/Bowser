@@ -17,7 +17,7 @@
 # the file name, ...
 
 BINARY := Bowser
-VERSION := 1.0.1
+VERSION := 1.1
 LIBS := -lbe -lnet -lnetapi -ltextencoding -ltranslation -ltracker
 
 ################################################
@@ -109,7 +109,7 @@ ifneq "$(EXTRADATA)" ""
 	@unzip $(EXTRADATA) -d $@~/$(FULLNAME)/
 endif
 	@find $@~ -type f | xargs mimeset
-	@rm -rf $@~/$(FULLNAME)/CVS $@~/$(FULLNAME)/protocol/CVS $@~/$(FULLNAME)/help/CVS
+	@rm -rf $@~/$(FULLNAME)/CVS $@~/$(FULLNAME)/protocol/CVS $@~/$(FULLNAME)/help/CVS $@~/$(FULLNAME)/scripts/CVS
 	@rm -rf $@~/$(FULLNAME)/CVS $@~/$(FULLNAME)/help/content/CVS $@~/$(FULLNAME)/help/images/CVS
 	@cd $@~ && $(ZIP) $@ $(FULLNAME)
 	@mv -f $@~/$@ .
@@ -124,8 +124,8 @@ ifneq "$(EXTRADATA)" ""
 endif
 	@find $@~ -type f | xargs mimeset
 	@rm -rf $@~/$(FULLNAME)-src/src/CVS $@~/$(FULLNAME)-src/data/CVS
-	@rm -rf $@~/$(FULLNAME)-src/CVS $@~/$(FULLNAME)-src/protocol/CVS $@~/$(FULLNAME)-src/help/CVS
-	@rm -rf $@~/$(FULLNAME)-src/CVS $@~/$(FULLNAME)-src/help/content/CVS $@~/$(FULLNAME)-src/help/images/CVS
+	@rm -rf $@~/$(FULLNAME)-src/CVS $@~/$(FULLNAME)-src/data/protocol/CVS $@~/$(FULLNAME)-src/data/help/CVS $@~/$(FULLNAME)-src/data/scripts/CVS
+	@rm -rf $@~/$(FULLNAME)-src/CVS $@~/$(FULLNAME)-src/data/help/content/CVS $@~/$(FULLNAME)-src/data/help/images/CVS
 	@cd $@~ && $(ZIP) $@ $(FULLNAME)-src
 	@mv -f $@~/$@ .
 	@rm -rf $@~
