@@ -4,6 +4,7 @@
 #include <NodeInfo.h>
 #include <TextControl.h>
 #include <TextView.h>
+#include <Clipboard.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -27,7 +28,6 @@ filter_result
 ClientInputFilter::Filter (BMessage *msg, BHandler **target)
 {
 	filter_result result (B_DISPATCH_MESSAGE);
-
 	switch (msg->what)
 	{
 		case B_MOUSE_MOVED:
@@ -47,7 +47,6 @@ ClientInputFilter::Filter (BMessage *msg, BHandler **target)
 			break;
 
 		case B_MIME_TYPE:
-
 			if (msg->HasData ("text/plain", B_MIME_TYPE))
 			{
 				const char *buffer;
@@ -72,9 +71,8 @@ ClientInputFilter::Filter (BMessage *msg, BHandler **target)
 				result = B_SKIP_MESSAGE;
 			}
 			break;
-
+		
 		case B_SIMPLE_DATA:
-
 			if (msg->HasRef ("refs"))
 			{
 				for (int32 i = 0; msg->HasRef ("refs", i); ++i)
@@ -115,11 +113,13 @@ ClientInputFilter::Filter (BMessage *msg, BHandler **target)
 				window->DroppedFile (msg);
 			}
 			break;
-
+		
 		default:
+		{
 			//printf ("FILTER UNHANDLED: ");
 			//msg->PrintToStream();
 			break;
+		}
 	}
 
 	return result;
@@ -174,7 +174,33 @@ ClientInputFilter::HandleKeys (BMessage *msg)
 				break;
 			}
 		}
-	
+	if (modifiers & B_COMMAND_KEY)
+	{
+		switch (keyStroke)
+		{
+			case 'v':
+			case 'V':
+			{
+				BClipboard clipboard("system");
+				const char *text;
+				int32 textLen;
+				BMessage *clip = (BMessage *)NULL;
+				if (clipboard.Lock()) {
+				   if ((clip = clipboard.Data()))
+	    			if (clip->FindData("text/plain", B_MIME_TYPE, 
+	    				(const void **)&text, &textLen) != B_OK)
+	 				{
+	 	  				clipboard.Unlock();
+	 					break;
+	    			}
+	    		}
+	   			clipboard.Unlock();
+	   			HandleDrop(text);
+	   			result = B_SKIP_MESSAGE;
+	   			break;
+			}
+		}
+	}
 	return result;
 }
 	
@@ -201,7 +227,7 @@ ClientInputFilter::HandleDrop (const char *buffer)
 		++lines;
 	}
 
-	int32 result (2);
+	int32 result (0);
 
 	if (lines > 1)
 	{
@@ -231,5 +257,6 @@ ClientInputFilter::HandleDrop (const char *buffer)
 		msg.AddBool ("lines", result == 1);
 		window->PostMessage (&msg);
 	}
+
 }
 
