@@ -211,7 +211,8 @@ ServerWindow::QuitRequested()
 		if (quitMsg.Length() == 0)
 		{
 			const char *expansions[1];
-			expansions[0] = bowser_app->BowserVersion().String();
+			BString version (bowser_app->BowserVersion());
+			expansions[0] = version.String();
 			quitMsg << "QUIT :" << ExpandKeyed (bowser_app->GetCommand (CMD_QUIT).String(), "V", expansions);
 		}
 
