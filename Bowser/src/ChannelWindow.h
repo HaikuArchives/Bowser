@@ -43,7 +43,8 @@ class ChannelWindow : public ClientWindow
 							chanLimit,
 							chanLimitOld,
 							chanKey,
-							chanKeyOld;
+							chanKeyOld,
+							lastExpansion;
 							
 	rgb_color					ctcpReqColor,
 									ctcpRpyColor,

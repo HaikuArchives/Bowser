@@ -209,6 +209,7 @@ ClientWindow::Init (void)
 	input->SetDivider (0);
 	input->TextView()->SetFontAndColor (&inputFont);
 	input->ResizeToPreferred();
+	//input->TextView()->SetMaxBytes(512);
 	input->MoveTo (
 		2,
 		status->Frame().top - input->Frame().Height() - 1);
@@ -1028,7 +1029,7 @@ ClientWindow::SlashParser (const char *data)
 			(this->*cmd) (data);
 //		else
 //			(this->*cmd) (void);
-
+		
 		return true;
 	}
 

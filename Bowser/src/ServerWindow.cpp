@@ -566,7 +566,6 @@ ServerWindow::DispatchMessage (BMessage *msg, BHandler *handler)
 void
 ServerWindow::Pulse (void)
 {
-	printf("pulse\n");
 	if (isConnected)
 	{
 		if (!checkingLag)

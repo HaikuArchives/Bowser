@@ -461,8 +461,23 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	if(secondWord == "329") // channel created
 	{
 		BString theChan (GetWord (data, 4)),
-				theTime (GetWord (data, 5)); // long time format
-		return true; // ignore, for now
+				theTime (GetWord (data, 5)),
+				tempString;
+				
+		int32 serverTime = strtoul(theTime.String(), NULL, 0);
+		struct tm *ptr; 
+    	time_t st;
+    	char str[80];    
+    	st = serverTime; 
+    	ptr = localtime(&st);
+    	strftime(str,80,"%a %b %d %Y %I:%M %p %Z",ptr);
+    	BString theTimeParsed (str);
+    	theTimeParsed.RemoveAll ("\n");
+    	
+    	tempString << theChan << " created " << theTimeParsed << "\n";
+		Display (tempString.String(), 0);
+		
+		return true;
 	}
 
 	if(secondWord == "331") // no topic set
@@ -506,7 +521,19 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	if (secondWord == "333") // person who changed topic
 	{
 		BString channel (GetWord (data, 4)),
-				user (GetWord (data, 5));
+				user (GetWord (data, 5)),
+				theTime (GetWord (data, 6));
+		
+		int32 serverTime = strtoul(theTime.String(), NULL, 0);
+		struct tm *ptr; 
+    	time_t st;
+    	char str[80];    
+    	st = serverTime; 
+    	ptr = localtime(&st);
+    	strftime(str,80,"%A %b %d %Y %I:%M %p %Z",ptr);
+    	BString theTimeParsed (str);
+    	theTimeParsed.RemoveAll ("\n");
+		
 		ClientWindow *client (Client (channel.String()));
 
 		if (client)
@@ -514,7 +541,8 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 			BMessage display (M_DISPLAY);
 			BString buffer;
 
-			buffer << "*** (Topic set by " << user << ")\n";
+			buffer << "*** Topic set by " << user << " @ "
+				<< theTimeParsed << "\n";
 			PackDisplay (&display, buffer.String(), &whoisColor, 0, bowser_app->GetStampState());
 			client->PostMessage (&display);
 		}
@@ -532,6 +560,10 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 		if (client) // in the channel
 		{
+			BString tempString ("*** Users in ");
+			tempString << channel << ": " << names << '\n';
+			Display (tempString.String(), &textColor);
+			
 			BMessage msg (M_CHANNEL_NAMES);
 			BString nick;
 			int32 place (1);

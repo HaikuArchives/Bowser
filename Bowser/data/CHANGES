@@ -17,7 +17,9 @@ http://bowser.sourceforge.net
  * Added Lag Checker to StatusView
  * Displayed cps rate for DCC xfers is averaged better now... not as erratic.
  * Added /dns command
- * Tab completion cycles through nicknames if you repeatedly hit tab.
+ * Tab completion cycles through matching nicknames.
+ * Names list is sent to Server Window instead of Channel Window
+ * Now shows time Channel Topic was set
 
 
 [d42b]

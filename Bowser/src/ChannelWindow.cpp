@@ -39,6 +39,7 @@ ChannelWindow::ChannelWindow (
 		chanLimitOld (""),
 		chanKey (""),
 		chanKeyOld (""),
+		lastExpansion (""),
 		userCount (0),
 		opsCount (0)
 
@@ -351,25 +352,25 @@ ChannelWindow::MessageReceived (BMessage *msg)
 		{
 			bool hit (false);
 
-			Display ("*** Users:", &textColor);
+//			Display ("*** Users:", &textColor);
 
 			for (int32 i = 0; msg->HasString ("nick", i); ++i)
 			{
 				const char *nick;
 				bool op, voice, ignored;
-				rgb_color color = textColor;
+//				rgb_color color = textColor;
 
 				msg->FindString ("nick", i, &nick);
 				msg->FindBool ("op", i, &op);
 				msg->FindBool ("voice", i, &voice);
 				msg->FindBool ("ignored", i, &ignored);
 
-				if      (ignored) color = namesList->GetColor (C_IGNORE);
-				else if (op)      color = namesList->GetColor (C_OP);
-				else if (voice)   color = namesList->GetColor (C_VOICE);
-
-				Display (" ", &textColor);
-				Display (nick, &color);
+//				if      (ignored) color = namesList->GetColor (C_IGNORE);
+//				else if (op)      color = namesList->GetColor (C_OP);
+//				else if (voice)   color = namesList->GetColor (C_VOICE);
+//
+//				Display (" ", &textColor);
+//				Display (nick, &color);
 			
 				if (FindPosition (nick) < 0)
 				{
@@ -397,7 +398,7 @@ ChannelWindow::MessageReceived (BMessage *msg)
 				}
 			}
 
-			Display ("\n", &textColor);
+//			Display ("\n", &textColor);
 
 			if (hit)
 			{
@@ -624,6 +625,7 @@ ChannelWindow::MessageReceived (BMessage *msg)
 void
 ChannelWindow::Parser (const char *buffer)
 {
+	lastExpansion = "";
 	BMessage send (M_SERVER_SEND);
 
 	AddSend (&send, "PRIVMSG ");
@@ -777,7 +779,9 @@ void
 ChannelWindow::TabExpansion (void)
 {
 	int32 start, finish;
-
+	static int32 lastindex;
+	static BString lastNick;
+	static BList myList;
 	input->TextView()->GetSelection (&start, &finish);
 
 	if (input->TextView()->TextLength()
@@ -788,43 +792,42 @@ ChannelWindow::TabExpansion (void)
 			input->TextView()->Text()
 			+ input->TextView()->TextLength());
 		const char *place (inputText);
-		
-
+	
 		while (place > input->TextView()->Text())
 		{
 			if (*(place - 1) == '\x20')
-				break;
+			break;
 			--place;
 		}
 		
-		// We first check if what the user typed matches the channel
-		// If that doesn't match, we check the names
-		BString insertion;
-
-		if (!id.ICompare (place, strlen (place)))
-			insertion = id;
-		else
+		if (lastExpansion == "" 
+			|| lastExpansion.ICompare(place, strlen(lastExpansion.String())) != 0
+			|| lastNick != place)
 		{
+			lastindex = 0;
+			lastExpansion = place;
+			if (!myList.IsEmpty())
+				myList.MakeEmpty();
 			int32 count (namesList->CountItems());
-
-			for (int32 i = 0; i < count; ++i)
+			for (int32 i = 0; i < count ; i++)
 			{
-				NameItem *item ((NameItem *)(namesList->ItemAt (i)));
-	
-				if (!item->Name().ICompare (place, strlen (place))) //nick
-				{
-					if (strlen(place) == strlen(item->Name().String()))
-					{
-						if ((count - i) >= 2)
-							insertion = ((NameItem *)(namesList->ItemAt(i+1)))->Name();
-						else insertion = ((NameItem *)(namesList->ItemAt(0)))->Name();
-						break;
-					}	
-					insertion = item->Name();
-					break;
-				}
+				if (!((NameItem *)namesList->ItemAt(i))->Name().ICompare(lastExpansion.String(), strlen(lastExpansion.String())))
+					myList.AddItem(namesList->ItemAt(i));
 			}
 		}
+			// We first check if what the user typed matches the channel
+			// If that doesn't match, we check the names
+			BString insertion;
+	
+			if (!id.ICompare (place, strlen (place)))
+				insertion = id;
+			else
+			{
+				int32 count (myList.CountItems());
+				insertion = ((NameItem *)myList.ItemAt(lastindex++))->Name();
+				if (lastindex == count) lastindex = 0;
+				lastNick = insertion;
+			}
 
 		if (insertion.Length())
 		{
@@ -1010,7 +1013,7 @@ ChannelWindow::ModeEvent (BMessage *msg)
 				PostMessage(&msg);
 
 				hit = true;
-
+				
 				item->SetStatus ((iStatus & ~STATUS_NORMAL_BIT) | STATUS_VOICE_BIT);
 			}
 			else if (theModifier == 'v')
