@@ -173,17 +173,9 @@ AboutWindow::MessageReceived (BMessage *msg)
 				if ((bmp = BTranslationUtils::GetBitmap ('bits', "bits")) != 0)
 				{
 					BRect bmp_bounds (bmp->Bounds());
-					
-					graphic->ResizeTo (
-						bmp_bounds.Width(),
-						bmp_bounds.Height());
-						
-					graphic->SetViewBitmap (bmp);
-					
-					credits->MoveTo (
-						0.0,
-						graphic->Frame().bottom + 1);
-					
+					graphic->ResizeTo (bmp_bounds.Width(), bmp_bounds.Height());
+					graphic->SetViewBitmap (bmp);					
+					credits->MoveTo (0.0, graphic->Frame().bottom + 1);
 					graphic->Invalidate();
 					EasterEggOn = false;
 					delete bmp;
@@ -195,17 +187,9 @@ AboutWindow::MessageReceived (BMessage *msg)
 		  		if ((bmp = BTranslationUtils::GetBitmap ('bits', "Gummy Orgy")) != 0)
 				{
 					BRect bmp_bounds (bmp->Bounds());
-					
-					graphic->ResizeTo (
-						bmp_bounds.Width(),
-						bmp_bounds.Height());
-						
-					graphic->SetViewBitmap (bmp);
-					
-					credits->MoveTo (
-						0.0,
-						graphic->Frame().bottom + 1);
-					
+					graphic->ResizeTo (bmp_bounds.Width(), bmp_bounds.Height());
+					graphic->SetViewBitmap (bmp);					
+					credits->MoveTo (0.0, graphic->Frame().bottom + 1);
 					graphic->Invalidate();
 					EasterEggOn = true;
 					delete bmp;
@@ -223,17 +207,9 @@ AboutWindow::MessageReceived (BMessage *msg)
 				if ((bmp = BTranslationUtils::GetBitmap ('bits', "bits")) != 0)
 				{
 					BRect bmp_bounds (bmp->Bounds());
-					
-					graphic->ResizeTo (
-						bmp_bounds.Width(),
-						bmp_bounds.Height());
-						
-					graphic->SetViewBitmap (bmp);
-					
-					credits->MoveTo (
-						0.0,
-						graphic->Frame().bottom + 1);
-					
+					graphic->ResizeTo (bmp_bounds.Width(), bmp_bounds.Height());
+					graphic->SetViewBitmap (bmp);					
+					credits->MoveTo (0.0, graphic->Frame().bottom + 1);
 					graphic->Invalidate();
 					EasterEggOn = false;
 					delete bmp;
@@ -245,17 +221,9 @@ AboutWindow::MessageReceived (BMessage *msg)
 		  		if ((bmp = BTranslationUtils::GetBitmap ('bits', "Buddy Jesus")) != 0)
 				{
 					BRect bmp_bounds (bmp->Bounds());
-					
-					graphic->ResizeTo (
-						bmp_bounds.Width(),
-						bmp_bounds.Height());
-						
-					graphic->SetViewBitmap (bmp);
-					
-					credits->MoveTo (
-						0.0,
-						graphic->Frame().bottom + 1);
-					
+					graphic->ResizeTo (bmp_bounds.Width(), bmp_bounds.Height());
+					graphic->SetViewBitmap (bmp);					
+					credits->MoveTo (0.0, graphic->Frame().bottom + 1);
 					graphic->Invalidate();
 					EasterEggOn = true;
 					delete bmp;
@@ -273,17 +241,9 @@ AboutWindow::MessageReceived (BMessage *msg)
 				if ((bmp = BTranslationUtils::GetBitmap ('bits', "bits")) != 0)
 				{
 					BRect bmp_bounds (bmp->Bounds());
-					
-					graphic->ResizeTo (
-						bmp_bounds.Width(),
-						bmp_bounds.Height());
-						
-					graphic->SetViewBitmap (bmp);
-					
-					credits->MoveTo (
-						0.0,
-						graphic->Frame().bottom + 1);
-					
+					graphic->ResizeTo (bmp_bounds.Width(), bmp_bounds.Height());
+					graphic->SetViewBitmap (bmp);					
+					credits->MoveTo (0.0, graphic->Frame().bottom + 1);
 					graphic->Invalidate();
 					EasterEggOn = false;
 					delete bmp;
@@ -295,21 +255,12 @@ AboutWindow::MessageReceived (BMessage *msg)
 		  		if ((bmp = BTranslationUtils::GetBitmap ('bits', "Erin and Patches")) != 0)
 				{
 					BRect bmp_bounds (bmp->Bounds());
-					
-					graphic->ResizeTo (
-						bmp_bounds.Width(),
-						bmp_bounds.Height());
-						
-					graphic->SetViewBitmap (bmp);
-					
-					credits->MoveTo (
-						0.0,
-						graphic->Frame().bottom + 1);
-					
+					graphic->ResizeTo (bmp_bounds.Width(), bmp_bounds.Height());
+					graphic->SetViewBitmap (bmp);					
+					credits->MoveTo (0.0, graphic->Frame().bottom + 1);
 					graphic->Invalidate();
 					EasterEggOn = true;
 					delete bmp;
-	
 				}
 			}
 			break;

@@ -16,6 +16,7 @@ http://bowser.sourceforge.net
  * Fixed "Find" and "Filter" prmopt dimensions in List window
  * Don't show processor info in CTCP Version reply should work all the time now.
  * Responds to CTCP Uptime requests.
+ 
 
 [d42a]
  * Improved DCC Send performance dramatically for users on fast pipes
