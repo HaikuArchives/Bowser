@@ -1506,7 +1506,7 @@ ClientWindow::SetupLogging (void)
 			return;
 		}
 	}
-	else if (isLogging == false && logFile.InitCheck() != B_NO_INIT) {
+	else if (!isLogging && logFile.InitCheck() != B_NO_INIT) {
 		time_t myTime (time (0));
 		struct tm *ptr;
 		ptr = localtime (&myTime);

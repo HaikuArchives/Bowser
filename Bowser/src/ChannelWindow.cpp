@@ -475,7 +475,7 @@ ChannelWindow::MessageReceived (BMessage *msg)
 			   
 			}
 			
-			
+			break;			
 		}		
 		
 

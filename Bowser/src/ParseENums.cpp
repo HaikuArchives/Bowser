@@ -355,7 +355,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 				theTime (GetWord (data, 5)),
 				signOnTime (GetWord (data, 6));
 				
-		int64 idleTime = strtoul(theTime.String(), NULL, 0);
+		int64 idleTime (strtoul(theTime.String(), NULL, 0));
 		tempString << "Idle: " << DurationString(idleTime * 1000 * 1000) << "\n";
 		
 		int32 serverTime = strtoul(signOnTime.String(), NULL, 0);
@@ -364,7 +364,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
     	char str[80];    
     	st = serverTime; 
     	ptr = localtime(&st);
-    	strftime(str,80,"%A %b %d %Y %I:%M %p %Z",ptr);
+    	strftime (str,80,"%A %b %d %Y %I:%M %p %Z",ptr);
     	BString signOnTimeParsed (str);
     	signOnTimeParsed.RemoveAll ("\n");
 		
@@ -478,12 +478,12 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 				theTime (GetWord (data, 5)),
 				tempString;
 				
-		int32 serverTime = strtoul(theTime.String(), NULL, 0);
+		int32 serverTime (strtoul(theTime.String(), NULL, 0));
 		struct tm *ptr; 
     	time_t st;
     	char str[80];    
     	st = serverTime; 
-    	ptr = localtime(&st);
+    	ptr = localtime (&st);
     	strftime(str,80,"%a %b %d %Y %I:%M %p %Z",ptr);
     	BString theTimeParsed (str);
     	theTimeParsed.RemoveAll ("\n");
@@ -538,13 +538,13 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 				user (GetWord (data, 5)),
 				theTime (GetWord (data, 6));
 		
-		int32 serverTime = strtoul(theTime.String(), NULL, 0);
+		int32 serverTime (strtoul(theTime.String(), NULL, 0));
 		struct tm *ptr; 
     	time_t st;
     	char str[80];    
     	st = serverTime; 
-    	ptr = localtime(&st);
-    	strftime(str,80,"%A %b %d %Y %I:%M %p %Z",ptr);
+    	ptr = localtime (&st);
+    	strftime (str,80,"%A %b %d %Y %I:%M %p %Z",ptr);
     	BString theTimeParsed (str);
     	theTimeParsed.RemoveAll ("\n");
 		
@@ -639,9 +639,9 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		if (!initialMotd
 		||  (initialMotd && motd))
 		{
-			BString tempString = RestOfString(data, 4);
-			tempString.RemoveFirst(":");
-			tempString.Append("\n");
+			BString tempString (RestOfString(data, 4));
+			tempString.RemoveFirst (":");
+			tempString.Append ("\n");
 			Display (tempString.String(), 0);
 		}
 		return true;
@@ -1073,11 +1073,11 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	
 	if (secondWord == "475") // cannot join channel
 	{
-		BString theChan = GetWord(data, 4);
-		BString theReason = RestOfString(data, 5);
+		BString theChan (GetWord(data, 4)),
+		        theReason (RestOfString(data, 5)),
+		        tempString("[x] ");
 		theReason.RemoveFirst(":");
 		theReason.ReplaceLast("channel", theChan.String());
-		BString tempString("[x] ");
 		tempString << theReason << " (bad channel key)\n";
 
 		BMessage msg (M_DISPLAY);
@@ -1116,20 +1116,20 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	
 	if (secondWord == "290") // MOTD-ish body
 	{
-		BString tempString = RestOfString(data, 4);
-		tempString.RemoveFirst(":");
-		tempString.Append("\n");
-		tempString.Prepend("- ");
+		BString tempString (RestOfString(data, 4));
+		tempString.RemoveFirst (":");
+		tempString.Append ("\n");
+		tempString.Prepend ("- ");
 		Display (tempString.String(), 0);
 		return true;
 	}
 
 	if (secondWord == "291") // "Welcome" body
 	{
-		BString tempString = RestOfString(data, 4);
-		tempString.RemoveFirst(":");
-		tempString.Append("\n");
-		tempString.Prepend("- ");
+		BString tempString (RestOfString(data, 4));
+		tempString.RemoveFirst (":");
+		tempString.Append ("\n");
+		tempString.Prepend ("- ");
 		Display (tempString.String(), 0);
 		return true;
 	}
