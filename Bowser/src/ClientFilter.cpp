@@ -252,7 +252,7 @@ ClientInputFilter::HandleDrop (const char *buffer)
 		result = alert->Go();
 	}
 
-	if (result)
+	if (result || lines == 1)
 	{
 		msg.AddBool ("lines", result == 1);
 		window->PostMessage (&msg);
