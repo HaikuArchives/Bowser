@@ -657,7 +657,8 @@ BowserApp::MessageReceived (BMessage *msg)
 
 							BMessage msg (M_IGNORE_REMOVE);
 							msg.AddPointer ("ignores", &sd->ignores);
-							msg.AddString ("ignorecmd", GetCommand (CMD_UNIGNORE).String());
+							msg.AddString ("ignorecmd", GetCommand
+								(CMD_UNIGNORE).String());
 							Broadcast (&msg, serverName);
 						}
 						break;
@@ -766,7 +767,8 @@ BowserApp::MessageReceived (BMessage *msg)
 
 							BMessage msg (M_IGNORE_REMOVE);
 							msg.AddPointer ("ignores", &sd->ignores);
-							msg.AddString ("ignorecmd", GetCommand (CMD_UNIGNORE).String());
+							msg.AddString ("ignorecmd", GetCommand
+								(CMD_UNIGNORE).String());
 							Broadcast (&msg, serverName);
 							break;
 						}
