@@ -1023,6 +1023,8 @@ ServerWindow::SendData (const char *cData)
 	{
 		// doh, we aren't even connected.
 		
+		printf ("reconnecting: %ld\n", reconnecting);
+		
 		if (!reconnecting) {
 			PostMessage (M_SERVER_DISCONNECT);
 		}

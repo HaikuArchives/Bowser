@@ -161,6 +161,7 @@ class ClientWindow : public BWindow
 	virtual void					Show (void);
 	virtual void					MenusBeginning (void);
 	virtual void					MenusEnded (void);
+	virtual void					ScreenChanged (BRect, color_space);
 	virtual void					FrameResized (float, float);
 
 	const BString					&Id (void) const;

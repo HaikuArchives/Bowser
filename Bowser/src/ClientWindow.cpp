@@ -6,6 +6,7 @@
 //#include <View.h>
 #include <Path.h>
 #include <Mime.h>
+#include <Screen.h>
 //#include <TextControl.h>
 #include <Roster.h>
 //#include <FindDirectory.h>
@@ -325,6 +326,12 @@ ClientWindow::Show (void)
 			BOWSER_SETTINGS);
 
 		settings->Restore();
+		
+		BScreen currentScreen (this);
+		if (Frame().top > currentScreen.Frame().bottom)
+			MoveTo (Frame().left, 110); // move up
+		if (Frame().left > currentScreen.Frame().right)
+			MoveTo (110, Frame().top);  // move left
 
 		BWindow::Show();
 
@@ -842,6 +849,24 @@ ClientWindow::MessageReceived (BMessage *msg)
 			BWindow::MessageReceived (msg);
 	}
 }
+
+
+void
+ClientWindow::ScreenChanged (BRect screenframe, color_space mode)
+{
+
+	// user might have lowered resolution, may need to
+	// move the window to a visible pos.
+	
+	if (Frame().top > screenframe.bottom)
+		MoveTo (Frame().left, 110); // move up
+	if (Frame().left > screenframe.right)
+		MoveTo (110, Frame().top);  // move left
+		
+	BWindow::ScreenChanged (screenframe, mode);
+
+}
+
 
 void
 ClientWindow::FrameResized (float width, float height)
