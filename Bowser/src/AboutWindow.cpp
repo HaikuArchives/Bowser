@@ -92,7 +92,7 @@ AboutWindow::AboutWindow (void)
 		"Todd Lair (tlair)\n"
 		"Brian Luft (Electroly)\n"
 		"Wade Majors (kurros)\n"
-		"Jamie Wilkinson (project).\n\n\n\n"
+		"Jamie Wilkinson (project)\n\n\n\n"
 		"Unit B\n\n"
 		"Assistant to Wade Majors: Patches\n"
 		"Music Supervisor: Baron Arnold\n"
