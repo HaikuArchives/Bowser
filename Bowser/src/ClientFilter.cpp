@@ -195,7 +195,8 @@ ClientInputFilter::HandleKeys (BMessage *msg)
 	    			}
 	    		}
 	   			clipboard.Unlock();
-	   			HandleDrop(text);
+	   			BString data(text, textLen);
+	   			HandleDrop(data.String());
 	   			result = B_SKIP_MESSAGE;
 	   			break;
 			}
@@ -257,6 +258,8 @@ ClientInputFilter::HandleDrop (const char *buffer)
 		msg.AddBool ("lines", result == 1);
 		window->PostMessage (&msg);
 	}
+	
+	window->input->SetText ("");
 
 }
 

@@ -5,7 +5,7 @@
 #include <View.h>
 #include <String.h>
 #include <Messenger.h>
-
+#include <File.h>
 #include <socket.h>
 
 class BStatusBar;
@@ -29,6 +29,7 @@ class DCCConnect : public BView
 	BStringView			*label;
 
 	thread_id			tid;
+	BFile				file;
 	int					s;
 	bool					running;
 	bool					success;
@@ -36,7 +37,7 @@ class DCCConnect : public BView
 
 	void					UpdateBar (int, int, uint32, bool);
 	void					UpdateStatus (const char *);
-	virtual void		Stopped (bool);
+	virtual void		Stopped (void);
 	virtual void		Lock (void);
 	virtual void		Unlock (void);
 

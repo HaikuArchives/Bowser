@@ -2027,10 +2027,11 @@ ClientWindow::DccCmd (const char *data)
 			
 			if (sendFile.InitCheck() == B_OK)
 			{
+				sendFile.Unset();
 				entry_ref ref;
 				get_ref_for_path(sendPath.Path(), &ref);
 				msg->AddRef("refs", &ref);
-				be_app_messenger.SendMessage(msg);	
+				sMsgr.SendMessage(msg);	
 				return;	
 			}
 		}

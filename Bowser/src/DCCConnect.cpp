@@ -128,7 +128,7 @@ DCCConnect::MessageReceived (BMessage *msg)
 	switch (msg->what)
 	{
 		case M_STOP_BUTTON:
-			Stopped (true);
+			Stopped ();
 			break;
 
 		case M_UPDATE_STATUS:
@@ -141,13 +141,17 @@ DCCConnect::MessageReceived (BMessage *msg)
 }
 
 void
-DCCConnect::Stopped (bool forced)
+DCCConnect::Stopped (void)
 {
 	running = false;
 
 	if (s > 0) closesocket (s);
 
 	Unlock();
+	if (file.InitCheck() == B_OK)
+	{
+		file.Unset();
+	}
 
 	BMessage msg (M_DCC_FINISH);
 
@@ -260,9 +264,7 @@ DCCReceive::Transfer (void *arg)
 	BPath path (view->file_name.String());
 	BString buffer;
 	off_t file_size (0);
-	BFile file;
-
-
+	
 	buffer << "Receiving \""
 		<< path.Leaf()
 		<< "\" from "
@@ -273,10 +275,10 @@ DCCReceive::Transfer (void *arg)
 	
 	if (view->resume && view->running)
 	{
-		if (file.SetTo (
+		if (view->file.SetTo (
 			view->file_name.String(),
 			B_WRITE_ONLY | B_OPEN_AT_END) == B_NO_ERROR
-		&&  file.GetSize (&file_size) == B_NO_ERROR
+		&&  view->file.GetSize (&file_size) == B_NO_ERROR
 		&&  file_size > 0LL)
 			view->UpdateBar (file_size, 0, 0, false);
 		else
@@ -286,14 +288,14 @@ DCCReceive::Transfer (void *arg)
 		}
 	}
 	else if (view->running)
-		file.SetTo (
+		view->file.SetTo (
 			view->file_name.String(),
 			B_WRITE_ONLY | B_CREATE_FILE | B_ERASE_FILE);
 	
 	uint32 bytes_received (file_size);
 	uint32 size (atol (view->size.String()));
 
-	if (file.InitCheck() == B_NO_ERROR)
+	if (view->file.InitCheck() == B_NO_ERROR)
 	{
 		bigtime_t last (system_time()), now;
 		int cps (0), period (0);
@@ -308,7 +310,7 @@ DCCReceive::Transfer (void *arg)
 			if ((read = recv (view->s, buffer, 8195, 0)) < 0)
 				break;
 
-			file.Write (buffer, read);
+			view->file.Write (buffer, read);
 			bytes_received += read;
 
 			uint32 feed_back (htonl (bytes_received));
@@ -334,8 +336,8 @@ DCCReceive::Transfer (void *arg)
 	{
 		view->success = bytes_received == size;
 		update_mime_info(path.Path(), false, false, true);
-		file.Unset();	
-		view->Stopped (false);
+		view->file.Unset();	
+		view->Stopped ();
 	}
 	
 	
@@ -400,7 +402,7 @@ DCCSend::Transfer (void *arg)
 	{
 		view->UpdateStatus ("Unable to establish connection.");
 		view->Unlock();
-		view->Stopped (false);
+		view->Stopped ();
 		return 0;
 	}
 
@@ -416,7 +418,7 @@ DCCSend::Transfer (void *arg)
 		view->UpdateStatus ("Unable to establish connection.");
 		closesocket (sd);
 		view->Unlock();
-		view->Stopped (false);
+		view->Stopped ();
 		return 0;
 	}
 	view->UpdateStatus ("Waiting for acceptance.");
@@ -444,7 +446,7 @@ DCCSend::Transfer (void *arg)
 			view->UpdateStatus ("Unable to establish connection.");
 			closesocket (sd);
 			view->Unlock();
-			view->Stopped (false);
+			view->Stopped ();
 			return 0;
 		}
 	}
@@ -467,7 +469,7 @@ DCCSend::Transfer (void *arg)
 			view->UpdateStatus ("Unable to establish connection.");
 			closesocket (sd);
 			view->Unlock();
-			view->Stopped (false);
+			view->Stopped ();
 			return 0;
 		}
 
@@ -488,12 +490,12 @@ DCCSend::Transfer (void *arg)
 	closesocket (sd);
 	view->Unlock();
 	
-	BFile file (view->file_name.String(), B_READ_ONLY);
+	view->file.SetTo(view->file_name.String(), B_READ_ONLY);
 	uint32 bytes_sent (0L);
 
 	if (view->pos)
 	{
-		file.Seek (view->pos + 1LL, SEEK_SET);
+		view->file.Seek (view->pos + 1LL, SEEK_SET);
 		view->UpdateBar (view->pos, 0, 0, false);
 		bytes_sent = view->pos;
 	}
@@ -505,7 +507,7 @@ DCCSend::Transfer (void *arg)
 		<< ".";
 	view->UpdateStatus (status.String());
 
-	if (file.InitCheck() == B_NO_ERROR)
+	if (view->file.InitCheck() == B_NO_ERROR)
 	{
 		bigtime_t last (system_time()), now;
 		char buffer[1400];
@@ -514,7 +516,7 @@ DCCSend::Transfer (void *arg)
 		bigtime_t start = system_time();
 
 		while (view->running
-		&&    (count = file.Read (buffer, 1400)) > 0)
+		&&    (count = view->file.Read (buffer, 1400)) > 0)
 		{
 			int sent;
 
@@ -545,13 +547,13 @@ DCCSend::Transfer (void *arg)
 		}
 
 		off_t size;
-		file.GetSize (&size);
+		view->file.GetSize (&size);
 		view->success = bytes_sent == size;
 	}
 	
-	file.Unset();
+	view->file.Unset();
 
-	if (view->running) view->Stopped (false);
+	if (view->running) view->Stopped ();
 
 	return 0;
 }
