@@ -6,10 +6,11 @@
 //#include <Font.h>
 //#include <Message.h>
 #include <Application.h>
-//#include <String.h>
+#include <String.h>
 
 #include <stdio.h>
 
+#include "Bowser.h"
 #include "AboutWindow.h"
 //#include "StringManip.h"
 #include "IRCDefines.h"
@@ -142,7 +143,7 @@ AboutWindow::AboutWindow (void)
 	run.runs[0].color  = black;
 
 	credits->Insert ("\n\n\n\n\n\n\n\n\nBowser ", &run);
-	credits->Insert (VERSION, &run);
+	credits->Insert (bowser_app->BowserVersion().String(), &run);
 	credits->Insert ("\n", &run);
 
 	run.runs[0].font = *be_plain_font;
@@ -155,7 +156,7 @@ AboutWindow::AboutWindow (void)
 		frame.Width()/2  -  Frame().Width()/2,
 		frame.Height()/2 - Frame().Height()/2); 
 
-	SetPulseRate (85000);
+	SetPulseRate (90000);
 }
 
 AboutWindow::~AboutWindow (void)

@@ -40,7 +40,6 @@ CFLAGS += -fno-pic
 CFLAGS += -ffast-math
 CFLAGS += -Wall -W -Wno-multichar -Wp,-Wall
 #CFLAGS += -Werror
-CFLAGS += -DVERSION=\"$(VERSION)\"
 CFLAGS += -DVERSION_STRING=\"$(VERSION)\" -DBINARY_NAME=\"$(BINARY)\"
 
 LD := g++
@@ -89,6 +88,10 @@ binarchive : $(FULLNAME).zip
 $(BINARY) : $(OBJECTS)
 	@echo linking $@
 	@$(LD) $(LDFLAGS) $(OBJECTS) -o $@
+	@echo merging resources
+	@echo resource\(\'CSTR\', 100, \"VERSION\"\) { \"$(VERSION)\" } >version.r
+	@mwbres -merge -o $(SRCDIR)/Bowser.rsrc version.r
+	@rm -f version.r
 	@xres -o $@ $(SRCDIR)/Bowser.rsrc
 	@mimeset -f $@
 	

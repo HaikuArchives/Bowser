@@ -803,9 +803,9 @@ ClientWindow::ParseCmd (const char *data)
 		if (theRest == "-9z99")
 		{
 			const char *expansions[1];
-			BString version (VERSION);
+			//BString version (VERSION);
 	
-			expansions[0] = version.String();
+			expansions[0] = bowser_app->BowserVersion().String();
 			theRest = ExpandKeyed (bowser_app
 				->GetCommand (CMD_QUIT).String(), "V", expansions);
 		}

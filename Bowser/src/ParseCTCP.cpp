@@ -82,7 +82,7 @@ ServerWindow::ParseCTCP(BString theNick, BString theMsg)
 		}
 		BString tempString("NOTICE ");
 		tempString << theNick << " :\1VERSION Bowser[" 
-			<< VERSION << "] : http://bowser.sourceforge.net : " << sysInfoString;
+			<< bowser_app->BowserVersion() << "] : http://bowser.sourceforge.net : " << sysInfoString;
 			
 //		#ifdef DEV_BUILD
 //			tempString << " (development build)";

@@ -8,6 +8,7 @@ class BowserApp * bowser_app;
 #include <String.h>
 #include <Deskbar.h>
 #include <MessageRunner.h>
+#include <Resources.h>
 
 #include <algorithm>
 
@@ -174,11 +175,25 @@ BowserApp::QuitRequested (void)
 	return false;
 }
 
+BString
+BowserApp::BowserVersion (void)
+{
+     BResources *appResources = AppResources(); 
+     size_t len;
+     char *str = (char *)appResources->FindResource(B_STRING_TYPE, "VERSION", &len); 
+     BString output (str);
+     free (str);
+     return output;
+}
+
+
 void
-BowserApp::AboutRequested()
+BowserApp::AboutRequested (void)
 {
 	if (aboutWin)
+	{
 		aboutWin->Activate();
+	}
 	else
 	{
 		aboutWin = new AboutWindow();

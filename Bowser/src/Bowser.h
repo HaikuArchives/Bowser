@@ -28,6 +28,7 @@ class BowserApp : public BApplication
 	virtual bool			QuitRequested (void);
 	virtual void			ArgvReceived (int32, char **);
 	virtual void			ReadyToRun (void);
+	BString						BowserVersion (void);
 			
 	void						StampState (bool);
 	bool						GetStampState (void) const;
@@ -51,7 +52,7 @@ class BowserApp : public BApplication
 	bool						GetMasterLogState (void) const;
 	void						DateLogsState (bool);
 	bool						GetDateLogsState (void) const;
-
+	
 
 	void						AlsoKnownAs (const char *);
 	BString					GetAlsoKnownAs (void) const;
@@ -73,7 +74,7 @@ class BowserApp : public BApplication
 	uint32					GetNicknameCount (void) const;
 	bool						AddNickname (ServerData *, const char *);
 	bool						RemoveNickname (ServerData *, uint32);
-
+	
 	void						ClientFontFamilyAndStyle (int32, const char *,
 									const char *);
 	void						ClientFontSize (int32, float);
