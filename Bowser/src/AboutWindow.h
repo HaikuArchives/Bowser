@@ -14,10 +14,18 @@ class AboutWindow : public BWindow
 
 								AboutWindow (const char *);
 								~AboutWindow (void);
+	virtual void				MessageReceived (BMessage *);
 	
 	virtual bool			QuitRequested (void);
 	virtual void			DispatchMessage (BMessage *, BHandler *);
 	void						Pulse (void);
+	
+	private:
+	
+	BView *background;
+	bool EasterEggOn;
+	BView *graphic;
+	
 };
 
 const uint32 M_ABOUT_CLOSE					= 'abcl';

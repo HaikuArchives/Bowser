@@ -11,6 +11,7 @@
 #include <stdio.h>
 
 #include "AboutWindow.h"
+#include "IRCDefines.h"
 
 AboutWindow::AboutWindow (const char *version)
 	: BWindow (
@@ -20,8 +21,11 @@ AboutWindow::AboutWindow (const char *version)
 		B_WILL_DRAW | B_NOT_RESIZABLE | B_NOT_ZOOMABLE)
 {
 	BRect bounds (Bounds());
-	BView *background;
 	BBitmap *bmp;
+	
+	// what's a program without easter eggs?
+	AddShortcut('O', B_COMMAND_KEY, new BMessage(M_ABOUT_ORGY));
+	AddShortcut('J', B_COMMAND_KEY, new BMessage(M_ABOUT_BUDDYJ));
 
 	background = new BView (
 		bounds,
@@ -30,11 +34,11 @@ AboutWindow::AboutWindow (const char *version)
 		B_WILL_DRAW);
 	background->SetViewColor (ui_color (B_PANEL_BACKGROUND_COLOR));
 	AddChild (background);
+	
 
 	if ((bmp = BTranslationUtils::GetBitmap ('bits', "bits")) != 0)
 	{
 		BRect bmp_bounds (bmp->Bounds());
-		BView *graphic;
 
 		ResizeTo (
 			bmp_bounds.Width() + 50,
@@ -48,6 +52,7 @@ AboutWindow::AboutWindow (const char *version)
 		background->AddChild (graphic);
 		
 		graphic->SetViewBitmap (bmp);
+		EasterEggOn = true;
 		delete bmp;
 
 		bounds.Set (
@@ -107,6 +112,7 @@ AboutWindow::AboutWindow (const char *version)
 	run.runs[0].font = *be_plain_font;
 	credits->Insert (creditstext, &run);
 	
+	
 	// Center that bad boy
 	BRect frame (BScreen().Frame());
 	MoveTo (
@@ -145,3 +151,114 @@ AboutWindow::Pulse (void)
 	if (credits->Bounds().bottom > point.y + Bounds().Height())
 		credits->ScrollTo (0, 0);
 }
+
+void
+AboutWindow::MessageReceived(BMessage *msg)
+{
+	switch (msg->what)
+	{
+		
+		case M_ABOUT_ORGY:
+		{
+			BBitmap *bmp;	
+			if (EasterEggOn) {
+				
+				if ((bmp = BTranslationUtils::GetBitmap ('bits', "bits")) != 0)
+				{
+					BRect bmp_bounds (bmp->Bounds());
+					
+					graphic->ResizeTo (
+						bmp_bounds.Width(),
+						bmp_bounds.Height());
+						
+					graphic->SetViewBitmap (bmp);
+					
+					credits->MoveTo (
+						0.0,
+						graphic->Frame().bottom + 1);
+					
+					graphic->Invalidate();
+					EasterEggOn = false;
+					delete bmp;
+	
+				}
+			}
+			else
+			{		  		
+		  		if ((bmp = BTranslationUtils::GetBitmap ('bits', "Gummy Orgy")) != 0)
+				{
+					BRect bmp_bounds (bmp->Bounds());
+					
+					graphic->ResizeTo (
+						bmp_bounds.Width(),
+						bmp_bounds.Height());
+						
+					graphic->SetViewBitmap (bmp);
+					
+					credits->MoveTo (
+						0.0,
+						graphic->Frame().bottom + 1);
+					
+					graphic->Invalidate();
+					EasterEggOn = true;
+					delete bmp;
+	
+				}
+			}
+			break;
+		}
+		
+		case M_ABOUT_BUDDYJ:
+		{
+			BBitmap *bmp;			
+			if (EasterEggOn) {
+				
+				if ((bmp = BTranslationUtils::GetBitmap ('bits', "bits")) != 0)
+				{
+					BRect bmp_bounds (bmp->Bounds());
+					
+					graphic->ResizeTo (
+						bmp_bounds.Width(),
+						bmp_bounds.Height());
+						
+					graphic->SetViewBitmap (bmp);
+					
+					credits->MoveTo (
+						0.0,
+						graphic->Frame().bottom + 1);
+					
+					graphic->Invalidate();
+					EasterEggOn = false;
+					delete bmp;
+	
+				}
+			}
+			else
+			{		  		
+		  		if ((bmp = BTranslationUtils::GetBitmap ('bits', "Buddy Jesus")) != 0)
+				{
+					BRect bmp_bounds (bmp->Bounds());
+					
+					graphic->ResizeTo (
+						bmp_bounds.Width(),
+						bmp_bounds.Height());
+						
+					graphic->SetViewBitmap (bmp);
+					
+					credits->MoveTo (
+						0.0,
+						graphic->Frame().bottom + 1);
+					
+					graphic->Invalidate();
+					EasterEggOn = true;
+					delete bmp;
+	
+				}
+			}
+			break;
+		}
+	
+	};		
+		
+}
+
