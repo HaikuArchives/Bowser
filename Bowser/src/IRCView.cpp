@@ -326,7 +326,7 @@ IRCView::FirstMarker (const char *cData)
 void
 IRCView::ClearView (void) 
 { 
-	if (TextLength() > 128) 
+	if (TextLength() > 192) 
 	{
 		list<URL> &urls (settings->urls); 
 		int32 bytes (TextLength() - 192);
