@@ -1,5 +1,9 @@
-Bowser d42b
+Bowser d42c
 http://bowser.sourceforge.net
+
+[d42c]
+ * New DCC system
+ * Fixed crashing bug which happened on some server notices.
 
 [d42b]
  * Source changes (new makefile, etc)

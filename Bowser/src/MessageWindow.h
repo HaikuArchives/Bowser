@@ -30,6 +30,7 @@ class MessageWindow : public ClientWindow
 	virtual void				Show (void);
 	virtual void				Parser (const char *);
 	virtual void				DroppedFile (BMessage *);
+//	virtual void				TabExpansion (void);
 
 	void							UpdateString (void);
 	

@@ -216,6 +216,51 @@ MessageWindow::Show (void)
 	SetFlags (Flags() & ~B_AVOID_FOCUS);
 }
 
+//void
+//MessageWindow::TabExpansion (void)
+//{
+//	int32 start, finish;
+//
+//	input->TextView()->GetSelection (&start, &finish);
+//
+//	if (input->TextView()->TextLength()
+//	&&  start == finish
+//	&&  start == input->TextView()->TextLength())
+//	{
+//		const char *inputText (
+//			input->TextView()->Text()
+//			+ input->TextView()->TextLength());
+//		const char *place (inputText);
+//		
+//
+//		while (place > input->TextView()->Text())
+//		{
+//			if (*(place - 1) == '\x20')
+//				break;
+//			--place;
+//		}
+//		
+//		BString insertion;
+//
+//		if (!id.ICompare (place, strlen (place)))
+//		{
+//			insertion = id;
+//		}
+//		
+//		if (insertion.Length())
+//		{
+//			input->TextView()->Delete (
+//				place - input->TextView()->Text(),
+//				input->TextView()->TextLength());
+//
+//			input->TextView()->Insert (insertion.String());
+//			input->TextView()->Select (
+//				input->TextView()->TextLength(),
+//				input->TextView()->TextLength());
+//		}
+//	}
+//}
+
 void
 MessageWindow::Parser (const char *buffer)
 {

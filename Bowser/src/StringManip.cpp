@@ -75,7 +75,7 @@ GetNick (const char *cData)
 BString
 GetIdent (const char *cData)
 {
-	BString data (cData);
+	BString data (GetWord(cData, 1));
 	BString theIdent;
 	int32 place[2];
 
@@ -85,14 +85,14 @@ GetIdent (const char *cData)
 		++(place[0]);
 		data.CopyInto (theIdent, place[0], place[1] - place[0]);
 	}
-	
+		
 	return theIdent;
 }
 
 BString
 GetAddress (const char *cData)
 {
-	BString data (cData);
+	BString data (GetWord(cData, 1));
 	BString address;
 	int32 place;
 
