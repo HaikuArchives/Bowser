@@ -162,7 +162,7 @@ ServerWindow::ParseCTCP(BString theNick, BString theMsg)
 					msg.AddBool   ("continue",    true);
 
 					PostMessage(&msg);
-					printf("posted message\n");
+					
 					delete data;
 					break;
 				}
@@ -190,7 +190,7 @@ ServerWindow::ParseCTCP(BString theNick, BString theMsg)
 
 			BMessenger msgr;
 			bReply.FindMessenger ("msgr", &msgr);
-			printf("messenger found\n");
+
 			BMessage msg (M_ADD_RESUME_DATA), reply;
 			msg.AddString ("bowser:nick", theNick.String());
 			msg.AddString ("bowser:port", port.String());

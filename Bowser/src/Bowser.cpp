@@ -152,7 +152,7 @@ BowserApp::~BowserApp (void)
 bool
 BowserApp::QuitRequested (void)
 {
-	printf ("BowserApp::QuitRequested\n");
+	//printf ("BowserApp::QuitRequested\n");
 	BMessage *msg (CurrentMessage());
 
 	// Presents from the setup window

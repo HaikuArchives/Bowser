@@ -20,8 +20,7 @@ class AboutWindow : public BWindow
 	virtual bool			QuitRequested (void);
 	virtual void			DispatchMessage (BMessage *, BHandler *);
 	void						Pulse (void);
-	void				ResetImage (void);
-	void				EggImage (const char *);
+	void				AboutImage (const char *, bool);
 
 	private:
 	

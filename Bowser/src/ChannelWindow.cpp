@@ -126,7 +126,7 @@ ChannelWindow::~ChannelWindow (void)
 bool
 ChannelWindow::QuitRequested()
 {
-	printf ("ChannelWindow::QuitRequested, %s\n", id.String());
+	//printf ("ChannelWindow::QuitRequested, %s\n", id.String());
 	BMessage *msg (CurrentMessage());
 	
 	if (!msg->HasBool ("bowser:part")

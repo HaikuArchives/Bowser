@@ -160,7 +160,7 @@ ServerWindow::~ServerWindow (void)
 bool
 ServerWindow::QuitRequested()
 {
-	printf ("ServerWindow::QuitRequested, %s\n", id.String());
+	//printf ("ServerWindow::QuitRequested, %s\n", id.String());
 	BMessage *msg (CurrentMessage());
 	bool shutdown (false);
 

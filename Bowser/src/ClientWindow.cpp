@@ -296,7 +296,7 @@ ClientWindow::~ClientWindow (void)
 bool
 ClientWindow::QuitRequested (void)
 {
-	printf ("ClientWindow::QuitRequested, %s\n", id.String());
+	//printf ("ClientWindow::QuitRequested, %s\n", id.String());
 	if (settings) settings->Save();
 	if (id.ICompare (serverName))
 	{

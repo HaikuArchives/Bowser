@@ -198,13 +198,11 @@ AboutWindow::MessageReceived (BMessage *msg)
 		{	
 			if (EasterEggOn)
 			{				
-				ResetImage();
+				AboutImage ("bits", false);		// bowser logo
 			}
 			else
 			{
-				char eggName[25];
-				sprintf(eggName, "Gummy Orgy");
-				EggImage (eggName);
+				AboutImage ("Gummi Orgy", true);
 			}
 			break;
 		}
@@ -213,13 +211,11 @@ AboutWindow::MessageReceived (BMessage *msg)
 		{
 			if (EasterEggOn)
 			{
-				ResetImage();
+				AboutImage ("bits", false);		// bowser logo
 			}
 			else
 			{
-				char eggName[25];
-				sprintf(eggName, "Buddy Jesus");
-				EggImage (eggName);
+				AboutImage ("Buddy Jesus", true);
 			}
 			break;
 		}
@@ -228,36 +224,18 @@ AboutWindow::MessageReceived (BMessage *msg)
 }
 
 void
-AboutWindow::ResetImage (void)
+AboutWindow::AboutImage (const char *eggName, bool egg)
 {
-	// reset image
 	BBitmap *bmp;
 	
-	if ((bmp = BTranslationUtils::GetBitmap ('bits', "bits")) != 0)
+	if ((bmp = BTranslationUtils::GetBitmap ('bits', eggName)) != 0)
 	{
 		BRect bmp_bounds (bmp->Bounds());
 		graphic->ResizeTo (bmp_bounds.Width(), bmp_bounds.Height());
 		graphic->SetViewBitmap (bmp);					
 		credits->MoveTo (0.0, graphic->Frame().bottom + 1);
 		graphic->Invalidate();
-		EasterEggOn = false;
-		delete bmp;
-	}
-}
-
-void
-AboutWindow::EggImage (const char *data)
-{
-	BBitmap *bmp;
-	
-	if ((bmp = BTranslationUtils::GetBitmap ('bits', data)) != 0)
-	{
-		BRect bmp_bounds (bmp->Bounds());
-		graphic->ResizeTo (bmp_bounds.Width(), bmp_bounds.Height());
-		graphic->SetViewBitmap (bmp);					
-		credits->MoveTo (0.0, graphic->Frame().bottom + 1);
-		graphic->Invalidate();
-		EasterEggOn = true;
+		EasterEggOn = egg;
 		delete bmp;
 	}
 }
