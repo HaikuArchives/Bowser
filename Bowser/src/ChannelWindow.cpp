@@ -1008,8 +1008,7 @@ ChannelWindow::UpdateMode(char theSign, char theMode)
 	{
 		BString theReal = GetWord(chanMode.String(), 1);
 		BString theRest = RestOfString(chanMode.String(), 2);
-		if (theMode == 'k' || theMode == 'l')
-			theReal.RemoveFirst(modeString);
+		theReal.RemoveFirst(modeString);
 		theReal.Append(modeString);
 		BString tempString(theReal);
 		if(theRest != "-9z99")
@@ -1027,6 +1026,7 @@ ChannelWindow::UpdateMode(char theSign, char theMode)
 			}
 			tempString.Append(" ");
 			tempString.Append(chanLimit);
+			chanLimitOld = chanLimit;
 		}
 		else if(theMode == 'k')
 		{
@@ -1038,6 +1038,7 @@ ChannelWindow::UpdateMode(char theSign, char theMode)
 			}
 			tempString.Append(" ");
 			tempString.Append(chanKey);
+			chanKeyOld = chanKey;
 		}
 		chanMode = tempString;
 	}

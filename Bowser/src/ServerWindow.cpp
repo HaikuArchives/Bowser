@@ -695,7 +695,9 @@ ServerWindow::Establish (void *arg)
 	
 	if (reconnecting)
 	{
-		snooze (2000000); // wait 2 seconds
+		if (server->retry > 0) {
+			snooze (2000000); // wait 2 seconds
+		}
 		server->retry++;
 		BMessage statusMsgR (M_DISPLAY);
 		BString tempStringR;
@@ -1019,7 +1021,9 @@ ServerWindow::SendData (const char *cData)
 	{
 		// doh, we aren't even connected.
 		
-		PostMessage (M_SERVER_DISCONNECT);
+		if (!reconnecting) {
+			PostMessage (M_SERVER_DISCONNECT);
+		}
 		
 		
 	}
