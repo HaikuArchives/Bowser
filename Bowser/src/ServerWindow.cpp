@@ -47,7 +47,7 @@ ServerWindow::ServerWindow (
 		ServerSeed++,
 		id_,
 		(const char *)nicks->FirstItem(),
-		BRect(105,105,550,400)),
+		BRect (105,105,550,400)),
 
 		lnicks (nicks),
 		lport (port),
@@ -74,11 +74,12 @@ ServerWindow::ServerWindow (
 		motd (motd_),
 		initialMotd (true),
 		identd (identd_),
-		parseWhois (0),
+		hostnameLookup (false),
 		cmds (cmds_),
-		hostAddress ("")
+		localAddress (""),
+		localIP ("")
 {
-	SetSizeLimits(200,2000,150,2000);
+	SetSizeLimits (200,2000,150,2000);
 
 	SetTitle ("Bowser: Connecting");
 
@@ -593,7 +594,7 @@ ServerWindow::MessageReceived (BMessage *msg)
 			// a binded socket will return the
 			// LAN ip over the DUN one 
 			
-			hostent *hp = gethostbyname(hostAddress.String());		
+			hostent *hp = gethostbyname (localAddress.String());
 				
 			DCCSend *view;
 			view = new DCCSend (
@@ -684,6 +685,7 @@ ServerWindow::Pulse (void)
 int32
 ServerWindow::Establish (void *arg)
 {
+	
 	BMessenger *sMsgr (reinterpret_cast<BMessenger *>(arg));
 	const char *id, *port, *ident, *name, *nick;
 	ServerWindow *server;
@@ -794,7 +796,7 @@ ServerWindow::Establish (void *arg)
 		//  is the one that we use to accept on)
 		server->Lock();
 		getsockname (endPoint->Socket(), (struct sockaddr *)&sin, &namelen);
-		server->localAddress = sin.sin_addr.s_addr;
+		server->localuIP = sin.sin_addr.s_addr;
 		server->Unlock();
 				
 		if (identd)
@@ -1338,10 +1340,11 @@ ServerWindow::AddResumeData (BMessage *msg)
 	SendData (buffer.String());
 }
 
+
 uint32
-ServerWindow::LocalAddress (void) const
+ServerWindow::LocaluIP (void) const
 {
-	return localAddress;
+	return localuIP;
 }
 
 
@@ -1368,4 +1371,49 @@ ServerWindow::HandleReconnect (void)
 		retry = 0;
 		Display ("[@] Giving up. Type /reconnect when you get your act together... or your ISP doesn't stink. Whatever.\n", &errorColor);
 	}
+}
+
+
+void
+ServerWindow::hostname_askserver (void)
+{
+	struct sockaddr_in ina;
+	ina.sin_addr.s_addr = localuIP;
+	
+	uint32 a1 (167772160U);
+	uint32 a2 (184549375U);
+	uint32 b1 (2886729728U);
+	uint32 b2 (2887843839U);
+	uint32 c1 (3232235520U);
+	uint32 c2 (3232301055U);	
+	
+	if ((localuIP >= a1)  // 10.0.0.0
+	||  (localuIP <= a2)  // 10.255.255.255
+	||  (localuIP >= b1)  // 172.16.0.0
+	||  (localuIP <= b2)  // 172.31.255.255
+	||  (localuIP >= c1)  // 192.168.0.0
+	||  (localuIP <= c2)) // 192.168.255.255
+	{
+		// local ip is private
+		// ask server what our ip is.
+	}
+	else
+	{
+		// we seem to have our own ip... thats good
+		
+		hostname_resolve(); // resolve localuIP
+	}
+		
+		
+	
+	printf ("localuIP: %ld\n", localuIP);
+	printf ("IP Address : %s\n", localIP.String());
+
+}
+
+
+void
+ServerWindow::hostname_resolve (void)
+{
+
 }

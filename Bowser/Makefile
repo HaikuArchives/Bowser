@@ -34,11 +34,11 @@ DATADIR := data
 # compiler, linker, ...
 
 CC := g++ -c -pipe
-CFLAGS :=
-CFLAGS += -O3
-CFLAGS += -fno-pic
-CFLAGS += -ffast-math
-CFLAGS += -Wall -W -Wno-multichar -Wp,-Wall
+CFLAGS := 
+CFLAGS += -O3 
+CFLAGS += -fno-pic 
+CFLAGS += -ffast-math 
+CFLAGS += -Wall -W -Wno-multichar -Wp,-Wall 
 #CFLAGS += -Werror
 
 LD := g++

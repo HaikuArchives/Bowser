@@ -404,7 +404,7 @@ DCCSend::DCCSend (
 
 DCCSend::~DCCSend (void)
 {
-	kill_thread(tid);
+	kill_thread (tid);
 }
 
 void

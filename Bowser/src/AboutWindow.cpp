@@ -22,7 +22,7 @@
 #include <Application.h>
 #include <String.h>
 
-//#include <stdio.h>
+#include <stdio.h>
 
 #include "Bowser.h"
 #include "AboutWindow.h"

@@ -899,9 +899,8 @@ ChannelWindow::SortNames(const void *name1, const void *name2)
 
 	BString first, second;
 
-	first   << (*firstPtr)->Status();
-	second  << (*secondPtr)->Status();
-	
+	first << (((*firstPtr)->Status() & STATUS_OP_BIT) ? STATUS_OP_BIT : (*firstPtr)->Status()); 
+	second << (((*secondPtr)->Status() & STATUS_OP_BIT) ? STATUS_OP_BIT : (*secondPtr)->Status()); 
 	first.Prepend ('0', 10 - first.Length());
 	second.Prepend ('0', 10 - second.Length());
 

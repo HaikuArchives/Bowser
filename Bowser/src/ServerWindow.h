@@ -51,7 +51,7 @@ class ServerWindow : public ClientWindow
 	void						Pulse (void);
 
 	static int32				Establish (void *);
-	uint32						LocalAddress (void) const;
+	uint32						LocaluIP (void) const;
 	void							PostActive (BMessage *);
 	void							Broadcast (BMessage *);
 	void							RepliedBroadcast (BMessage *);
@@ -85,6 +85,9 @@ class ServerWindow : public ClientWindow
 	void							DCCChatDialog (BString theNick, BString theIP, BString thePort);
 	void							AddResumeData (BMessage *);
 	void							HandleReconnect (void);
+	
+	void							hostname_askserver (void);
+	void							hostname_resolve (void);
 
 	// Locked accessors:
 
@@ -133,16 +136,18 @@ class ServerWindow : public ClientWindow
 									joinColor,
 									noticeColor;
 	const char					**events;
-	uint32						localAddress;
+//	uint32						localAddress;
 	
 	
 	
 	bool							motd,
 									initialMotd,
-									identd;
-	int32							parseWhois;
+									identd,
+									hostnameLookup;
 	BString						cmds;
-	BString						hostAddress;
+	BString						localAddress,
+								localIP;
+	uint32						localuIP;
 	int32 s; 				// socket
 
 };

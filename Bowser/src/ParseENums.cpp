@@ -46,14 +46,6 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		BString title ("Bowser: ");
 		title += id;
 		
-		if (parseWhois == 0)
-		{	
-			BString command ("WHOIS ");
-			command << myNick << "\n";
-			endPoint->Send (command.String(), strlen(command.String()));
-			parseWhois = 1;
-		}	
-		
 		if (title != Title())
 		{
 			SetTitle (title.String());
@@ -179,7 +171,6 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		
 	if (secondWord == "301") // whois | away reason (5th param)
 	{
-		if (parseWhois != 2) return true;
 		BString tempString ("[x] "),
 				theReason (RestOfString(data, 5));
 		theReason.RemoveFirst(":");
@@ -193,15 +184,22 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	
 	if (secondWord == "302") // userhost and usrip reply
 	{
-		BString theHost (GetWord (data, 4));
+		BString theHost (GetWord (data, 4)),
+				theHostname (GetAddress (theHost.String()));
 		theHost.RemoveFirst (":");
-		
+				
+		if (hostnameLookup)
+		{
+			localAddress = theHostname.String();
+			hostnameLookup = false;
+			return true;
+		}		
+						
 		if (theHost != "-9z99" && theHost != "")
 		{
-			BString tempString (GetAddress (theHost.String()));
 		
 			BMessage *msg (new BMessage);
-			msg->AddString ("lookup", tempString.String());
+			msg->AddString ("lookup", theHostname.String());
 			ClientWindow *client (ActiveClient());
 			if (client)
 				msg->AddPointer("client", client);
@@ -262,19 +260,16 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	
 	if (secondWord == "307") // whois | user has identified
 	{
-		if (parseWhois != 2) return true;
 		BString theInfo (RestOfString (data, 5));
 		theInfo.RemoveFirst (":");
 
 		BMessage display (M_DISPLAY);
 		BString buffer;
 		
-		if (parseWhois == 2)
-		{
-			buffer << "[x] " << theInfo << "\n";
-			PackDisplay (&display, buffer.String(), &whoisColor, &serverFont);
-			PostActive (&display);
-		}
+		buffer << "[x] " << theInfo << "\n";
+		PackDisplay (&display, buffer.String(), &whoisColor, &serverFont);
+		PostActive (&display);
+		
 		return true;
 	}
 	
@@ -289,31 +284,22 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		BMessage display (M_DISPLAY);
 		BString buffer;
 
-		if (parseWhois == 2)
-		{
-			buffer << "[x] " << theNick << " (" << theIdent
-				<< "@" << theAddress << ")\n" << "[x] "
-				<< theName << "\n";
+		buffer << "[x] " << theNick << " (" << theIdent
+			<< "@" << theAddress << ")\n" << "[x] "
+			<< theName << "\n";
 
-			PackDisplay (
-				&display,
-				buffer.String(),
-				&whoisColor,
-				&serverFont);
-			PostActive (&display);
-		}
-		
-		if (theNick == myNick && hostAddress == "")
-		{
-			hostAddress = theAddress;
-		}
+		PackDisplay (
+			&display,
+			buffer.String(),
+			&whoisColor,
+			&serverFont);
+		PostActive (&display);
 
 		return true;
 	}
 
 	if (secondWord == "312") // whois | server
 	{
-		if (parseWhois != 2) return true;
 		BString theNick (GetWord (data, 4)),
 				theServer (GetWord (data, 5)),
 				theInfo (RestOfString (data, 6));
@@ -331,7 +317,6 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if (secondWord == "313") // IRC operator (uh oh)
 	{
-		if (parseWhois != 2) return true;
 		BString theNick (GetWord (data, 4)),
 				tempString ("[x] "),
 				info (RestOfString (data, 5));
@@ -376,7 +361,6 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if (secondWord == "317") // whois | idle/signon (5th, 6th)
 	{
-		if (parseWhois != 2) return true;
 		BString theNick (GetWord (data, 4)),
 				tempString ("[x] "),
 				tempString2 ("[x] "),
@@ -408,7 +392,6 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if (secondWord == "318") // end of whois
 	{
-		parseWhois = 2;
 		return true;
 	}
 
@@ -710,6 +693,14 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 			reconnecting = false;
 		}
 		
+		if (initialMotd)
+		{
+			BString command ("USERHOST ");
+			command << myNick << "\n";
+			SendData (command.String());
+			hostnameLookup = true;
+		}
+		
 		if (initialMotd && cmds.Length())
 		{
 			BMessage msg (M_SUBMIT_RAW);
@@ -935,9 +926,18 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 			
 			reconnecting = false;
 		}
+		
+		if (initialMotd)
+		{
+			BString command ("USERHOST ");
+			command << myNick << "\n";
+			SendData (command.String());
+			hostnameLookup = true;
+		}
 	
 		if (initialMotd && cmds.Length())
 		{
+			
 			BMessage msg (M_SUBMIT_RAW);
 			const char *place (cmds.String()), *eol;
 

@@ -398,7 +398,7 @@ MessageWindow::DCCServerSetup (void)
   server = dynamic_cast<ServerWindow *>(looper);
 
   sa.sin_family = AF_INET;
-  sa.sin_addr.s_addr = server->LocalAddress();
+  sa.sin_addr.s_addr = server->LocaluIP();
   sa.sin_port = htons(myPort);
   if (bind (mySocket, (struct sockaddr*)&sa, sizeof(sa)) == -1)
   {
@@ -415,7 +415,7 @@ MessageWindow::DCCServerSetup (void)
   BString buffer;
 
   buffer << "PRIVMSG " << chatee << " :\1DCC CHAT chat ";
-  buffer << htonl (server->LocalAddress()) << " ";
+  buffer << htonl (server->LocaluIP()) << " ";
   buffer << myPort << "\1";
   msg.AddString ("data", buffer.String());
   sMsgr.SendMessage (&msg);
@@ -427,7 +427,7 @@ MessageWindow::DCCServerSetup (void)
     BString buffer;
     struct in_addr addr;
 		
-    addr.s_addr = server->LocalAddress();
+    addr.s_addr = server->LocaluIP();
     buffer << "Accepting connection on address "
       << inet_ntoa (addr) << ", port " << myPort << "\n";
 

@@ -21,7 +21,10 @@ http://bowser.sourceforge.net
  * Automatically reconnects when disconnected (25 retries, 2 second delays)
  * Message windows not explicity created by the user will not take focus
    of the keyboard
- * Fixed issue with chaning font/background colors in Message Windows
+ * Fixed issue with changing font/background colors in Message Windows
+ * Fixed a weird issue with sorting in the names list when users were both
+   oped and voiced
+ * and more?
 
 
 [1.0]
