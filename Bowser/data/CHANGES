@@ -12,6 +12,9 @@ http://bowser.sourceforge.net
    used in a channel it acts like /mode #channel <parms>
  * Modified Idle/SignOn time parsing for /whois
  * "/uptime -l" switch echos the uptime locally instead of sending to server
+ * Channel topic is now shown in SatusView
+ * StatusView items now autosize to their contents.
+ * Added Lag Checker to StatusView
 
 
 [d42b]

@@ -68,6 +68,12 @@ ChannelWindow::ChannelWindow (
 	status->AddItem (new StatusItem (
 		serverName.String(), 0),
 		true);
+		
+	status->AddItem (new StatusItem (
+		"Lag: ",
+		"",
+		STATUS_ALIGN_LEFT),
+		true);
 
 	status->AddItem (new StatusItem (
 		0,
@@ -76,7 +82,7 @@ ChannelWindow::ChannelWindow (
 		true);
 
 	status->AddItem (new StatusItem (
-		"Users: ", "@@"),
+		"Users: ", ""),
 		true);
 
 	status->AddItem (new StatusItem (
@@ -92,6 +98,7 @@ ChannelWindow::ChannelWindow (
 		"", "", 
 		STATUS_ALIGN_LEFT),
 		true);
+	status->SetItemValue (STATUS_LAG, "0.000");
 	status->SetItemValue (STATUS_NICK, myNick.String());
 		
 	bgView->AddChild(namesScroll);
@@ -599,7 +606,15 @@ ChannelWindow::MessageReceived (BMessage *msg)
 			sMsgr.SendMessage (msg);
 			break;
 		}
-
+		
+		case M_LAG_CHANGED:
+		{
+			BString lag;
+			msg->FindString("lag", &lag);
+			status->SetItemValue(STATUS_LAG, lag.String());
+			break;
+		}
+		
 		default:
 			ClientWindow::MessageReceived (msg);
 			break;

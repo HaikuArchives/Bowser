@@ -232,7 +232,7 @@ ServerWindow::ParseEvents (const char *data)
 		if (myNick.ICompare (oldNick) == 0)
 		{
 			myNick = newNick;
-			status->SetItemValue (1, newNick.String());
+			status->SetItemValue (STATUS_NICK, newNick.String());
 		}
 
 		bowser_app->PostMessage (&msg); // for ignores

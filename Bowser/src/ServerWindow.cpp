@@ -55,10 +55,14 @@ ServerWindow::ServerWindow (
 		lident (ident),
 		nickAttempt (0),
 		myNick ((const char *)nicks->FirstItem()),
+		myLag ("0.000"),
 		isConnected (false),
 		isConnecting (true),
 		hasWarned (false),
 		isQuitting (false),
+		checkingLag (false),
+		lagCheck (0),
+		lagCount (0),
 		endPoint (0),
 		send_buffer (0),
 		send_size (0),
@@ -89,10 +93,17 @@ ServerWindow::ServerWindow (
 	status->AddItem (new StatusItem (
 		serverName.String(), 0),
 		true);
+		
+	status->AddItem (new StatusItem (
+		"Lag: ",
+		0,
+		STATUS_ALIGN_LEFT),
+		true);
+	status->SetItemValue (STATUS_LAG, myLag.String());
 
 	status->AddItem (new StatusItem (
 		0,
-		"@@@@@@@@@@@@@@@@@",
+		0,
 		STATUS_ALIGN_LEFT),
 		true);
 	status->SetItemValue (STATUS_NICK, myNick.String());
@@ -109,6 +120,8 @@ ServerWindow::ServerWindow (
 	msg->AddString ("nick", myNick.String());
 	msg->AddBool ("identd", identd);
 	msg->AddPointer ("server", this);
+	
+	SetPulseRate (10000000);
 
 	loginThread = spawn_thread (
 		Establish,
@@ -269,6 +282,15 @@ ServerWindow::MessageReceived (BMessage *msg)
 			SendData (buffer.String());
 
 			break;
+		}
+		
+		case M_LAG_CHANGED:
+		{
+			status->SetItemValue(STATUS_LAG, myLag.String());
+			BMessage newmsg(M_LAG_CHANGED);
+			newmsg.AddString("lag", myLag);
+			Broadcast(&newmsg);
+			break;	
 		}
 
 		case CYCLE_WINDOWS:
@@ -532,20 +554,52 @@ ServerWindow::MenusBeginning (void)
 	ClientWindow::MenusBeginning();
 }
 
-//void
-//ServerWindow::DispatchMessage (BMessage *msg, BHandler *handler)
-//{
-//	if (msg->what == B_PULSE)
-//		Pulse();
-//
-//	BWindow::DispatchMessage (msg, handler);
-//}
+void
+ServerWindow::DispatchMessage (BMessage *msg, BHandler *handler)
+{
+	if (msg->what == B_PULSE)
+		Pulse();
 
-//void
-//ServerWindow::Pulse (void)
-//{
-//	Display ("* test\n", 0);
-//}
+	BWindow::DispatchMessage (msg, handler);
+}
+
+void
+ServerWindow::Pulse (void)
+{
+	printf("pulse\n");
+	if (isConnected)
+	{
+		if (!checkingLag)
+		{
+			lagCheck = system_time();
+			lagCount = 1;
+			checkingLag = true;
+			BMessage send (M_SERVER_SEND);
+			AddSend (&send, "BOWSER_LAG_CHECK");
+			AddSend (&send, endl);
+		}
+		else
+		{
+			if (lagCount > 4)
+			{
+				// connection problems?
+				myLag = "CONNECTION PROBLEM";
+				BMessage msg(M_LAG_CHANGED);
+				PostMessage(&msg);
+			}
+			else
+			{
+				// wait some more
+				char lag[15] = "";
+				sprintf (lag, "%ld0.000+", lagCount);
+				myLag = lag;
+				++lagCount;
+				BMessage msg(M_LAG_CHANGED);
+				PostMessage(&msg);
+			}
+		}	
+	}
+}
 
 
 

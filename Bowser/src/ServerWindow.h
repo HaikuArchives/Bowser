@@ -47,13 +47,15 @@ class ServerWindow : public ClientWindow
 	virtual bool				QuitRequested (void);
 	virtual void				MessageReceived (BMessage *message);
 	virtual void				MenusBeginning (void);
+	virtual void			DispatchMessage (BMessage *, BHandler *);
+	void						Pulse (void);
 
 	static int32				Establish (void *);
 	uint32						LocalAddress (void) const;
 	void							PostActive (BMessage *);
 	void							Broadcast (BMessage *);
 	void							RepliedBroadcast (BMessage *);
-
+	
 	protected:
 
 	virtual void				StateChange (BMessage *msg);
@@ -95,11 +97,15 @@ class ServerWindow : public ClientWindow
 	int32							nickAttempt;		// going through list
 	BString						myNick;
 	BString						quitMsg;
+	BString						myLag;
 
-	bool							isConnected,		// were done connecting
+	bool						isConnected,		// were done connecting
 									isConnecting,		// in process
 									hasWarned,			// warn about quitting
-									isQuitting;			// look out, going down
+									isQuitting,			// look out, going down
+									checkingLag;		// waiting for a lag_check reply
+	int32						lagCheck,			// system_time()
+								lagCount;			// passes made waiting
 
 	BNetEndpoint				*endPoint;			// socket class
 	static BLocker				identLock;

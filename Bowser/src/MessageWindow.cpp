@@ -60,12 +60,19 @@ MessageWindow::MessageWindow (
 		serverName.String(), 0),
 		true);
 
+	status->AddItem (new StatusItem(
+		"Lag: ", 0,
+		STATUS_ALIGN_LEFT),
+		true);
 	status->AddItem (new StatusItem (
 		0,
 		"@@@@@@@@@@@@@@@@@",
 		STATUS_ALIGN_LEFT),
 		true);
-	status->SetItemValue (1, myNick.String());
+	
+	BMessage reply(B_REPLY);
+	status->SetItemValue (STATUS_LAG, "0.000");	
+	status->SetItemValue (STATUS_NICK, myNick.String());
 
 	BString titleString (id);
 	if (addyString && *addyString)
@@ -202,6 +209,13 @@ MessageWindow::MessageReceived (BMessage *msg)
 			// Send the rest of processing up the chain
 			ClientWindow::MessageReceived (msg);
 			break;
+		}
+		
+		case M_LAG_CHANGED:
+		{
+			BString lag;
+			msg->FindString("lag", &lag);
+			status->SetItemValue(STATUS_LAG, lag.String());
 		}
 
 		default:

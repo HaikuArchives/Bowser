@@ -2,14 +2,6 @@
 #ifndef CHANNELWINDOW_H_
 #define CHANNELWINDOW_H_
 
-#define STATUS_SERVER			0
-#define STATUS_NICK					1
-#define STATUS_USERS			2
-#define STATUS_OPS					3
-#define STATUS_MODES			4
-#define STATUS_TOPIC				5
-
-
 #include <String.h>
 
 #include "ClientWindow.h"

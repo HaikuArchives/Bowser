@@ -136,7 +136,7 @@ const uint32 M_SERVER_SEND							= 0x1701;
 const uint32 M_SERVER_SHUTDOWN						= 0x1702;
 const uint32 M_CLIENT_SHUTDOWN						= 0x1703;
 const uint32 M_IGNORED_PRIVMSG						= 0x1704;
-
+const uint32 M_LAG_CHANGED							= 0x1705;
 // List Messages
 const uint32 M_SORT_CHANNEL							= 0x1800;
 const uint32 M_SORT_USER							= 0x1801;

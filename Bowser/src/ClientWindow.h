@@ -2,6 +2,14 @@
 #ifndef CLIENTWINDOW_H_
 #define CLIENTWINDOW_H_
 
+#define STATUS_SERVER			0
+#define STATUS_LAG					1
+#define STATUS_NICK				2
+#define STATUS_USERS				3
+#define STATUS_OPS				4
+#define STATUS_MODES				5
+#define STATUS_TOPIC			6
+
 #include <Window.h>
 #include <Messenger.h>
 #include <String.h>

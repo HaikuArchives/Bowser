@@ -31,7 +31,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 		BString theNick (GetWord (data, 3));
 		myNick = theNick;
-		status->SetItemValue (1, myNick.String());
+		status->SetItemValue (STATUS_NICK, myNick.String());
 
 		BString theMsg (RestOfString (data, 4));
 		theMsg.RemoveFirst (":");
@@ -780,10 +780,32 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	
 	if(secondWord == "421") // unknown command
 	{
-		BString tempString (RestOfString (data, 4));
-		tempString.RemoveFirst (":");
-		tempString.Append ("\n");
-		Display (tempString.String(), 0);
+		BString tempString (RestOfString (data, 4)),
+				badCmd (GetWord (data, 4));
+		
+		if (badCmd == "BOWSER_LAG_CHECK")
+		{
+			int32 difference (system_time() - lagCheck);
+			if (difference > 0)
+			{
+				int32 secs (difference / 1000000);
+				int32 milli (difference / 1000);
+				char lag[15] = "";
+				sprintf (lag, "%ld.%03ld", secs, milli);
+				myLag = lag;
+				lagCount = 0;
+				checkingLag = false;
+				BMessage msg(M_LAG_CHANGED);
+				PostMessage(&msg);
+			}			
+		}
+		else
+		{
+			tempString.RemoveFirst (":");
+			tempString.Append ("\n");
+			Display (tempString.String(), 0);
+		}
+		
 		return true;
 	}
 
