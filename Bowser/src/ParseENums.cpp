@@ -140,7 +140,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 	
-	if(secondWord == "254") // channels formed
+	if (secondWord == "254") // channels formed
 	{
 		BString theNumber (GetWord (data, 4)),
 				tempString ("* ");
@@ -150,7 +150,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	}
 
 
-	if(secondWord == "263") // server load too busy, wait a min
+	if (secondWord == "263") // server load too busy, wait a min
 	{
 		BString tempString ("[x] ");
 		tempString << RestOfString (data, 4);
@@ -163,7 +163,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 		
-	if(secondWord == "301") // whois | away reason (5th param)
+	if (secondWord == "301") // whois | away reason (5th param)
 	{
 		BString tempString ("[x] "),
 				theReason (RestOfString(data, 5));
@@ -219,7 +219,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "305") // back from away
+	if (secondWord == "305") // back from away
 	{
 		BString tempString ("[x] ");
 		tempString << RestOfString (data, 4);
@@ -232,7 +232,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "306") // you are now away
+	if (secondWord == "306") // you are now away
 	{
 		BString tempString ("[x] ");
 		tempString << RestOfString (data, 4);
@@ -245,7 +245,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 	
-	if(secondWord == "307") // whois | user has identified
+	if (secondWord == "307") // whois | user has identified
 	{
 		BString theInfo (RestOfString (data, 5));
 		theInfo.RemoveFirst (":");
@@ -285,7 +285,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "312") // whois | server
+	if (secondWord == "312") // whois | server
 	{
 		BString theNick (GetWord (data, 4)),
 				theServer (GetWord (data, 5)),
@@ -337,7 +337,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "315") // end of who
+	if (secondWord == "315") // end of who
 	{
 		BString tempString (RestOfString (data, 4));
 		tempString.RemoveFirst (":");
@@ -346,7 +346,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "317") // whois | idle/signon (5th, 6th)
+	if (secondWord == "317") // whois | idle/signon (5th, 6th)
 	{
 		BString theNick (GetWord (data, 4)),
 				tempString ("[x] "),
@@ -382,7 +382,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "319") // whois | channels
+	if (secondWord == "319") // whois | channels
 	{
 		BString theChannels (RestOfString (data, 5));
 		theChannels.RemoveFirst(":");
@@ -437,13 +437,13 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "324") // channel mode
+	if (secondWord == "324") // channel mode
 	{
 		BString theChan (GetWord (data, 4)),
 				theMode (GetWord (data, 5)),
 				tempStuff (RestOfString (data, 6));
 
-		if(tempStuff != "-9z99")
+		if (tempStuff != "-9z99")
 		{
 			theMode.Append(" ");
 			theMode.Append(tempStuff); // avoid extra space w/o params
@@ -471,7 +471,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "329") // channel created
+	if (secondWord == "329") // channel created
 	{
 		BString theChan (GetWord (data, 4)),
 				theTime (GetWord (data, 5)),
@@ -493,7 +493,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "331") // no topic set
+	if (secondWord == "331") // no topic set
 	{
 		BString theChan (GetWord (data, 4)),
 				tempString ("[x] No topic set in ");
@@ -632,7 +632,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "372"  // MOTD body (standard)
+	if (secondWord == "372"  // MOTD body (standard)
 	|| secondWord == "378") // MOTD body (alt)
 	{
 		if (!initialMotd
@@ -646,7 +646,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "375") // MOTD start
+	if (secondWord == "375") // MOTD start
 	{
 		if (!initialMotd
 		||  (initialMotd && motd))
@@ -657,7 +657,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 	
-	if(secondWord == "376") // end of MOTD
+	if (secondWord == "376") // end of MOTD
 	{
 		if (!initialMotd
 		||  (initialMotd && motd))
@@ -707,7 +707,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "381") // you are now irc op  
+	if (secondWord == "381") // you are now irc op  
 	{
 		BString tempString ("[x] ");
 		tempString << RestOfString (data, 4);
@@ -720,7 +720,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "382") // (ircop) rehashing config  
+	if (secondWord == "382") // (ircop) rehashing config  
 	{
 		BString tempString ("[x] ");
 		tempString << RestOfString (data, 4);
@@ -784,7 +784,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "403") // no such channel
+	if (secondWord == "403") // no such channel
 	{
 		BString theChannel (GetWord (data, 4)),
 				tempString ("[x] ");
@@ -797,7 +797,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "404") // cannot send to channel
+	if (secondWord == "404") // cannot send to channel
 	{
 		BString theChannel (GetWord (data, 4)),
 				tempString ("[x] Cannot send data to ");
@@ -810,7 +810,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "405") // too many channels
+	if (secondWord == "405") // too many channels
 	{
 		BString theChannel (GetWord (data, 4)),
 				tempString ("[x] Cannot join ");
@@ -823,7 +823,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "406") // whowas (not on irc)
+	if (secondWord == "406") // whowas (not on irc)
 	{
 		BString theNick (GetWord (data, 4)),
 				tempString ("[x] ");
@@ -836,7 +836,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "407") // duplicate recipients
+	if (secondWord == "407") // duplicate recipients
 	{
 		BString theTarget (GetWord (data, 4)),
 				tempString ("[x] There is more than one ");
@@ -848,7 +848,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "412") // no text to send 
+	if (secondWord == "412") // no text to send 
 	{
 		BString tempString (RestOfString (data, 4));
 		tempString.RemoveFirst (":");
@@ -857,7 +857,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 	
-	if(secondWord == "421") // unknown command
+	if (secondWord == "421") // unknown command
 	{
 		BString tempString (RestOfString (data, 4)),
 				badCmd (GetWord (data, 4));
@@ -887,7 +887,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "422") // motd file is missing
+	if (secondWord == "422") // motd file is missing
 	{
 		BString tempString (RestOfString (data, 4));
 		tempString.RemoveFirst (":");
@@ -934,7 +934,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "433") // nick in use
+	if (secondWord == "433") // nick in use
 	{
 		if (isConnecting)
 		{
@@ -961,7 +961,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		}
 
 		BString theNick (GetWord (data, 4)),
-				tempString ("Nickname ");
+				tempString;
 		tempString << "[x] " << theNick << " is already in use.\n";
 
 		BMessage display (M_DISPLAY);
@@ -970,7 +970,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "441") // user not on channel
+	if (secondWord == "441") // user not on channel
 	{
 		BString theChannel (GetWord (data, 5)),
 				theNick (GetWord (data, 4)),
@@ -984,7 +984,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "442") // you're not on channel
+	if (secondWord == "442") // you're not on channel
 	{
 		BString theChannel (GetWord (data, 4)),
 				tempString ("[x] You're not in ");
@@ -997,7 +997,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "443") // already on channel
+	if (secondWord == "443") // already on channel
 	{
 		BString theChannel (GetWord (data, 5)),
 				theNick (GetWord (data, 4)),
@@ -1011,7 +1011,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "467") // key already set
+	if (secondWord == "467") // key already set
 	{
 		BString theChannel (GetWord (data, 4)),
 				tempString ("[x] Channel key already set in ");
@@ -1024,7 +1024,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "472") // unknown channel mode
+	if (secondWord == "472") // unknown channel mode
 	{
 		BString theMode (GetWord (data, 4)),
 				tempString ("[x] Unknown channel mode: '");
@@ -1037,7 +1037,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "473") // cannot join channel
+	if (secondWord == "473") // cannot join channel
 	{
 		BString theChan (GetWord (data, 4)),
 				tempString ("[x] "),
@@ -1053,7 +1053,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "474") // cannot join channel
+	if (secondWord == "474") // cannot join channel
 	{
 		BString theChan (GetWord (data, 4)),
 				tempString ("[x] "),
@@ -1070,7 +1070,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 	
-	if(secondWord == "475") // cannot join channel
+	if (secondWord == "475") // cannot join channel
 	{
 		BString theChan = GetWord(data, 4);
 		BString theReason = RestOfString(data, 5);
@@ -1085,7 +1085,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "482") // not channel operator
+	if (secondWord == "482") // not channel operator
 	{
 		BString theChannel (GetWord (data, 4));
 
@@ -1099,7 +1099,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "501") // unknown user mode
+	if (secondWord == "501") // unknown user mode
 	{
 		BMessage msg (M_DISPLAY);
 		BString buffer;
@@ -1113,7 +1113,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	// NON-RFC numerics:
 	
-	if(secondWord == "290") // MOTD-ish body
+	if (secondWord == "290") // MOTD-ish body
 	{
 		BString tempString = RestOfString(data, 4);
 		tempString.RemoveFirst(":");
@@ -1123,7 +1123,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "291") // "Welcome" body
+	if (secondWord == "291") // "Welcome" body
 	{
 		BString tempString = RestOfString(data, 4);
 		tempString.RemoveFirst(":");
