@@ -162,7 +162,7 @@ BowserApp::AboutRequested()
 	BString buffer;
 
 	buffer << "Bowser[d" << VERSION
-		<< "] for BeOS R4.5: Copyright 1999\n\n";
+		<< "] for BeOS R4.5+: Copyright 1999, 2000\n\n";
 	buffer << "by Andrew Bazan (abazan@berbee.com),\n";
 	buffer << "Todd Lair (bowser@tvl-p.com),\n";
 	buffer << "Jamie Wilkinson (jamie@tave.com),\n";
