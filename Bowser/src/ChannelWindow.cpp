@@ -733,7 +733,9 @@ ChannelWindow::MessageReceived (BMessage *msg)
 			rgb_color errorColor = bowser_app->GetColor (C_ERROR);
 			Display ("[@] Attempting to rejoin...\n", &errorColor, &serverFont);
 		
-			namesList->ClearList();
+			namesList->ClearList();  // cleanup
+			opsCount = 0;
+			userCount = 0;
 		
 			BMessage send (M_SERVER_SEND);	
 			AddSend (&send, "JOIN ");
