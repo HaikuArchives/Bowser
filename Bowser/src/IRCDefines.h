@@ -72,7 +72,7 @@
 #define STATUS_NORMAL_BIT								0x0100
 #define STATUS_IGNORE_BIT								0x1000
 
-#define VERSION											"42b"
+#define VERSION											"42c"
 
 #include <GraphicsDefs.h>
 
@@ -225,7 +225,10 @@ const uint32 CYCLE_WINDOWS							= 0x1205;
 const uint32 CYCLE_BACK								= 0x1206;
 const uint32 DCC_ACCEPT								= 0x1207;
 const uint32 CHAT_ACCEPT							= 0x1208;
-
+const uint32 M_DCC_PORT								= 0x1209;
+const uint32 M_DCC_FILE_WIN							= 0x1210;
+const uint32 M_DCC_FILE_WIN_DONE					= 0x1211;
+const uint32 M_ADD_RESUME_DATA						= 0x1212;
 
 #ifdef DEV_BUILD
 extern bool DumpReceived;

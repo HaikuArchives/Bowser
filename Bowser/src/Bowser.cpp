@@ -14,6 +14,10 @@ class BowserApp * bowser_app;
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
 
 #include "ServerWindow.h"
 #include "Settings.h"
@@ -24,6 +28,7 @@ class BowserApp * bowser_app;
 #include "ListWindow.h"
 #include "StringManip.h"
 #include "Bowser.h"
+#include "DCCConnect.h"
 #include "AboutWindow.h"
 
 class AppSettings : public Settings
@@ -99,11 +104,15 @@ BowserApp::BowserApp()
 	  aboutWin (0)
 {
 	settings = new AppSettings;
+	dcc_sid     = create_sem (1, "dcc accept");
+
 }
 
 BowserApp::~BowserApp()
 {
 	delete settings;
+	
+	delete_sem (dcc_sid);
 
 	#if 0
 	thread_id team (Team());
@@ -165,26 +174,11 @@ BowserApp::QuitRequested (void)
 void
 BowserApp::AboutRequested()
 {
-//	BString buffer;
-//
-//	buffer << "Bowser[d" << VERSION
-//		<< "] for BeOS R4.5+: Copyright 1999, 2000\n\n";
-//	buffer << "by Andrew Bazan (abazan@berbee.com),\n";
-//	buffer << "Todd Lair (bowser@tvl-p.com),\n";
-//	buffer << "Jamie Wilkinson (jamie@tave.com),\n";
-//	buffer << "and Wade Majors (guru@startrek.com)\n";
-//
-//	BAlert *aboutAlert = new BAlert("About", buffer.String(),
-//		"Cool", NULL, NULL, B_WIDTH_AS_USUAL, B_INFO_ALERT);
-//	aboutAlert->Go();
-	BString version;
-	version = "Bowser d";
-	version << VERSION;
 	if (aboutWin)
 		aboutWin->Activate();
 	else
 	{
-		aboutWin = new AboutWindow (version.String());
+		aboutWin = new AboutWindow();
 		aboutWin->Show();
 	}
 }
@@ -1102,6 +1096,46 @@ BowserApp::MessageReceived (BMessage *msg)
 			break;
 		}
 
+		case M_DCC_PORT:
+		{
+			if (msg->IsSourceWaiting())
+			{
+				BMessage reply (B_REPLY);
+				reply.AddInt32 ("sid", dcc_sid);
+				msg->SendReply (&reply);
+			}
+			break;
+		}
+
+		
+		case M_DCC_FILE_WIN:
+		{
+			if (dccFileWin)
+			{
+				dccFileWin->PostMessage (msg);
+			}
+			else
+			{
+				DCCConnect *view;
+				
+				msg->FindPointer ("view", reinterpret_cast<void **>(&view));
+				dccFileWin = new DCCFileWindow (view, settings->windowFollowsState);
+				dccFileWin->Show();
+			}
+
+			break;
+		}
+
+		case M_DCC_FILE_WIN_DONE:
+		{
+			dccFileWin = 0;
+			break;
+		}
+
+
+
+
+		
 		default:
 			BApplication::MessageReceived (msg);
 	}

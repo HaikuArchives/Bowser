@@ -91,7 +91,19 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	||  secondWord == "261"  // trace log file
 	||  secondWord == "262"  // end of trace
 	||  secondWord == "302"  // userhost and usrip reply
-	||  secondWord == "328")
+	||  secondWord == "328"
+	||  secondWord == "351"  // version info
+	||  secondWord == "352"  // who info
+	||  secondWord == "371"  // info info
+	||  secondWord == "374"  // end of info
+	||  secondWord == "438"  // nick change too fast
+	||  secondWord == "445"  // summon disabled
+	||  secondWord == "446"  // users disabled
+	||  secondWord == "461"  // not enough parms
+	||  secondWord == "481"  // not an IRC op
+	||  secondWord == "483"  // can't kill server
+	||  secondWord == "491"  // no o-lines for your host
+	||  secondWord == "502") // can't change mode for other users
 	{
 		BString tempString = RestOfString(data, 4);
 		tempString.RemoveFirst(":");
@@ -521,24 +533,6 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "351") // version info 
-	{
-		BString tempString = RestOfString(data, 4);
-		tempString.RemoveFirst(":");
-		tempString.Append("\n");
-		Display (tempString.String(), 0);
-		return true;
-	}
-
-	if(secondWord == "352") // who info 
-	{
-		BString tempString = RestOfString(data, 4);
-		tempString.RemoveFirst(":");
-		tempString.Append("\n");
-		Display (tempString.String(), 0);
-		return true;
-	}
-
 	if (secondWord == "353") // names list
 	{
 		BString channel (GetWord (data, 5));
@@ -601,24 +595,6 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	if (secondWord == "366"		// end of names list (don't do anything)
 	||  secondWord == "369") 	// end of /whowas
 	{
-		return true;
-	}
-
-	if(secondWord == "371") // /info info 
-	{
-		BString tempString = RestOfString(data, 4);
-		tempString.RemoveFirst(":");
-		tempString.Append("\n");
-		Display (tempString.String(), 0);
-		return true;
-	}
-
-	if(secondWord == "374") // end of /info info 
-	{
-		BString tempString = RestOfString(data, 4);
-		tempString.RemoveFirst(":");
-		tempString.Append("\n");
-		Display (tempString.String(), 0);
 		return true;
 	}
 
@@ -957,33 +933,6 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "445") // summon disabled
-	{
-		BString tempString = RestOfString(data, 4);
-		tempString.RemoveFirst(":");
-		tempString.Append("\n");
-		Display (tempString.String(), 0);
-		return true;
-	}
-
-	if(secondWord == "446") // users disabled
-	{
-		BString tempString = RestOfString(data, 4);
-		tempString.RemoveFirst(":");
-		tempString.Append("\n");
-		Display (tempString.String(), 0);
-		return true;
-	}
-
-	if(secondWord == "461") // not enough parms
-	{
-		BString tempString = RestOfString(data, 4);
-		tempString.RemoveFirst(":");
-		tempString.Append("\n");
-		Display (tempString.String(), 0);
-		return true;
-	}
-
 	if(secondWord == "467") // key already set
 	{
 		BString theChannel = GetWord(data, 4);
@@ -1057,20 +1006,6 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "481") // not an IRCop
-	{
-		BMessage msg (M_DISPLAY);
-		BString buffer;
-
-		PackDisplay (
-			&msg,
-			"[x] Permission denied: not an IRC operator.\n",
-			&errorColor);
-		PostActive (&msg);
-
-		return true;
-	}
-
 	if(secondWord == "482") // not channel operator
 	{
 		BString theChannel (GetWord (data, 4));
@@ -1085,32 +1020,6 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
-	if(secondWord == "483") // can't kill server
-	{
-		BString tempString("[x] ");
-		tempString << RestOfString(data, 4);
-		tempString.RemoveFirst(":");
-		tempString.Append("\n");
-		
-		BMessage msg (M_DISPLAY);
-		PackDisplay (&msg, tempString.String(), &quitColor, &serverFont);
-		PostActive (&msg);
-		return true;
-	}
-
-	if(secondWord == "491") // "no o-lines for your host"
-	{
-		BString tempString("[x] ");
-		tempString << RestOfString(data, 4);
-		tempString.RemoveFirst(":");
-		tempString.Append("\n");
-		
-		BMessage msg (M_DISPLAY);
-		PackDisplay (&msg, tempString.String(), &quitColor, &serverFont);
-		PostActive (&msg);
-		return true;
-	}
-
 	if(secondWord == "501") // unknown user mode
 	{
 		BMessage msg (M_DISPLAY);
@@ -1118,19 +1027,6 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		
 		buffer << "[x] Unknown MODE flag.\n";
 		PackDisplay (&msg, buffer.String(), &quitColor);
-		PostActive (&msg);
-
-		return true;
-	}
-
-	if(secondWord == "502") // can't change mode for others
-	{
-		BMessage msg (M_DISPLAY);
-
-		PackDisplay (
-			&msg,
-			"[x] Can't change mode for other users.\n",
-			&errorColor);
 		PostActive (&msg);
 
 		return true;

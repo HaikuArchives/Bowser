@@ -1929,7 +1929,7 @@ ClientWindow::DccCmd (const char *data)
 				entry_ref ref;
 				get_ref_for_path(sendPath.Path(), &ref);
 				msg->AddRef("refs", &ref);
-				sMsgr.SendMessage(msg);	
+				be_app_messenger.SendMessage(msg);	
 				return;	
 			}
 		}

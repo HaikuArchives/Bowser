@@ -19,7 +19,7 @@
 #include "IRCView.h"
 #include "StringManip.h"
 #include "ChannelWindow.h"
-#include "DCCFileWindow.h"
+#include "DCCConnect.h"
 #include "MessageWindow.h"
 #include "ListWindow.h"
 #include "IgnoreWindow.h"
@@ -345,36 +345,50 @@ ServerWindow::MessageReceived (BMessage *msg)
 
 		case DCC_ACCEPT:
 		{
-			const char *theNick,
-				*theFile,
-				*theSize,
-				*theIP,
-				*thePort;
-			entry_ref ref;
+			bool cont (false);
+			const char *nick,
+				*size,
+				*ip,
+				*port;
+			BPath path;
 
-			msg->FindString("bowser:nick", &theNick);
-			msg->FindString("name", &theFile);
-			msg->FindString("bowser:size", &theSize);
-			msg->FindString("bowser:ip", &theIP);
-			msg->FindString("bowser:port", &thePort);
+			msg->FindString("bowser:nick", &nick);
+			msg->FindString("bowser:size", &size);
+			msg->FindString("bowser:ip", &ip);
+			msg->FindString("bowser:port", &port);
 
-			msg->FindRef ("directory", &ref);
+			if (msg->HasString ("path"))
+				path.SetTo (msg->FindString ("path"));
+			else
+			{
+				const char *file;
+				entry_ref ref;
 
-			BDirectory dir (&ref);
-			BPath path (&dir, theFile);
+				msg->FindRef ("directory", &ref);
+				msg->FindString("name", &file);
 
-			DCCFileWindow *myWindow (new DCCFileWindow (
-				"GET",
-				theNick,
+				BDirectory dir (&ref);
+				path.SetTo (&dir, file);
+			}
+
+			if (msg->HasBool ("continue"))
+				msg->FindBool ("continue", &cont);
+
+			DCCReceive *view;
+			view = new DCCReceive (
+				nick,
 				path.Path(),
-				theSize,
-				theIP,
-				thePort,
-				this));
+				size,
+				ip,
+				port,
+				cont);
 
-			myWindow->Show();
+			BMessage aMsg (M_DCC_FILE_WIN);
+			aMsg.AddPointer ("view", view);
+			be_app->PostMessage (&aMsg);
 			break;
 		}
+
 
 		case B_CANCEL:
 
@@ -413,25 +427,6 @@ ServerWindow::MessageReceived (BMessage *msg)
 			clients.AddItem (window);
 			window->Show();
 			break;	
-		}
-
-		case CHOSE_FILE: // DCC send
-		{
-			const char *theNick;
-			entry_ref theRef;
-			off_t intSize;
-			msg->FindString("nick", &theNick);
-			msg->FindRef("refs", &theRef); // get file
-			BEntry myEntry(&theRef);
-			BPath myPath(&myEntry);
-			myEntry.GetSize(&intSize);
-			char theSize[20];
-			sprintf(theSize, "%Ld", intSize);
-			BString theString(myPath.Path());
-			BWindow *myWindow = new DCCFileWindow("SEND", theNick, theString,
-				theSize, "", "", this);
-			myWindow->Show();
-			break;
 		}
 
 		case CHAT_ACTION: // DCC chat
@@ -475,6 +470,47 @@ ServerWindow::MessageReceived (BMessage *msg)
 			
 			break;
 		}
+
+		case CHOSE_FILE: // DCC send
+		{
+			const char *nick;
+			entry_ref ref;
+			off_t size;
+			msg->FindString ("nick", &nick);
+			msg->FindRef ("refs", &ref); // get file
+			
+			BEntry entry (&ref);
+			BPath path (&entry);
+			printf("file path: %s\n", path.Path());
+			entry.GetSize (&size);
+
+			BString ssize;
+			ssize << size;
+
+			// because of a bug in the be library
+			// we have to get the sockname on this
+			// socket, and not the one that DCCSend
+			// binds.  calling getsockname on a
+			// a binded socket will return the
+			// LAN ip over the DUN one 
+			struct sockaddr_in sin;
+			int sinsize (sizeof (struct sockaddr_in));
+
+			getsockname (endPoint->Socket(), (struct sockaddr *)&sin, &sinsize);			
+			
+			DCCSend *view;
+			view = new DCCSend (
+				nick,
+				path.Path(),
+				ssize.String(),
+				sMsgr,
+				sin.sin_addr);
+			BMessage msg (M_DCC_FILE_WIN);
+			msg.AddPointer ("view", view);
+			be_app->PostMessage (&msg);
+			break;
+		}
+
 
 		default:
 			ClientWindow::MessageReceived (msg);
@@ -1083,6 +1119,39 @@ ServerWindow::StateChange (BMessage *msg)
 		delete [] events[which];
 		events[which] = strcpy (new char [strlen (event) + 1], event);
 	}
+}
+
+void
+ServerWindow::AddResumeData (BMessage *msg)
+{
+	ResumeData *data;
+
+	data = new ResumeData;
+
+	data->expire = system_time() + 50000000LL;
+	data->nick   = msg->FindString ("bowser:nick");
+	data->file   = msg->FindString ("bowser:file");
+	data->size   = msg->FindString ("bowser:size");
+	data->ip     = msg->FindString ("bowser:ip");
+	data->port   = msg->FindString ("bowser:port");
+	data->path   = msg->FindString ("path");
+	data->pos    = msg->FindInt64  ("pos");
+
+	resumes.AddItem (data);
+
+	BString buffer;
+
+	buffer << "PRIVMSG "
+		<< data->nick
+		<< " :\1DCC RESUME "
+		<< data->file
+		<< " "
+		<< data->port
+		<< " "
+		<< data->pos
+		<< "\1";
+
+	SendData (buffer.String());
 }
 
 uint32

@@ -15,6 +15,18 @@ class ListWindow;
 class IgnoreWindow;
 class NotifyWindow;
 
+struct ResumeData
+{
+	bigtime_t					expire;
+	off_t							pos;
+	BString						nick,
+									file,
+									size,
+									ip,
+									port,
+									path;
+};
+
 class ServerWindow : public ClientWindow
 {
 	public:
@@ -50,7 +62,7 @@ class ServerWindow : public ClientWindow
 
 	ClientWindow				*Client (const char *);
 	ClientWindow				*ActiveClient (void);
-
+	BList							resumes;	
 	void							DisplayAll (const char *, bool = false);
 
 
@@ -69,7 +81,7 @@ class ServerWindow : public ClientWindow
 	void							DCCGetDialog(BString theNick, BString theFile, BString theSize,
 										BString theIP, BString thePort);
 	void							DCCChatDialog(BString theNick, BString theIP, BString thePort);
-
+	void							AddResumeData(BMessage *);
 
 	// Locked accessors:
 
@@ -116,6 +128,7 @@ class ServerWindow : public ClientWindow
 									initialMotd,
 									identd;
 	BString						cmds;
+	int32 s; 				// socket
 
 };
 

@@ -14,7 +14,7 @@
 #include "StringManip.h"
 #include "IRCDefines.h"
 
-AboutWindow::AboutWindow (const char *version)
+AboutWindow::AboutWindow (void)
 	: BWindow (
 		BRect (0.0, 0.0, 317.0, 225.0),
 		"About Bowser",
@@ -115,7 +115,7 @@ AboutWindow::AboutWindow (const char *version)
 		"BeTika\n"
 		"Resartus\n"
 		"Terminus\n"
-		"John Kurt von Finck\n"
+		"Kurt von Finck\n"
 		"Jean-Baptiste Quéru\n"
 		"Be, Inc., Menlo Park, CA\n"
 		"Pizza Hut, Winter Haven, FL (now give me that free pizza Mike)\n\n\n"
@@ -145,8 +145,8 @@ AboutWindow::AboutWindow (const char *version)
 	run.runs[0].font   = font;
 	run.runs[0].color  = black;
 
-	credits->Insert ("\n\n\n\n\n\n\n\n\n", &run);
-	credits->Insert (version, &run);
+	credits->Insert ("\n\n\n\n\n\n\n\n\nBowser", &run);
+	credits->Insert (VERSION, &run);
 	credits->Insert ("\n", &run);
 
 	run.runs[0].font = *be_plain_font;

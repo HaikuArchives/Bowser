@@ -5,14 +5,14 @@
 
 #include <Application.h>
 #include <String.h>
-
+#include "DCCFileWindow.h"
 #include "IRCDefines.h"
 
 class AppSettings;
 class SetupWindow;
 class ServerData;
 class AboutWindow;
-
+class DCCFileWindow;
 extern class BowserApp * bowser_app;
 
 class BowserApp : public BApplication
@@ -93,7 +93,10 @@ class BowserApp : public BApplication
 
 	AppSettings				*settings;
 	SetupWindow				*setupWindow;
+	DCCFileWindow			*dccFileWin;
 	AboutWindow				*aboutWin;
+	sem_id					dcc_sid;
+
 };
 
 

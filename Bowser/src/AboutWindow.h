@@ -13,7 +13,7 @@ class AboutWindow : public BWindow
 
 	public:
 
-								AboutWindow (const char *);
+								AboutWindow (void);
 								~AboutWindow (void);
 	virtual void				MessageReceived (BMessage *);
 	
