@@ -31,6 +31,7 @@ http://bowser.sourceforge.net
  * Fixed some oddities in the Color Preferences panel
  * Added options to Window Preferences to disable Alt+W for Setup and Server
    windows
+ * URL highlight & clicking is now case insensitive
  
 
 [d42a]
