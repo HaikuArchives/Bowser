@@ -180,8 +180,8 @@ const uint32 M_NICK_ADD								= 0x1061;
 const uint32 M_NICK_REMOVE							= 0x1062;
 const uint32 M_NICK_LOAD							= 0x1063;
 const uint32 M_LAUNCH_WEB							= 0x1064;
-const uint32 M_ABOUT_ORGY							= 0x1065;
-const uint32 M_ABOUT_BUDDYJ							= 0x1066;
+//const uint32 M_ABOUT_ORGY							= 0x1065;
+//const uint32 M_ABOUT_BUDDYJ							= 0x1066;
 
 // Server Options
 const uint32 M_SOPTIONS_MOTD						= 0x2000;

@@ -2,6 +2,7 @@
 #define _ABOUT_WINDOW_H
 
 #include <Window.h>
+#include <Roster.h>
 
 class BTextView;
 
@@ -28,6 +29,26 @@ class AboutWindow : public BWindow
 	
 };
 
-const uint32 M_ABOUT_CLOSE					= 'abcl';
+class GraphicView : public BView
+{
+	public:
+	GraphicView(BRect frame, const char *name, uint32 resizeMask, uint32 flags) 
+		: BView(frame, name, resizeMask, flags)
+	{
+	};
+	
+	virtual void MouseDown(BPoint)
+	{
+		const char *arguments[] = {"http://bowser.sourceforge.net", 0};
+		be_roster->Launch ("text/html", 1, const_cast<char **>(arguments));
+	};
+	
+};
+
+
+const uint32 M_ABOUT_CLOSE					= 'abcl'; // The party has to stop sometime
+const uint32 M_ABOUT_ORGY					= 'abor'; // Gummy Orgy
+const uint32 M_ABOUT_BUDDYJ					= 'abbj'; // Buddy Jesus!
+const uint32 M_ABOUT_ERIN					= 'abep'; // Erin and Patches
 
 #endif

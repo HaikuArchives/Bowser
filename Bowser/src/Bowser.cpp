@@ -1,9 +1,3 @@
-//
-// Note #01 - Nov-25-2000 -Wade
-// I've enabled new g++ optimization flags that threw up warnings about stuff,
-// i fixed them and left the old versions in comments. grep "Note #01" for instances
-// 
-
 
 class BowserApp * bowser_app;
 
@@ -1105,12 +1099,6 @@ BowserApp::MessageReceived (BMessage *msg)
 			aboutWin = 0;
 			break;
 		}
-
-//		case M_LAUNCH_WEB:
-//			const char *arguments[] = {"http://www.tvl-p.com/Bowser.html", 0};
-//			be_roster->Launch ("text/html", 1, const_cast<char **>(arguments));
-//			break;	
-
 
 		default:
 			BApplication::MessageReceived (msg);

@@ -26,6 +26,7 @@ AboutWindow::AboutWindow (const char *version)
 	// what's a program without easter eggs?
 	AddShortcut('O', B_COMMAND_KEY, new BMessage(M_ABOUT_ORGY));
 	AddShortcut('J', B_COMMAND_KEY, new BMessage(M_ABOUT_BUDDYJ));
+	AddShortcut('E', B_COMMAND_KEY, new BMessage(M_ABOUT_ERIN));
 
 	background = new BView (
 		bounds,
@@ -44,7 +45,13 @@ AboutWindow::AboutWindow (const char *version)
 			bmp_bounds.Width() + 50,
 			bmp_bounds.Height() + 250);
 
-		graphic = new BView (
+//		graphic = new BView (
+//			bmp->Bounds().OffsetByCopy (25, 25),
+//			"image",
+//			B_FOLLOW_LEFT | B_FOLLOW_TOP,
+//			B_WILL_DRAW);
+		
+		graphic = new GraphicView (
 			bmp->Bounds().OffsetByCopy (25, 25),
 			"image",
 			B_FOLLOW_LEFT | B_FOLLOW_TOP,
@@ -153,7 +160,7 @@ AboutWindow::Pulse (void)
 }
 
 void
-AboutWindow::MessageReceived(BMessage *msg)
+AboutWindow::MessageReceived (BMessage *msg)
 {
 	switch (msg->what)
 	{
@@ -257,8 +264,58 @@ AboutWindow::MessageReceived(BMessage *msg)
 			}
 			break;
 		}
+
+		case M_ABOUT_ERIN:
+		{
+			BBitmap *bmp;			
+			if (EasterEggOn) {
+				
+				if ((bmp = BTranslationUtils::GetBitmap ('bits', "bits")) != 0)
+				{
+					BRect bmp_bounds (bmp->Bounds());
+					
+					graphic->ResizeTo (
+						bmp_bounds.Width(),
+						bmp_bounds.Height());
+						
+					graphic->SetViewBitmap (bmp);
+					
+					credits->MoveTo (
+						0.0,
+						graphic->Frame().bottom + 1);
+					
+					graphic->Invalidate();
+					EasterEggOn = false;
+					delete bmp;
+	
+				}
+			}
+			else
+			{		  		
+		  		if ((bmp = BTranslationUtils::GetBitmap ('bits', "Erin and Patches")) != 0)
+				{
+					BRect bmp_bounds (bmp->Bounds());
+					
+					graphic->ResizeTo (
+						bmp_bounds.Width(),
+						bmp_bounds.Height());
+						
+					graphic->SetViewBitmap (bmp);
+					
+					credits->MoveTo (
+						0.0,
+						graphic->Frame().bottom + 1);
+					
+					graphic->Invalidate();
+					EasterEggOn = true;
+					delete bmp;
+	
+				}
+			}
+			break;
+		}
+
 	
 	};		
 		
 }
-
