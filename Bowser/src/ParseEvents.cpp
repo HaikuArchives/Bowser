@@ -251,11 +251,12 @@ ServerWindow::ParseEvents (const char *data)
 		        theRest (RestOfString (data, 3)),
 		        ident (GetIdent (data)),
 		        address (GetAddress (data)),
-		        theMsg;
+		        theMsg,
+		        firstNick;
 		const char *expansions[4];
 
 		theRest.RemoveFirst (":");
-
+		
 		expansions[0] = theNick.String();
 		expansions[1] = theRest.String();
 		expansions[2] = ident.String();
@@ -270,6 +271,16 @@ ServerWindow::ParseEvents (const char *data)
 		msg.AddString ("nick", theNick.String());
 
 		Broadcast (&msg);
+		
+		// see if it was our first nickname. if so, change
+		firstNick = (const char *)lnicks->ItemAt (0);
+		if (theNick == firstNick)
+		{
+			BString tempCmd ("/nick ");
+			tempCmd << firstNick;
+			ParseCmd (tempCmd.String());
+		}
+				
 		return true;
 	}
 
