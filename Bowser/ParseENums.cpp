@@ -48,10 +48,12 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	if (secondWord == "002"  // more welcome
 	||  secondWord == "003"  // more welcome
 	||  secondWord == "004"  // server strings/supported modes
+	||  secondWord == "005"  // string used by UltimateIRCd
 	||  secondWord == "251"  // current network users
 	||  secondWord == "255"  // current/max local users
 	||  secondWord == "265"  // current/max global users
 	||  secondWord == "250"  // "highest connection count" info
+	||  secondWord == "253"  // unknown connects (UltimateIRCd)
 	||  secondWord == "266")
 	{
 		ParseENums(data, "001");
@@ -86,7 +88,8 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	||  secondWord == "259"  // admin info 
 	||  secondWord == "261"  // trace log file
 	||  secondWord == "262"  // end of trace
-	||  secondWord == "302") // userhost and usrip reply
+	||  secondWord == "302"  // userhost and usrip reply
+	||  secondWord == "328")
 	{
 		BString tempString = RestOfString(data, 4);
 		tempString.RemoveFirst(":");

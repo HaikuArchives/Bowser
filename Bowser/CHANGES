@@ -1,6 +1,9 @@
-Bowser d41a
+Bowser d41b
 http://bowser.sourceforge.net
 
+
+[d41b]
+ * Support for new numerics: 105, 253, 328
 
 [d41a]
  * New CTCP options in nick list menu
