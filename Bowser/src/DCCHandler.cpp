@@ -12,7 +12,7 @@
 #include <stdio.h>
 
 #include "Bowser.h"
-#include "VTextControl.h"
+#include "BTextControl.h"
 #include "ServerWindow.h"
 
 class DCCFileFilter : public BMessageFilter
@@ -207,7 +207,7 @@ filter_result
 DCCFileFilter::HandleButton (BMessage *)
 {
 	filter_result result (B_DISPATCH_MESSAGE);
-	VTextControl *text (dynamic_cast<VTextControl *>(
+	BTextControl *text (dynamic_cast<BTextControl *>(
 		panel->Window()->FindView ("text view")));
 
 	if (text)
@@ -256,7 +256,7 @@ DCCFileFilter::HandleButton (BMessage *)
 filter_result
 DCCFileFilter::HandleAlert (BMessage *msg)
 {
-	VTextControl *text (dynamic_cast<VTextControl *>(
+	BTextControl *text (dynamic_cast<BTextControl *>(
 		panel->Window()->FindView ("text view")));
 	int32 which;
 
