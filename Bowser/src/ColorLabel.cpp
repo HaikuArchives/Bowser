@@ -59,13 +59,8 @@ ColorLabel::AttachedToWindow (void)
 }
 
 void
-ColorLabel::Draw (BRect frame)
+ColorLabel::Draw (BRect)
 {
-	if (frame.left > 1)
-	{
-		// we don't care. just want to get rid of the warning
-	}
-
 	font_height fh;
 
 	PushState();
@@ -181,14 +176,8 @@ ColorLabel::MessageReceived (BMessage *msg)
 }
 
 void
-ColorLabel::MouseDown (BPoint point)
+ColorLabel::MouseDown (BPoint)
 {
-
-	if (point.x > 1)
-	{
-		// we don't care. just want to get rid of the warning
-	}
-
 
 	// Little song and dance for those who ... wait,
 	// who doesn't like a little singing and dancing?

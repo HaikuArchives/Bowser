@@ -425,13 +425,13 @@ ClientWindow::MenusEnded (void)
 void
 ClientWindow::DispatchMessage (BMessage *msg, BHandler *handler)
 {
-	if (msg->what == M_STATE_CHANGE)
+/*	if (msg->what == M_STATE_CHANGE)
 	{
 		StateChange (msg);
 		return;
 	}
-	
-	else if (msg->what == B_KEY_DOWN)
+*/	
+	if (msg->what == B_KEY_DOWN)
 	{
 		BRect bounds = input->TextView()->Bounds();
 		BFont current;
@@ -837,7 +837,13 @@ ClientWindow::MessageReceived (BMessage *msg)
 			}
 			break;
 		}
-
+		
+		case M_STATE_CHANGE:
+		{
+			StateChange (msg);
+			break;
+		}
+		
 		default:
 			BWindow::MessageReceived (msg);
 	}

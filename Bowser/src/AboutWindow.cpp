@@ -45,12 +45,6 @@ AboutWindow::AboutWindow (void)
 			bmp_bounds.Width() + 50,
 			bmp_bounds.Height() + 250);
 
-//		graphic = new BView (
-//			bmp->Bounds().OffsetByCopy (25, 25),
-//			"image",
-//			B_FOLLOW_LEFT | B_FOLLOW_TOP,
-//			B_WILL_DRAW);
-		
 		graphic = new GraphicView (
 			bmp->Bounds().OffsetByCopy (25, 25),
 			"image",
@@ -163,7 +157,7 @@ AboutWindow::AboutWindow (void)
 	SetPulseRate (85000);
 }
 
-AboutWindow::~AboutWindow(void)
+AboutWindow::~AboutWindow (void)
 {
 }
 

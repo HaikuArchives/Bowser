@@ -217,13 +217,8 @@ NotifyView::Archive (BMessage *archive, bool deep) const
 }
 
 void
-NotifyView::Draw (BRect frame)
+NotifyView::Draw (BRect)
 {
-	if (frame.left > 1)
-	{
-		// we don't care. just want to get rid of the warning
-	}
-	
 	SetDrawingMode (B_OP_ALPHA);
 	SetBlendingMode (B_PIXEL_ALPHA, B_ALPHA_OVERLAY);
 
@@ -250,7 +245,6 @@ NotifyView::Draw (BRect frame)
 void
 NotifyView::MessageReceived (BMessage *msg)
 {
-	//printf ("MessageReceived\n");
 	switch (msg->what)
 	{
 		case M_NEW_CLIENT:
@@ -516,7 +510,6 @@ NotifyView::MessageReceived (BMessage *msg)
 
 		case M_NOTIFY_PULSE:
 		{
-			//printf ("M_NOTIFY_PULSE\n");
 			if ((nicks && (mask & NOTIFY_NICK_FLASH_BIT) != 0)
 			||  (nicks && (mask & NOTIFY_NICK_FLASH_BIT) == 0 && !nickOn)
 			|| (!nicks && nickOn))
@@ -539,14 +532,12 @@ NotifyView::MessageReceived (BMessage *msg)
 				Draw (Bounds());
 			}
 			
-			//printf ("break\n");
 			break;
 		}
 
 		default:
 			BView::MessageReceived (msg);
 	}
-	//printf ("done\n");
 }
 
 void
@@ -668,14 +659,8 @@ NotifyView::DetachedFromWindow (void)
 }
 
 void
-NotifyView::MouseDown (BPoint point)
+NotifyView::MouseDown (BPoint)
 {
-
-	if (point.x > 1)
-	{
-		// we don't care. just want to get rid of the warning
-	}
-
 	BMessage *msg (Window()->CurrentMessage());
 	uint32 buttons;
 	uint32 modifiers;

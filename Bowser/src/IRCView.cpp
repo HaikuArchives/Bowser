@@ -7,7 +7,7 @@
 #include <Font.h>
 #include <Roster.h>
 
-#include <list>
+#include <list.h>
 #include <stdio.h>
 #include <ctype.h>
 
@@ -74,7 +74,7 @@ IRCView::IRCView (
 
         : BTextView ( 
                 textframe, 
-                "IRCView", 
+                "IRCView",
                 textrect, 
                 B_FOLLOW_ALL_SIDES, 
                 B_WILL_DRAW | B_FRAME_EVENTS) 
@@ -91,7 +91,7 @@ IRCView::IRCView (
         SetStylable (true); 
 } 
 
-IRCView::~IRCView() 
+IRCView::~IRCView (void) 
 { 
         delete settings; 
 } 
@@ -324,10 +324,63 @@ IRCView::FirstMarker (const char *cData)
 } 
 
 void
-IRCView::ClearView() 
+IRCView::ClearView (void) 
 { 
-        SetText(""); 
-        ScrollToOffset(0); 
+	if (TextLength() > 192) 
+	{
+		list<URL> &urls (settings->urls); 
+		int32 bytes (TextLength() - 192);
+		const char *text (Text()); 
+
+		while (*(text + bytes) && *(text + bytes) != '\n') 
+                        ++bytes;
+
+		while (*(text + bytes) 
+		&&    (*(text + bytes) == '\n' 
+		||     *(text + bytes) == '\r')) 
+			++bytes; 
+
+		while (!urls.empty()) 
+			if (urls.front().offset < bytes) 
+				urls.erase (urls.begin()); 
+			else 
+				break; 
+
+		list<URL>::iterator it; 
+		for (it = urls.begin(); it != urls.end(); ++it) 
+			it->offset -= bytes; 
+                
+		ClientWindow *parent = (ClientWindow *)Window(); 
+		float scrollMin, scrollMax; 
+		parent->ScrollRange (&scrollMin, &scrollMax); 
+                
+		Delete (0,bytes);
+				
+		ScrollToOffset(TextLength());           
+	}
+	else
+	{
+		list<URL> &urls (settings->urls); 
+		int32 bytes (TextLength());
+
+		while (!urls.empty()) 
+		if (urls.front().offset < bytes) 
+			urls.erase (urls.begin()); 
+		else 
+			break; 
+
+		list<URL>::iterator it; 
+		for (it = urls.begin(); it != urls.end(); ++it) 
+			it->offset -= bytes; 
+                
+		ClientWindow *parent = (ClientWindow *)Window(); 
+		float scrollMin, scrollMax; 
+		parent->ScrollRange (&scrollMin, &scrollMax); 
+                
+		Delete (0,bytes);
+				
+		ScrollToOffset(0);  
+	}
 } 
 
 void 

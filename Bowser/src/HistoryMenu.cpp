@@ -28,13 +28,8 @@ HistoryMenu::~HistoryMenu (void)
 }
 
 void
-HistoryMenu::Draw (BRect update)
+HistoryMenu::Draw (BRect)
 {
-	if (update.left > 1)
-	{
-		// we don't care. just want to get rid of the warning
-	}
-	
 	BRect bounds (Bounds());
 
 	rgb_color bright = {255, 255, 255, 255};
@@ -88,13 +83,8 @@ HistoryMenu::AttachedToWindow (void)
 }
 
 void
-HistoryMenu::MouseDown (BPoint point)
+HistoryMenu::MouseDown (BPoint)
 {
-	if (point.y > 1)
-	{
-		// we don't care. just want to get rid of the warning
-	}
-	
 	BMessage *msg (Window()->CurrentMessage());
 
 	int32 buttons;
@@ -120,16 +110,8 @@ HistoryMenu::MouseDown (BPoint point)
 }
 
 void
-HistoryMenu::MouseMoved (BPoint point, uint32 transit, const BMessage *msg)
+HistoryMenu::MouseMoved (BPoint, uint32 transit, const BMessage *)
 {
-	if (point.x > 1)
-	{
-		switch (msg->what)
-		{
-			// we don't care. just want to get rid of the warnings
-		}
-	}
-	
 	if (tracking)
 		switch (transit)
 		{

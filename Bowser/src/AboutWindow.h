@@ -39,7 +39,7 @@ class GraphicView : public BView
 	{
 	};
 	
-	virtual void MouseDown(BPoint)
+	virtual void MouseDown (BPoint)
 	{
 		const char *arguments[] = {"http://bowser.sourceforge.net", 0};
 		be_roster->Launch ("text/html", 1, const_cast<char **>(arguments));

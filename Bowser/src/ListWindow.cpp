@@ -523,13 +523,8 @@ ListWindow::MessageReceived (BMessage *msg)
 }
 
 void
-ListWindow::FrameResized (float width, float high)
+ListWindow::FrameResized (float width, float)
 {
-	if (high > 1)
-	{
-		// we don't care. just want to get rid of the warning
-	}
-
 	if (!processing)
 	{
 		sLineWidth = ChannelWidth() 
@@ -623,13 +618,8 @@ ChannelItem::Topic (void) const
 }
 
 void
-ChannelItem::DrawItem (BView *owner, BRect frame, bool complete)
+ChannelItem::DrawItem (BView *owner, BRect frame, bool)
 {
-	if (complete)
-	{
-		// we don't care. just want to get rid of the warning
-	}
-	
 	ListWindow *listWindow ((ListWindow *)owner->Window());
 
 	if (IsSelected())

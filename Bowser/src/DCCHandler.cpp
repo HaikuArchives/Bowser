@@ -203,15 +203,8 @@ DCCFileFilter::Filter (BMessage *msg, BHandler **handler)
 }
 
 filter_result
-DCCFileFilter::HandleButton (BMessage *msg)
+DCCFileFilter::HandleButton (BMessage *)
 {
-
-	switch (msg->what)
-	{
-		// we don't care. just want to get rid of the warning
-	}
-
-
 	filter_result result (B_DISPATCH_MESSAGE);
 	BTextControl *text (dynamic_cast<BTextControl *>(
 		panel->Window()->FindView ("text view")));

@@ -35,11 +35,12 @@ class IRCView : public BTextView
 
 	void						SetColor (int32, rgb_color);
 	void						SetFont  (int32, const BFont *);
-
+	
 	private:
 
 	IRCViewSettings		*settings;
 
 };
+
 
 #endif

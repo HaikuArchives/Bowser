@@ -213,6 +213,7 @@ ClientWindow::ParseCmd (const char *data)
 		return true;
 	}
 	
+	
 	if (firstWord == "/CTCP")
 	{
 		BString theTarget (GetWord (data, 2));

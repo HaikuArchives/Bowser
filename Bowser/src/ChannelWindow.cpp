@@ -111,7 +111,7 @@ ChannelWindow::ChannelWindow (
 
 }
 
-ChannelWindow::~ChannelWindow()
+ChannelWindow::~ChannelWindow (void)
 {
 	BListItem *nameItem;
 
