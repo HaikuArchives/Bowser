@@ -406,16 +406,65 @@ ChannelWindow::MessageReceived (BMessage *msg)
 			const char *theTopic;
 			BString buffer;
 
-			msg->FindString ("topic", &theTopic);
+			if(bowser_app->GetShowTopicState())
+			{
+			    //show topic
+				msg->FindString ("topic", &theTopic);
 
-			buffer << id << " : " << theTopic;
-			SetTitle (buffer.String());
+				buffer << id << " : " << theTopic;
+				SetTitle (buffer.String());
+			}
+			else
+			{
+			    //don't show topic
+			    buffer << id;
+			    SetTitle (buffer.String());
+			}
+			
 
 			BMessage display;
 			if (msg->FindMessage ("display", &display) == B_NO_ERROR)
 				ClientWindow::MessageReceived (&display);
 			break;
 		}
+
+		case M_CHANNEL_GOT_KICKED:
+		{
+		    
+			BMessage display; // "you were kicked"
+			if (msg->FindMessage ("display", &display) == B_NO_ERROR)
+				ClientWindow::MessageReceived (&display);
+				
+		    if(bowser_app->GetAutoRejoinState())
+			{
+			    const char *theChannel;
+				msg->FindString ("channel", &theChannel);			    
+			    
+				BMessage display; // "attempting auto rejoin"
+				if (msg->FindMessage ("display2", &display) == B_NO_ERROR)
+					ClientWindow::MessageReceived (&display);
+				
+				BMessage send (M_SERVER_SEND);	
+				AddSend (&send, "JOIN ");
+				AddSend (&send, theChannel);	
+				if (chanKey != "-9z99")
+				{
+					AddSend (&send, " ");
+					AddSend (&send, chanKey);
+				}
+				AddSend (&send, endl);
+			}
+			else
+			{
+				BMessage display; // "type /join" (autorejoin off)
+				if (msg->FindMessage ("display3", &display) == B_NO_ERROR)
+					ClientWindow::MessageReceived (&display);
+			   
+			}
+			
+			
+		}		
+		
 
 		case M_CHANNEL_MODE:
 			ModeEvent (msg);

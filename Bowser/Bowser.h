@@ -37,6 +37,10 @@ class BowserApp : public BApplication
 	bool						GetHideServerState (void) const;
 	void						ShowServerState (bool);
 	bool						GetShowServerState (void) const;
+	void						ShowTopicState (bool);
+	bool						GetShowTopicState (void) const;
+	void						AutoRejoinState (bool);
+	bool						GetAutoRejoinState (void) const;
 
 	void						AlsoKnownAs (const char *);
 	BString					GetAlsoKnownAs (void) const;
@@ -59,7 +63,8 @@ class BowserApp : public BApplication
 	bool						AddNickname (ServerData *, const char *);
 	bool						RemoveNickname (ServerData *, uint32);
 
-	void						ClientFontFamilyAndStyle (int32, const char *, const char *);
+	void						ClientFontFamilyAndStyle (int32, const char *,
+									const char *);
 	void						ClientFontSize (int32, float);
 	const BFont				*GetClientFont (int32) const;
 

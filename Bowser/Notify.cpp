@@ -23,9 +23,9 @@
 
 struct NotifyData
 {
-	map<BString, NotifyData *>			clients;				// Yeah, I know this is wasted
-																		// on the second level deep..
-																		// shoot me!
+	map<BString, NotifyData *>			clients;	// Yeah, I know this is wasted
+													// on the second level deep..
+													// shoot me!
 
 	BString									name;
 	int32										sid;
@@ -208,7 +208,8 @@ NotifyView::Archive (BMessage *archive, bool deep) const
 	{
 		#ifdef DEV_BUILD
 		if (NotifyStatus)
-			printf ("*** Could not archive elements for Notify: %s\n", strerror (status));
+			printf ("*** Could not archive elements for Notify: %s\n", strerror
+				(status));
 		#endif
 		;
 	}
@@ -330,7 +331,8 @@ NotifyView::MessageReceived (BMessage *msg)
 				msg->FindString ("newid", &newid);
 				nData = it->second;
 
-				printf ("NOTIFY Changing id from %s to %s\n", it->first.String(), newid);
+				printf ("NOTIFY Changing id from %s to %s\n", it->first.String(),
+					newid);
 				strId = newid;
 				servers[sid]->clients.erase (it);
 				servers[sid]->clients[strId] = nData;
@@ -534,10 +536,14 @@ NotifyView::AttachedToWindow (void)
 			{
 				if (ibits[k] == B_TRANSPARENT_MAGIC_CMAP8)
 				{
-					bbits[0][j + 0] = bbits[1][j + 0] = bbits[2][j + 0] = bbits[3][j + 0] = background.blue;
-					bbits[0][j + 1] = bbits[1][j + 1] = bbits[2][j + 1] = bbits[3][j + 1] = background.green;
-					bbits[0][j + 2] = bbits[1][j + 2] = bbits[2][j + 2] = bbits[3][j + 2] = background.red;
-					bbits[0][j + 3] = bbits[1][j + 3] = bbits[2][j + 3] = bbits[3][j + 3] = 255;
+					bbits[0][j + 0] = bbits[1][j + 0] = bbits[2][j + 0] =
+						bbits[3][j + 0] = background.blue;
+					bbits[0][j + 1] = bbits[1][j + 1] = bbits[2][j + 1] =
+						bbits[3][j + 1] = background.green;
+					bbits[0][j + 2] = bbits[1][j + 2] = bbits[2][j + 2] =
+						bbits[3][j + 2] = background.red;
+					bbits[0][j + 3] = bbits[1][j + 3] = bbits[2][j + 3] =
+						bbits[3][j + 3] = 255;
 				}
 				else
 				{
@@ -554,8 +560,10 @@ NotifyView::AttachedToWindow (void)
 					bbits[1][j + 3] = 255;
 
 					bbits[2][j + 0] = cmap->color_list[index].blue;
-					bbits[2][j + 1] = min_c (cmap->color_list[index].green + 100L, 255L);
-					bbits[2][j + 2] = min_c (cmap->color_list[index].red + 100L, 255L);
+					bbits[2][j + 1] = min_c (cmap->color_list[index].green +
+						100L, 255L);
+					bbits[2][j + 2] = min_c (cmap->color_list[index].red +
+						100L, 255L);
 					bbits[2][j + 3] = 255;
 
 					bbits[3][j + 0] = 255;

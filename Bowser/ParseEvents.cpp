@@ -274,21 +274,40 @@ ServerWindow::ParseEvents (const char *data)
 		BString kickee (GetWord (data, 4));
 		BString rest (RestOfString (data, 5));
 		BString channel (GetWord (data, 3));
-		ClientWindow *client;
+		//ClientWindow *client;
+		ClientWindow *client (Client (channel.String()));
 
 		rest.RemoveFirst (":");
 
 		if ((client = Client (channel.String())) != 0
 		&&   kickee == myNick)
 		{
-			BMessage display (M_DISPLAY);
+			BMessage display (M_DISPLAY); // "you were kicked"
 			BString buffer;
 
 			buffer << "*** You have been kicked from "
 				<< channel << " by " << kicker << " (" << rest << ")\n";
 			PackDisplay (&display, buffer.String(), &quitColor, 0, true);
 
-			ClientWindow::MessageReceived (&display);	
+			BMessage display2 (M_DISPLAY); // "attempting auto rejoin"
+			buffer = "*** Attempting to automagically rejoin ";
+			buffer << channel << "...\n";
+			PackDisplay (&display2, buffer.String(), &quitColor, 0, true);
+			
+			BMessage display3 (M_DISPLAY); // "type /join" (autorejoin off)
+			buffer = "*** Type /join ";
+			buffer << channel << " to rejoin channel.\n";
+			PackDisplay (&display3, buffer.String(), &quitColor, 0, true);
+						
+			// dont need to send to server window anymore...
+			// ClientWindow::MessageReceived (&display);
+		
+			BMessage msg (M_CHANNEL_GOT_KICKED);
+			msg.AddString ("channel", channel.String());
+			msg.AddMessage ("display", &display);  // "you were kicked"
+			msg.AddMessage ("display2", &display2); // "attempting auto rejoin"
+			msg.AddMessage ("display3", &display3); // "type /join" (autorejoin off)
+			client->PostMessage (&msg);
 		}
 
 		if (client && kickee != myNick)

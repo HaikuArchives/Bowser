@@ -24,7 +24,8 @@ class NameItem : public BListItem
 	void								SetAddress (const char *);
 	void								SetStatus (int32);
 
-	virtual void					DrawItem (BView *father, BRect frame, bool complete = false);
+	virtual void					DrawItem (BView *father, BRect frame,
+										bool complete = false);
 
 	private:
 

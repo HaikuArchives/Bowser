@@ -15,7 +15,9 @@ class PreferenceGeneral : public BView
 									*nickBindBox,
 									*windowFollows,
 									*hideServer,
-									*showServer;
+									*showServer,
+									*showTopic,
+									*autoRejoin;
 
 	public:
 

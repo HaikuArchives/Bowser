@@ -70,7 +70,7 @@
 #define STATUS_NORMAL_BIT								0x0100
 #define STATUS_IGNORE_BIT								0x1000
 
-#define VERSION											"40a"
+#define VERSION											"41"
 
 #include <GraphicsDefs.h>
 
@@ -79,137 +79,140 @@ const int32 BIG_ENOUGH_FOR_A_REALLY_FAST_ETHERNET	= 1024 * 16;
 
 // Application Messages
 const uint32 M_ACTIVATION_CHANGE 					= 0x1011;
-const uint32 M_NEW_CLIENT								= 0x1012;
-const uint32 M_QUIT_CLIENT								= 0x1013;
-const uint32 M_NEWS_CLIENT								= 0x1014;
-const uint32 M_NICK_CLIENT								= 0x1015;
-const uint32 M_ID_CHANGE								= 0x1016;
+const uint32 M_NEW_CLIENT							= 0x1012;
+const uint32 M_QUIT_CLIENT							= 0x1013;
+const uint32 M_NEWS_CLIENT							= 0x1014;
+const uint32 M_NICK_CLIENT							= 0x1015;
+const uint32 M_ID_CHANGE							= 0x1016;
 
-const uint32 M_NOTIFY_SELECT							= 0x1017;
+const uint32 M_NOTIFY_SELECT						= 0x1017;
 const uint32 M_NOTIFY_PULSE							= 0x1018;
-const uint32 M_NOTIFY_END								= 0x1019;
+const uint32 M_NOTIFY_END							= 0x1019;
 const uint32 M_NOTIFY_START							= 0x1020;
-const uint32 M_NOTIFY_USER								= 0x1021;
-const uint32 M_NOTIFY_COMMAND							= 0x1022;
-const uint32 M_NOTIFY_WINDOW							= 0x1023;
+const uint32 M_NOTIFY_USER							= 0x1021;
+const uint32 M_NOTIFY_COMMAND						= 0x1022;
+const uint32 M_NOTIFY_WINDOW						= 0x1023;
 const uint32 M_NOTIFY_SHUTDOWN						= 0x1024;
 
-const uint32 M_LIST_BEGIN								= 0x1025;
-const uint32 M_LIST_EVENT								= 0x1026;
-const uint32 M_LIST_DONE								= 0x1027;
+const uint32 M_LIST_BEGIN							= 0x1025;
+const uint32 M_LIST_EVENT							= 0x1026;
+const uint32 M_LIST_DONE							= 0x1027;
 const uint32 M_LIST_COMMAND							= 0x1028;
-const uint32 M_LIST_SHUTDOWN							= 0x1029;
+const uint32 M_LIST_SHUTDOWN						= 0x1029;
 
-const uint32 M_IS_IGNORED								= 0x1030;
-const uint32 M_IGNORE_COMMAND							= 0x1031;
+const uint32 M_IS_IGNORED							= 0x1030;
+const uint32 M_IGNORE_COMMAND						= 0x1031;
 const uint32 M_IGNORE_SHUTDOWN						= 0x1032;
 const uint32 M_UNIGNORE_COMMAND  					= 0x1033;
 const uint32 M_EXCLUDE_COMMAND						= 0x1034;
-const uint32 M_IGNORE_WINDOW							= 0x1035;
+const uint32 M_IGNORE_WINDOW						= 0x1035;
 
 const uint32 M_STATE_CHANGE							= 0x1036;
-const uint32 M_SERVER_STARTUP							= 0x1037;
+const uint32 M_SERVER_STARTUP						= 0x1037;
 const uint32 M_SERVER_CONNECTED						= 0x1038;
 
 // Client Window Messages
 const uint32 M_PREVIOUS_CLIENT						= 0x1300;
-const uint32 M_NEXT_CLIENT								= 0x1301;
-const uint32 M_PREVIOUS_INPUT							= 0x1302;
-const uint32 M_NEXT_INPUT								= 0x1303;
-const uint32 M_SUBMIT									= 0x1304;
-const uint32 M_DISPLAY									= 0x1305;
-const uint32 M_SUBMIT_RAW								= 0x1306;
-const uint32 M_CHANNEL_MSG								= 0x1307;
-const uint32 M_CHANGE_NICK								= 0x1308;
-const uint32 M_CHANNEL_MODES							= 0x1309;
+const uint32 M_NEXT_CLIENT							= 0x1301;
+const uint32 M_PREVIOUS_INPUT						= 0x1302;
+const uint32 M_NEXT_INPUT							= 0x1303;
+const uint32 M_SUBMIT								= 0x1304;
+const uint32 M_DISPLAY								= 0x1305;
+const uint32 M_SUBMIT_RAW							= 0x1306;
+const uint32 M_CHANNEL_MSG							= 0x1307;
+const uint32 M_CHANGE_NICK							= 0x1308;
+const uint32 M_CHANNEL_MODES						= 0x1309;
 
-const uint32 M_HISTORY_SELECT							= 0x1311;
-const uint32 M_SETUP_ACTIVATE							= 0x1312;
-const uint32 M_SCROLL_TOGGLE							= 0x1313;
-const uint32 M_SETUP_HIDE								= 0x1314;
+const uint32 M_HISTORY_SELECT						= 0x1311;
+const uint32 M_SETUP_ACTIVATE						= 0x1312;
+const uint32 M_SCROLL_TOGGLE						= 0x1313;
+const uint32 M_SETUP_HIDE							= 0x1314;
 
 // Server Messages
-const uint32 M_PARSE_LINE								= 0x1700;
-const uint32 M_SERVER_SEND								= 0x1701;
+const uint32 M_PARSE_LINE							= 0x1700;
+const uint32 M_SERVER_SEND							= 0x1701;
 const uint32 M_SERVER_SHUTDOWN						= 0x1702;
 const uint32 M_CLIENT_SHUTDOWN						= 0x1703;
 const uint32 M_IGNORED_PRIVMSG						= 0x1704;
 
 // List Messages
 const uint32 M_SORT_CHANNEL							= 0x1800;
-const uint32 M_SORT_USER								= 0x1801;
-const uint32 M_FILTER_LIST								= 0x1802;
-const uint32 M_LIST_FIND								= 0x1803;
-const uint32 M_LIST_FAGAIN								= 0x1804;
-const uint32 M_LIST_INVOKE								= 0x1805;
+const uint32 M_SORT_USER							= 0x1801;
+const uint32 M_FILTER_LIST							= 0x1802;
+const uint32 M_LIST_FIND							= 0x1803;
+const uint32 M_LIST_FAGAIN							= 0x1804;
+const uint32 M_LIST_INVOKE							= 0x1805;
 
 // Ignore Messages
-const uint32 M_IGNORE_ADD								= 0x1900;
-const uint32 M_IGNORE_EXCLUDE							= 0x1901;
-const uint32 M_IGNORE_REMOVE							= 0x1902;
+const uint32 M_IGNORE_ADD							= 0x1900;
+const uint32 M_IGNORE_EXCLUDE						= 0x1901;
+const uint32 M_IGNORE_REMOVE						= 0x1902;
 const uint32 M_IGNORE_CLEAR							= 0x1903;
 
 // Notify Messages
-const uint32 M_NOTIFY_ADD								= 0x1950;
-const uint32 M_NOTIFY_REMOVE							= 0x1951;
+const uint32 M_NOTIFY_ADD							= 0x1950;
+const uint32 M_NOTIFY_REMOVE						= 0x1951;
 const uint32 M_NOTIFY_CLEAR							= 0x1952;
 
 // Channel Messages
-const uint32 M_USER_QUIT								= 0x1600;
-const uint32 M_USER_ADD									= 0x1601;
-const uint32 M_CHANNEL_NAMES							= 0x1602;
-const uint32 M_CHANNEL_TOPIC							= 0x1603;
+const uint32 M_USER_QUIT							= 0x1600;
+const uint32 M_USER_ADD								= 0x1601;
+const uint32 M_CHANNEL_NAMES						= 0x1602;
+const uint32 M_CHANNEL_TOPIC						= 0x1603;
 const uint32 M_CHANNEL_MODE							= 0x1604;
-const uint32 M_INPUT_FOCUS								= 0x1605;
+const uint32 M_INPUT_FOCUS							= 0x1605;
+const uint32 M_CHANNEL_GOT_KICKED					= 0x1606;
 
 // Setup Window
-const uint32 M_SERVER_SELECT							= 0x1050;
-const uint32 M_SERVER_NEW								= 0x1051;
-const uint32 M_SERVER_COPY								= 0x1052;
-const uint32 M_SERVER_REMOVE							= 0x1053;
-const uint32 M_SERVER_OPTIONS							= 0x1054;
-const uint32 M_SERVER_NAME								= 0x1055;
-const uint32 M_DONE										= 0x1056;
-const uint32 M_CANCEL									= 0x1057;
-const uint32 M_PREFS_SHUTDOWN							= 0x1058;
+const uint32 M_SERVER_SELECT						= 0x1050;
+const uint32 M_SERVER_NEW							= 0x1051;
+const uint32 M_SERVER_COPY							= 0x1052;
+const uint32 M_SERVER_REMOVE						= 0x1053;
+const uint32 M_SERVER_OPTIONS						= 0x1054;
+const uint32 M_SERVER_NAME							= 0x1055;
+const uint32 M_DONE									= 0x1056;
+const uint32 M_CANCEL								= 0x1057;
+const uint32 M_PREFS_SHUTDOWN						= 0x1058;
 const uint32 M_SETUP_BUTTON							= 0x1059;
 const uint32 M_PREFS_BUTTON							= 0x1060;
-const uint32 M_NICK_ADD									= 0x1061;
-const uint32 M_NICK_REMOVE								= 0x1062;
-const uint32 M_NICK_LOAD								= 0x1063;
-const uint32 M_LAUNCH_WEB								= 0x1064;
+const uint32 M_NICK_ADD								= 0x1061;
+const uint32 M_NICK_REMOVE							= 0x1062;
+const uint32 M_NICK_LOAD							= 0x1063;
+const uint32 M_LAUNCH_WEB							= 0x1064;
 
 // Server Options
-const uint32 M_SOPTIONS_MOTD							= 0x2000;
+const uint32 M_SOPTIONS_MOTD						= 0x2000;
 const uint32 M_SOPTIONS_IDENTD						= 0x2001;
-const uint32 M_SOPTIONS_SHUTDOWN						= 0x2002;
-const uint32 M_SOPTIONS_CONNECT_ON_STARTUP		= 0x2003;
+const uint32 M_SOPTIONS_SHUTDOWN					= 0x2002;
+const uint32 M_SOPTIONS_CONNECT_ON_STARTUP			= 0x2003;
 
 // Preferences
 const uint32 M_PREFERENCE_GROUP						= 0x1400;
-const uint32 M_STAMP_BOX								= 0x1401;
-const uint32 M_STAMP_PARANOID							= 0x1402;
-const uint32 M_NICKNAME_BIND							= 0x1403;
-const uint32 M_MESSAGE_OPEN     						= 0x1404;
-const uint32 M_MESSAGE_FOCUS							= 0x1405;
-const uint32 M_WINDOW_FOLLOWS							= 0x1406;
-const uint32 M_FONT_CHANGE								= 0x1407;
+const uint32 M_STAMP_BOX							= 0x1401;
+const uint32 M_STAMP_PARANOID						= 0x1402;
+const uint32 M_NICKNAME_BIND						= 0x1403;
+const uint32 M_MESSAGE_OPEN     					= 0x1404;
+const uint32 M_MESSAGE_FOCUS						= 0x1405;
+const uint32 M_WINDOW_FOLLOWS						= 0x1406;
+const uint32 M_FONT_CHANGE							= 0x1407;
 const uint32 M_FONT_SIZE_CHANGE						= 0x1408;
 const uint32 M_NOTIFICATION							= 0x1409;
-const uint32 M_NOTIFY_NONE								= 0x1410;
-const uint32 M_NOTIFY_NICK								= 0x1411;
-const uint32 M_NOTIFY_CONTENT							= 0x1412;
+const uint32 M_NOTIFY_NONE							= 0x1410;
+const uint32 M_NOTIFY_NICK							= 0x1411;
+const uint32 M_NOTIFY_CONTENT						= 0x1412;
 const uint32 M_NOTIFY_COMBO   						= 0x1413;
-const uint32 M_NOTIFY_NICK_FLASH						= 0x1414;
+const uint32 M_NOTIFY_NICK_FLASH					= 0x1414;
 const uint32 M_NOTIFY_CONT_FLASH 					= 0x1415;
 const uint32 M_NOTIFY_OTHER_FLASH 					= 0x1416;
 const uint32 M_AKA_MODIFIED							= 0x1417;
 const uint32 M_OTHER_NICK_MODIFIED					= 0x1418;
 const uint32 M_AUTO_NICK_MODIFIED					= 0x1419;
-const uint32 M_EVENT_MODIFIED							= 0x1420;
+const uint32 M_EVENT_MODIFIED						= 0x1420;
 const uint32 M_COMMAND_MODIFIED						= 0x1421;
-const uint32 M_HIDE_SERVER								= 0x1422;
+const uint32 M_HIDE_SERVER							= 0x1422;
 const uint32 M_ACTIVATE_SERVER						= 0x1423;
+const uint32 M_SHOW_TOPIC							= 0x1424;
+const uint32 M_AUTO_REJOIN							= 0x1425;
 
 
 // Color (Part of Preferinces)
@@ -218,17 +221,17 @@ const uint32 M_COLOR_SELECT							= 0x1501;
 const uint32 M_COLOR_CHANGE							= 0x1502;
 
 
-const uint32 INVITE_USER								= 0x1134; // not inuse yet
+const uint32 INVITE_USER							= 0x1134; // not inuse yet
 
-const uint32 POPUP_ACTION								= 0x1200;
-const uint32 SEND_ACTION								= 0x1201;
-const uint32 CHAT_ACTION								= 0x1202;
-const uint32 CHOSE_FILE									= 0x1203;
-const uint32 OPEN_MWINDOW								= 0x1204;
-const uint32 CYCLE_WINDOWS								= 0x1205;
-const uint32 CYCLE_BACK									= 0x1206;
-const uint32 DCC_ACCEPT									= 0x1207;
-const uint32 CHAT_ACCEPT								= 0x1208;
+const uint32 POPUP_ACTION							= 0x1200;
+const uint32 SEND_ACTION							= 0x1201;
+const uint32 CHAT_ACTION							= 0x1202;
+const uint32 CHOSE_FILE								= 0x1203;
+const uint32 OPEN_MWINDOW							= 0x1204;
+const uint32 CYCLE_WINDOWS							= 0x1205;
+const uint32 CYCLE_BACK								= 0x1206;
+const uint32 DCC_ACCEPT								= 0x1207;
+const uint32 CHAT_ACCEPT							= 0x1208;
 
 
 #ifdef DEV_BUILD

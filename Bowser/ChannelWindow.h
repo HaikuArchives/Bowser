@@ -50,6 +50,14 @@ class ChannelWindow : public ClientWindow
 							chanLimitOld,
 							chanKey,
 							chanKeyOld;
+							
+	rgb_color					ctcpReqColor,
+									ctcpRpyColor,
+									whoisColor,
+									errorColor,
+									quitColor,
+									joinColor,
+									noticeColor;
 
 	int32					userCount,
 							opsCount;

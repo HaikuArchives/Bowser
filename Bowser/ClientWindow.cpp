@@ -275,6 +275,7 @@ ClientWindow::Init (void)
 	cmdWrap->cmds["/ADMIN"]		= &ClientWindow::AdminCmd;
 	cmdWrap->cmds["/INFO"]		= &ClientWindow::InfoCmd;
 	cmdWrap->cmds["/RAW"]		= &ClientWindow::RawCmd;
+	cmdWrap->cmds["/QUOTE"]		= &ClientWindow::RawCmd;
 	cmdWrap->cmds["/STATS"]		= &ClientWindow::StatsCmd;
 	cmdWrap->cmds["/OPER"]		= &ClientWindow::OperCmd;
 	cmdWrap->cmds["/REHASH"]	= &ClientWindow::RehashCmd;

@@ -36,7 +36,9 @@ class AppSettings : public Settings
 									messageFocusState,
 									windowFollowsState,
 									hideServerState,
-									showServerState;
+									showServerState,
+									showTopicState,
+									autoRejoinState;
 	BString						alsoKnownAs,
 									otherNick,
 									autoNickTime;
@@ -1353,7 +1355,39 @@ BowserApp::GetShowServerState (void) const
 	return settings->showServerState;
 }
 
+void
+BowserApp::ShowTopicState (bool state)
+{
+	settings->showTopicState = state;
 
+	BMessage msg (M_STATE_CHANGE);
+
+	msg.AddBool ("showtopic", state);
+	Broadcast (&msg);
+}
+
+bool
+BowserApp::GetShowTopicState (void) const
+{
+	return settings->showTopicState;
+}
+
+void
+BowserApp::AutoRejoinState (bool state)
+{
+	settings->autoRejoinState = state;
+
+	BMessage msg (M_STATE_CHANGE);
+
+	msg.AddBool ("autorejoin", state);
+	Broadcast (&msg);
+}
+
+bool
+BowserApp::GetAutoRejoinState (void) const
+{
+	return settings->autoRejoinState;
+}
 bool
 BowserApp::GetMessageOpenState (void) const
 {
@@ -1658,6 +1692,8 @@ AppSettings::AppSettings (void)
 	  windowFollowsState (true),
 	  hideServerState (false),
 	  showServerState (false),
+	  showTopicState (true),
+	  autoRejoinState (false),
 	  alsoKnownAs ("bowserUser beosUser"),
 	  otherNick ("tlair"),
 	  autoNickTime ("10"),
@@ -1850,6 +1886,12 @@ AppSettings::RestorePacked (BMessage *msg)
 
 	if (msg->HasBool ("Show Server"))
 		msg->FindBool ("Show Server", &showServerState);
+		
+	if (msg->HasBool ("Show Topic"))
+		msg->FindBool ("Show Topic", &showTopicState);
+		
+	if (msg->HasBool ("Auto Rejoin"))
+		msg->FindBool ("Auto Rejoin", &autoRejoinState);
 
 
 	for (int32 i = 0; i < MAX_FONTS; ++i)
@@ -1991,8 +2033,8 @@ AppSettings::RestorePacked (BMessage *msg)
 	
 		serverData->ident  = "bowser";
 		serverData->name   = "Bowser User";
-		serverData->server = "irc.mindspring.com";
-		serverData->port   = "6668";
+		serverData->server = "irc.reefer.org";
+		serverData->port   = "6667";
 
 		for (uint32 i = 0; i < nicks.size(); ++i)
 			serverData->order.push_back (i);
@@ -2104,6 +2146,8 @@ AppSettings::SavePacked (BMessage *msg)
 	msg->AddBool ("Window Follows", windowFollowsState);
 	msg->AddBool ("Hide Server", hideServerState);
 	msg->AddBool ("Show Server", showServerState);
+    msg->AddBool ("Show Topic", showTopicState);
+    msg->AddBool ("Auto Rejoin", autoRejoinState);
 	msg->AddInt32 ("NotificationMask", notificationMask);
 
 	msg->AddString ("AlsoKnownAs", alsoKnownAs.String());

@@ -70,14 +70,31 @@ PreferenceGeneral::PreferenceGeneral (void)
 	AddChild (hideServer);
 
 	showServer = new BCheckBox (
-		BRect (0, 175, bounds.right, 200),
+		BRect (0, 175, bounds.right, 199),
 		"showserver",
 		"Activate setup window on disconnect",
 		new BMessage (M_ACTIVATE_SERVER));
 	showServer->SetValue (bowser_app->GetShowServerState()
 		? B_CONTROL_ON : B_CONTROL_OFF);
 	AddChild (showServer);
+	
+	showTopic = new BCheckBox (
+		BRect (0, 200, bounds.right, 224),
+		"showtopic",
+		"Show channel topic in Titlebar",
+		new BMessage (M_SHOW_TOPIC));
+	showTopic->SetValue (bowser_app->GetShowTopicState()
+		? B_CONTROL_ON : B_CONTROL_OFF);
+	AddChild (showTopic);
 
+	autoRejoin = new BCheckBox (
+		BRect (0, 225, bounds.right, 249),
+		"autorejoin",
+		"Automagically re-join channels when kicked",
+		new BMessage (M_AUTO_REJOIN));
+	autoRejoin->SetValue (bowser_app->GetAutoRejoinState()
+		? B_CONTROL_ON : B_CONTROL_OFF);
+	AddChild (autoRejoin);
 }
 
 
@@ -100,6 +117,8 @@ PreferenceGeneral::AttachedToWindow (void)
 	windowFollows->SetTarget (this);
 	hideServer->SetTarget (this);
 	showServer->SetTarget (this);
+	showTopic->SetTarget (this);
+	autoRejoin->SetTarget (this);
 
 	stampBox->ResizeToPreferred();
 	paranoidBox->ResizeToPreferred();
@@ -108,6 +127,8 @@ PreferenceGeneral::AttachedToWindow (void)
 	windowFollows->ResizeToPreferred();
 	hideServer->ResizeToPreferred();
 	showServer->ResizeToPreferred();
+	showTopic->ResizeToPreferred();
+	autoRejoin->ResizeToPreferred();
 
 	paranoidBox->MoveTo (0, stampBox->Frame().bottom + 1);
 	nickBindBox->MoveTo (0, paranoidBox->Frame().bottom + 1);
@@ -115,6 +136,8 @@ PreferenceGeneral::AttachedToWindow (void)
 	windowFollows->MoveTo (0, messageBox->Frame().bottom + 1);
 	hideServer->MoveTo (0, windowFollows->Frame().bottom + 1);
 	showServer->MoveTo (0, hideServer->Frame().bottom + 1);
+	showTopic->MoveTo (0, showServer->Frame().bottom + 1);
+	autoRejoin->MoveTo (0, showTopic->Frame().bottom + 1);
 
 	float biggest (stampBox->Frame().right);
 
@@ -135,8 +158,14 @@ PreferenceGeneral::AttachedToWindow (void)
 
 	if (showServer->Frame().right > biggest)
 		biggest = showServer->Frame().right;
+	
+	if (showTopic->Frame().right > biggest)
+		biggest = showTopic->Frame().right;
+	
+	if (autoRejoin->Frame().right > biggest)
+		biggest = autoRejoin->Frame().right;
 
-	ResizeTo (biggest, showServer->Frame().bottom);
+	ResizeTo (biggest, autoRejoin->Frame().bottom);
 }
 
 void
@@ -177,6 +206,16 @@ PreferenceGeneral::MessageReceived (BMessage *msg)
 		case M_ACTIVATE_SERVER:
 			bowser_app->ShowServerState (
 				showServer->Value() == B_CONTROL_ON);
+			break;
+
+		case M_SHOW_TOPIC:
+			bowser_app->ShowTopicState (
+				showTopic->Value() == B_CONTROL_ON);
+			break;
+
+		case M_AUTO_REJOIN:
+			bowser_app->AutoRejoinState (
+				autoRejoin->Value() == B_CONTROL_ON);
 			break;
 
 		default:
