@@ -524,43 +524,6 @@ ChannelWindow::MessageReceived (BMessage *msg)
 			break;
 		}
 
-		case POPUP_ACTION:
-		{
-			char theChannel[1024];
-			char theNick[512];
-			memset (theChannel, 0, 1024); // be safe
-			memset (theNick, 0, 512); // ditto
-			sprintf (theChannel, "%s", id.String());
-			const char *action;
-			msg->FindString ("action", &action);
-			BString theAction (action),
-					myNick (myNick),
-					targetNick;
-			theAction.ReplaceFirst("-9y99", theChannel);
-			NameItem *myUser;
-			int32 pos = namesList->CurrentSelection();
-			if(pos >= 0)
-			{
-				myUser = static_cast<NameItem *>(namesList->ItemAt(pos));
-				targetNick = myUser->Name();
-			}
-
-			sprintf (theNick, "%s", targetNick.String());
-			theAction.ReplaceFirst ("-9x99", theNick);
-
-			if (GetWord(theAction.String(), 3) == ":\1PING")
-			{
-				long theTime = time(NULL);
-				theAction << theTime << '\1';
-			}
-
-			BMessage send (M_SERVER_SEND);
-			AddSend (&send, theAction);
-			AddSend (&send, endl);
-
-			break;
-		}
-		
 		case POPUP_MODE:
 		{
 			const char *inaction;
@@ -598,7 +561,8 @@ ChannelWindow::MessageReceived (BMessage *msg)
 			
 			
 			/// iterate ///			
-   			while ((i = namesList->CurrentSelection(index++)) >= 0) { 				
+   			while ((i = namesList->CurrentSelection(index++)) >= 0)
+   			{ 				
 				myUser = static_cast<NameItem *>(namesList->ItemAt(i));
 				targetNick = myUser->Name();
 				
@@ -635,7 +599,8 @@ ChannelWindow::MessageReceived (BMessage *msg)
 			action.ToUpper();
 			
 			/// iterate ///			
-   			while ((i = namesList->CurrentSelection(index++)) >= 0) { 				
+   			while ((i = namesList->CurrentSelection(index++)) >= 0)
+   			{ 				
 				myUser = static_cast<NameItem *>(namesList->ItemAt(i));
 				targetNick = myUser->Name();
 				
@@ -661,7 +626,8 @@ ChannelWindow::MessageReceived (BMessage *msg)
 			NameItem *myUser;
 			
 			/// iterate ///			
-   			while ((i = namesList->CurrentSelection(index++)) >= 0) { 				
+   			while ((i = namesList->CurrentSelection(index++)) >= 0)
+   			{ 				
 				myUser = static_cast<NameItem *>(namesList->ItemAt(i));
 				targetNick = myUser->Name();
 				
@@ -687,7 +653,8 @@ ChannelWindow::MessageReceived (BMessage *msg)
 			NameItem *myUser;
 			
 			/// iterate ///			
-   			while ((i = namesList->CurrentSelection(index++)) >= 0) { 				
+   			while ((i = namesList->CurrentSelection(index++)) >= 0)
+   			{ 				
 				myUser = static_cast<NameItem *>(namesList->ItemAt(i));
 				targetNick = myUser->Name();
 				

@@ -291,7 +291,7 @@ NotifyView::MessageReceived (BMessage *msg)
 			printf ("found everything\n");
 			
 			printf ("sid: %ld\n", sid);
-			printf ("sid name: %s\n", servers[sid]->name);
+			printf ("sid name: %s\n", servers[sid]->name.String());
 						
 			if (servers[sid]->name == id)
 			{

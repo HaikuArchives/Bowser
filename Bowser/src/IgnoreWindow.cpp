@@ -457,6 +457,7 @@ IgnoreWindow::UpdateCount (void)
 }
 
 IgnoreItem::IgnoreItem (const char *text_)
+	: BListItem()
 {
 	text = strcpy (new char [strlen (text_) + 1], text_);
 
@@ -468,6 +469,7 @@ IgnoreItem::IgnoreItem (const char *text_)
 }
 
 IgnoreItem::IgnoreItem (const IgnoreItem &item)
+	: BListItem()
 {
 	text = strcpy (new char [strlen (item.text) + 1], item.text);
 

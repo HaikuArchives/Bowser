@@ -218,25 +218,24 @@ const uint32 M_COLOR_CHANGE							= 0x1502;
 
 const uint32 INVITE_USER							= 0x1134; // not inuse yet
 
-const uint32 POPUP_ACTION							= 0x1200;
-const uint32 SEND_ACTION							= 0x1201;
-const uint32 CHAT_ACTION							= 0x1202;
-const uint32 CHOSE_FILE								= 0x1203;
-const uint32 OPEN_MWINDOW							= 0x1204;
-const uint32 CYCLE_WINDOWS							= 0x1205;
-const uint32 CYCLE_BACK								= 0x1206;
-const uint32 DCC_ACCEPT								= 0x1207;
-const uint32 CHAT_ACCEPT							= 0x1208;
-const uint32 M_DCC_PORT								= 0x1209;
-const uint32 M_DCC_FILE_WIN							= 0x1210;
-const uint32 M_DCC_FILE_WIN_DONE					= 0x1211;
-const uint32 M_ADD_RESUME_DATA						= 0x1212;
-const uint32 M_DCC_MESSENGER						= 0x1213;
-const uint32 M_DCC_COMPLETE							= 0x1214;
-const uint32 POPUP_MODE								= 0x1215;
-const uint32 POPUP_CTCP								= 0x1216;
-const uint32 POPUP_WHOIS							= 0x1217;
-const uint32 POPUP_KICK								= 0x1218;
+const uint32 SEND_ACTION							= 0x1200;
+const uint32 CHAT_ACTION							= 0x1201;
+const uint32 CHOSE_FILE								= 0x1202;
+const uint32 OPEN_MWINDOW							= 0x1203;
+const uint32 CYCLE_WINDOWS							= 0x1204;
+const uint32 CYCLE_BACK								= 0x1205;
+const uint32 DCC_ACCEPT								= 0x1206;
+const uint32 CHAT_ACCEPT							= 0x1207;
+const uint32 M_DCC_PORT								= 0x1208;
+const uint32 M_DCC_FILE_WIN							= 0x1209;
+const uint32 M_DCC_FILE_WIN_DONE					= 0x1210;
+const uint32 M_ADD_RESUME_DATA						= 0x1211;
+const uint32 M_DCC_MESSENGER						= 0x1212;
+const uint32 M_DCC_COMPLETE							= 0x1213;
+const uint32 POPUP_MODE								= 0x1214;
+const uint32 POPUP_CTCP								= 0x1215;
+const uint32 POPUP_WHOIS							= 0x1216;
+const uint32 POPUP_KICK								= 0x1217;
 
 #ifdef DEV_BUILD
 extern bool DumpReceived;
