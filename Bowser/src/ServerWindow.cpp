@@ -120,8 +120,6 @@ ServerWindow::ServerWindow (
 	msg->AddString ("nick", myNick.String());
 	msg->AddBool ("identd", identd);
 	msg->AddPointer ("server", this);
-	
-	SetPulseRate (10000000);
 
 	loginThread = spawn_thread (
 		Establish,

@@ -23,7 +23,6 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		Lock();
 		isConnected  = true;
 		isConnecting = false;
-		SetPulseRate (10000000);
 		Unlock();
 
 		BMessage msg (M_SERVER_CONNECTED);
@@ -43,6 +42,8 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		BString title ("Bowser: ");
 		title += id;
 		SetTitle (title.String());
+		
+		SetPulseRate (10000000);
 		
 		return true;
 	}
