@@ -36,6 +36,7 @@ ServerWindow::ParseCTCP(BString theNick, BString theMsg)
 			version_info version;
 			info.GetVersionInfo(&version, B_SYSTEM_VERSION_KIND);
 			librootversion = version.short_info;
+			librootversion.RemoveFirst ("R");
 			
 			delete libroot;
 						
