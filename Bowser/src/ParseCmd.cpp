@@ -25,7 +25,6 @@ bool
 ClientWindow::ParseCmd (const char *data)
 {
 	BString firstWord (GetWord(data, 1).ToUpper());
-	
 		
 //	if (firstWord == "/INFO"    // commands we dont need to do any processing
 //	||  firstWord == "/KILL"    // on; ship them off to the server
