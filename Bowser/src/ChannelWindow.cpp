@@ -813,6 +813,13 @@ ChannelWindow::TabExpansion (void)
 	
 				if (!item->Name().ICompare (place, strlen (place))) //nick
 				{
+					if (strlen(place) == strlen(item->Name().String()))
+					{
+						if ((count - i) >= 2)
+							insertion = ((NameItem *)(namesList->ItemAt(i+1)))->Name();
+						else insertion = ((NameItem *)(namesList->ItemAt(0)))->Name();
+						break;
+					}	
 					insertion = item->Name();
 					break;
 				}
