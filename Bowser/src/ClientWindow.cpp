@@ -1313,6 +1313,7 @@ ClientWindow::DnsCmd (const char *data)
 	{
 		BMessage *msg (new BMessage);
 		msg->AddString ("lookup", parms.String());
+		msg->AddPointer ("client", this);
 		
 		lookupThread = spawn_thread (
 			DNSLookup,
@@ -2435,13 +2436,13 @@ ClientWindow::DurationString (int64 value)
 int32
 ClientWindow::DNSLookup (void *arg)
 {
-	printf ("here\n");
-	ClientWindow *window((ClientWindow *)arg);
-	printf ("after cast\n");
+//	ClientWindow *window((ClientWindow *)arg);
 	BMessage *msg (reinterpret_cast<BMessage *>(arg));
 	const char *lookup;
+	ClientWindow *client;
 	
 	msg->FindString ("lookup", &lookup);
+	msg->FindPointer ("client", reinterpret_cast<void **>(&client));
 	
 	delete msg;
 	
@@ -2484,7 +2485,7 @@ ClientWindow::DNSLookup (void *arg)
 	
 	output << "\n";
 	printf ("dnslookup: %s\n", output.String());
-	window->Display (output.String(), &(window->quitColor));
+	client->Display (output.String(), &(client->quitColor));
 	printf ("after display\n");
 	
 	return 0;
