@@ -23,6 +23,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		Lock();
 		isConnected  = true;
 		isConnecting = false;
+		initialMotd = true;
 		retry = 0;
 		Unlock();
 

@@ -17,8 +17,7 @@ http://bowser.sourceforge.net
    window entirely.
  * The server window's apparance is now updated in real-time like the other
    windows (fonts, colors, etc).
- * Automagic reconnect when disconnected (will not auto reconnect if it is a
-   networking error (unable to resolve, etc).
+ * Automagic reconnect when disconnected
 
 
 [1.0]
