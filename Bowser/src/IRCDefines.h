@@ -191,8 +191,6 @@ const uint32 M_SOPTIONS_CONNECT_ON_STARTUP			= 0x2003;
 
 // Preferences
 const uint32 M_PREFERENCE_GROUP						= 0x1400;
-const uint32 M_MESSAGE_OPEN     					= 0x1404;
-const uint32 M_MESSAGE_FOCUS						= 0x1405;
 const uint32 M_WINDOW_FOLLOWS						= 0x1406;
 const uint32 M_FONT_CHANGE							= 0x1407;
 const uint32 M_FONT_SIZE_CHANGE						= 0x1408;
@@ -207,11 +205,6 @@ const uint32 M_NOTIFY_OTHER_FLASH 					= 0x1416;
 const uint32 M_AKA_MODIFIED							= 0x1417;
 const uint32 M_OTHER_NICK_MODIFIED					= 0x1418;
 const uint32 M_AUTO_NICK_MODIFIED					= 0x1419;
-const uint32 M_EVENT_MODIFIED						= 0x1420;
-
-const uint32 M_HIDE_SETUP							= 0x1422;
-const uint32 M_ACTIVATE_SETUP						= 0x1423;
-const uint32 M_SHOW_TOPIC							= 0x1424;
 
 
 // Color (Part of Preferinces)

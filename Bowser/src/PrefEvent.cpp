@@ -4,7 +4,6 @@
 #include <stdio.h>
 
 #include "Bowser.h"
-#include "IRCDefines.h"
 #include "PrefEvent.h"
 
 static const char *ControlLabels[] =

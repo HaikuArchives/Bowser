@@ -22,4 +22,10 @@ class PreferenceWindow : public BView
 	virtual void				MessageReceived (BMessage *);
 };
 
+const uint32 M_MESSAGE_OPEN     					= 'pwmo';
+const uint32 M_MESSAGE_FOCUS						= 'pwmf';
+const uint32 M_HIDE_SETUP							= 'pwhs';
+const uint32 M_ACTIVATE_SETUP						= 'pwas';
+const uint32 M_SHOW_TOPIC							= 'pwst';
+
 #endif

@@ -18,4 +18,6 @@ class PreferenceEvent : public BView
 	virtual void				MessageReceived (BMessage *);
 };
 
+const uint32 M_EVENT_MODIFIED						= 'pemo';
+
 #endif
