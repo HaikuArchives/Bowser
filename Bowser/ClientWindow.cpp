@@ -323,6 +323,11 @@ ClientWindow::Init (void)
 	cmdWrap->cmds["/ABOUT"]			= &ClientWindow::AboutCmd;
 	cmdWrap->cmds["/PREFERENCES"]	= &ClientWindow::PreferencesCmd;
 	cmdWrap->cmds["/VISIT"]			= &ClientWindow::VisitCmd;
+	cmdWrap->cmds["/NICKSERV"]		= &ClientWindow::NickServCmd;
+	cmdWrap->cmds["/CHANSERV"]		= &ClientWindow::ChanServCmd;
+	cmdWrap->cmds["/MEMOSERV"]		= &ClientWindow::MemoServCmd;
+	cmdWrap->cmds["/USERHOST"]		= &ClientWindow::UserhostCmd;
+
 }
 
 ClientWindow::~ClientWindow (void)
@@ -1135,6 +1140,108 @@ ClientWindow::MsgCmd (const char *data)
 }
 
 void
+ClientWindow::NickServCmd (const char *data)
+{
+	BString theRest (RestOfString (data, 2));
+
+	if (theRest != "-9z99")
+	{
+		if (bowser_app->GetMessageOpenState())
+		{
+			BMessage msg (OPEN_MWINDOW);
+			BMessage buffer (M_SUBMIT);
+
+			buffer.AddString ("input", theRest.String());
+			msg.AddMessage ("msg", &buffer);
+			msg.AddString ("nick", "NickServ");
+			sMsgr.SendMessage (&msg);
+		}
+		else
+		{
+			BString tempString;
+			
+			tempString << "[M]-> NickServ > " << theRest << "\n";
+			Display (tempString.String(), 0);
+
+			BMessage send (M_SERVER_SEND);
+			AddSend (&send, "PRIVMSG NickServ");
+			AddSend (&send, " :");
+			AddSend (&send, theRest);
+			AddSend (&send, endl);
+		}
+
+	}
+}
+
+void
+ClientWindow::ChanServCmd (const char *data)
+{
+	BString theRest (RestOfString (data, 2));
+
+	if (theRest != "-9z99")
+	{
+		if (bowser_app->GetMessageOpenState())
+		{
+			BMessage msg (OPEN_MWINDOW);
+			BMessage buffer (M_SUBMIT);
+
+			buffer.AddString ("input", theRest.String());
+			msg.AddMessage ("msg", &buffer);
+			msg.AddString ("nick", "ChanServ");
+			sMsgr.SendMessage (&msg);
+		}
+		else
+		{
+			BString tempString;
+			
+			tempString << "[M]-> ChanServ > " << theRest << "\n";
+			Display (tempString.String(), 0);
+
+			BMessage send (M_SERVER_SEND);
+			AddSend (&send, "PRIVMSG ChanServ");
+			AddSend (&send, " :");
+			AddSend (&send, theRest);
+			AddSend (&send, endl);
+		}
+
+	}
+}
+
+void
+ClientWindow::MemoServCmd (const char *data)
+{
+	BString theRest (RestOfString (data, 2));
+
+	if (theRest != "-9z99")
+	{
+		if (bowser_app->GetMessageOpenState())
+		{
+			BMessage msg (OPEN_MWINDOW);
+			BMessage buffer (M_SUBMIT);
+
+			buffer.AddString ("input", theRest.String());
+			msg.AddMessage ("msg", &buffer);
+			msg.AddString ("nick", "MemoServ");
+			sMsgr.SendMessage (&msg);
+		}
+		else
+		{
+			BString tempString;
+			
+			tempString << "[M]-> MemoServ > " << theRest << "\n";
+			Display (tempString.String(), 0);
+
+			BMessage send (M_SERVER_SEND);
+			AddSend (&send, "PRIVMSG MemoServ");
+			AddSend (&send, " :");
+			AddSend (&send, theRest);
+			AddSend (&send, endl);
+		}
+
+	}
+}
+
+void
 ClientWindow::CtcpCmd (const char *data)
 {
 	BString theTarget (GetWord (data, 2));
@@ -1292,6 +1399,21 @@ ClientWindow::WhoIsCmd (const char *data)
 			AddSend (&send, theNick2);
 		}
 
+		AddSend (&send, endl);
+	}
+}
+
+void
+ClientWindow::UserhostCmd (const char *data)
+{
+	BString theNick (GetWord (data, 2));
+
+	if (theNick != "-9z99")
+	{
+		BMessage send (M_SERVER_SEND);
+
+		AddSend (&send, "USERHOST ");
+		AddSend (&send, theNick);
 		AddSend (&send, endl);
 	}
 }
@@ -2193,4 +2315,22 @@ ClientWindow::NotifyRegister (void)
 	msg.AddMessenger ("msgr", BMessenger (this));
 
 	bowser_app->PostMessage (&msg);
+}
+
+float
+ClientWindow::ScrollPos(void)
+{
+	return scroll->ScrollBar (B_VERTICAL)->Value();
+}
+
+void
+ClientWindow::SetScrollPos(float value)
+{
+	scroll->ScrollBar (B_VERTICAL)->SetValue(value);
+}
+
+void
+ClientWindow::ScrollRange(float *min, float *max)
+{
+	scroll->ScrollBar(B_VERTICAL)->GetRange (min, max);
 }

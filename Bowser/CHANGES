@@ -1,15 +1,27 @@
-Bowser d41b
+Bowser d42a
 http://bowser.sourceforge.net
 
+[d42a]
+ * Improved DCC Send performance dramatically for users on fast pipes
+ * Fixed DCC Send/Get crasher bug (would sometimes crash net_server on
+   abort, eek.)
 
-[d41b]
- * Support for new numerics: 105, 253, 328
+
+[d42]
+ * Support for new numerics: 105, 253, 328, 352, 412
  * Added /about command - opens About window
  * Added /preferences command - opens Preferences window
  * Added /visit command - /visit <url> loads URL in default text/html app.
  * Fixed redraw bug in Channel List Window (thanks AnEvilYak)
  * Fixed mouse over bug in Color preferences (thanks AnEvilYak)
  * Can now specify a file directly in /dcc send <nick> <file>
+ * Fixed bug where there was no linefeed after the "You are not an IRC
+   operator" warning
+ * Added /nickserv command - alias to /msg nickserv
+ * Added /chanserv command - alias to /msg chanserv
+ * Added /memoserv command - alias to /msg memoserv
+ * Added support for /userhost command
+ * Improved scrolling logic during buffer clip (ooh, geeky!) (thanks AnEvilYak)
 
 
 [d41a]

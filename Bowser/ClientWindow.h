@@ -155,6 +155,9 @@ class ClientWindow : public BWindow
 	void								ActionMessage (
 											const char *,
 											const char *);
+	float								ScrollPos(void);
+	void								SetScrollPos(float);
+	void								ScrollRange(float *, float *);
 
 	protected:
 										// Commands
@@ -174,6 +177,10 @@ class ClientWindow : public BWindow
 	void								JoinCmd (const char *);
 	void								NickCmd (const char *);
 	void								MsgCmd (const char *);
+	void								NickServCmd (const char *);
+	void								ChanServCmd (const char *);
+	void								MemoServCmd (const char *);
+	void								UserhostCmd (const char *);
 	void								CtcpCmd (const char *);
 	void								AdminCmd (const char *);
 	void								InfoCmd (const char *);

@@ -29,6 +29,7 @@ class DCCFileWindow : public BWindow
 	
 	private:
 		int mySocket;
+		int acceptSocket;
 		thread_id dataThread;
 		BStatusBar *myStatus;
 		BString dNick, dIP, dPort, dSize, dFile, dType;

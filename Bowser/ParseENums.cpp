@@ -483,6 +483,15 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		return true;
 	}
 
+	if(secondWord == "352") // who info 
+	{
+		BString tempString = RestOfString(data, 4);
+		tempString.RemoveFirst(":");
+		tempString.Append("\n");
+		Display (tempString.String(), 0);
+		return true;
+	}
+
 	if (secondWord == "353") // names list
 	{
 		BString channel (GetWord (data, 5));
@@ -769,6 +778,15 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		PostActive (&msg);
 		return true;
 	}
+
+	if(secondWord == "412") // no text to send 
+	{
+		BString tempString = RestOfString(data, 4);
+		tempString.RemoveFirst(":");
+		tempString.Append("\n");
+		Display (tempString.String(), 0);
+		return true;
+	}
 	
 	if(secondWord == "421") // unknown command
 	{
@@ -999,7 +1017,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 		PackDisplay (
 			&msg,
-			"[x] Permission denied: not an IRC operator.",
+			"[x] Permission denied: not an IRC operator.\n",
 			&errorColor);
 		PostActive (&msg);
 

@@ -224,13 +224,23 @@ IRCView::DisplayChunk (
 		for (it = urls.begin(); it != urls.end(); ++it)
 			it->offset -= bytes;
 		
+		ClientWindow *parent = (ClientWindow *)Window();
+		float scrollMin, scrollMax;
+		parent->ScrollRange(&scrollMin, &scrollMax);
+		
+		float scrollVal = parent->ScrollPos();
+		int32 curLine = (int32) ((scrollMax/LineHeight()) * (scrollVal/scrollMax));
+		
 		Delete (0,bytes);
+		if (!scrolling)
+			parent->SetScrollPos(TextHeight(0, curLine));		
 	}
 
-	if (scrolling) {
+	if (scrolling)
+	{
+		if (TextLength() > 0)
 		ScrollToOffset (TextLength());
 	}
-
 	return TextLength();
 }
 

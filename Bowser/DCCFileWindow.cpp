@@ -101,6 +101,9 @@ void DCCFileWindow::Quit()
 
 bool DCCFileWindow::QuitRequested()
 {
+	// make sure all sockets are closed
+	closesocket(mySocket);
+	closesocket(acceptSocket);
 	return true;
 }
 
@@ -243,7 +246,7 @@ int32 DCCFileWindow::DCCSend()
 	int32 myPort = 1500 + (rand() % 5000); // baxter's way of getting a port
 	struct sockaddr_in sa, socky;
 	
-	int mySocket = socket(AF_INET, SOCK_STREAM, 0);
+	mySocket = socket(AF_INET, SOCK_STREAM, 0);
 	if(mySocket < 0)
 	{
 		SetTitle("Error creating socket");
@@ -293,11 +296,11 @@ int32 DCCFileWindow::DCCSend()
 	listen(mySocket, 1);
 	struct sockaddr_in remoteAddy;
 	int theLen = sizeof(remoteAddy);
-	int acceptSocket = accept(mySocket, (struct sockaddr*)&remoteAddy, &theLen);
+	acceptSocket = accept(mySocket, (struct sockaddr*)&remoteAddy, &theLen);
 
 	int32 myLength = 0, sendInPass = 0, bytesSent = 0;
 	int32 fileSize = atol(dSize.String());
-	char myBuffer[1024];
+	char myBuffer[4096];
 	
 	bigtime_t last (system_time()), now;
 	int cps (0), period (0);
