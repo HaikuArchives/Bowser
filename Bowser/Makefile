@@ -60,7 +60,7 @@ OPTIMIZE=-O3
 CXXFLAGS=$(OPTIMIZE) $(DEBUG) -Wall -Wno-multichar -Wno-ctor-dtor-privacy
 LDFLAGS=
 
-all : objs Bowser rv
+all : objs Bowser
 
 Bowser : $(OBJS) Bowser.rsrc
 	$(CXX) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
