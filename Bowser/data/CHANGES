@@ -1,7 +1,7 @@
-Bowser d43
+Bowser 1.0
 http://bowser.sourceforge.net
 
-[d43]
+[1.0]
  * New DCC system
     - Multi-tiered transfer window, ala Tracker
     - DCC Resume support

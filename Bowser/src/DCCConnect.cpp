@@ -16,6 +16,7 @@
 #include "Bowser.h"
 #include "PrefGeneral.h"
 #include "DCCConnect.h"
+#include "ServerWindow.h"
 
 const uint32 M_STOP_BUTTON				= 'stop';
 const uint32 M_UPDATE_STATUS			= 'stat';
@@ -335,6 +336,7 @@ DCCReceive::Transfer (void *arg)
 	{
 		view->success = bytes_received == size;
 		update_mime_info(path.Path(), false, false, true);
+		rgb_color msgColor = bowser_app->GetColor (C_CTCP_RPY);
 		view->file.Unset();	
 		view->Stopped ();
 	}

@@ -498,9 +498,22 @@ void
 ClientWindow::DispatchMessage (BMessage *msg, BHandler *handler)
 {
 	if (msg->what == M_STATE_CHANGE)
+	{
 		StateChange (msg);
-	else
-		BWindow::DispatchMessage (msg, handler);
+		return;
+	}
+	else if (msg->what == B_KEY_DOWN)
+	{
+		BRect bounds = input->TextView()->Bounds();
+		BFont current;
+		input->TextView()->GetFontAndColor(0, &current);
+		
+		bounds.left = input->TextView()->LineWidth(0);
+		bounds.right = bounds.left + 2 * current.Size();
+		if (bounds.left > 0) bounds.left -= current.Size();
+		input->TextView()->Invalidate(bounds);
+	}
+	BWindow::DispatchMessage (msg, handler);
 }
 
 void
