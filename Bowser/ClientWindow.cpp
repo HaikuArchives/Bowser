@@ -6,7 +6,7 @@
 #include <View.h>
 #include <TextControl.h>
 #include <Roster.h>
-
+#include <FindDirectory.h>
 #include <map>
 #include <ctype.h>
 
@@ -1754,25 +1754,48 @@ ClientWindow::DccCmd (const char *data)
 {
 	BString secondWord (GetWord (data, 2));
 	BString theNick (GetWord (data, 3));
-
+	BString theFile (RestOfString(data, 4));
+	
 	if (secondWord.ICompare ("SEND") == 0
 	&&  theNick != "-9z99")
 	{
+		BMessage *msg (new BMessage (CHOSE_FILE));
+		msg->AddString ("nick", theNick.String());
+		if (theFile != "-9z99")
+		{	
+			char filePath[B_PATH_NAME_LENGTH] = "\0";
+			if (theFile.ByteAt(0) != '/')
+			{
+				find_directory(B_USER_DIRECTORY, 0, false, filePath, B_PATH_NAME_LENGTH);
+				filePath[strlen(filePath)] = '/';
+			}
+			strcat(filePath, theFile.LockBuffer(0));
+			theFile.UnlockBuffer();
+			BPath sendPath(filePath, NULL, true);
+			BFile sendFile(sendPath.Path(), B_READ_ONLY);
+			
+			if (sendFile.InitCheck() == B_OK)
+			{
+				entry_ref ref;
+				get_ref_for_path(sendPath.Path(), &ref);
+				printf("sending %s\n", sendPath.Path());
+				msg->AddRef("refs", &ref);
+				sMsgr.SendMessage(msg);	
+				return;	
+			}
+		}
 		BFilePanel *myPanel (new BFilePanel);
 		BString myTitle ("Sending a file to ");
-		BMessage *msg (new BMessage (CHOSE_FILE));
 
 		myTitle.Append (theNick);
 		myPanel->Window()->SetTitle (myTitle.String());
 
-		msg->AddString ("nick", theNick.String());
 		myPanel->SetMessage (msg);
 
 		myPanel->SetButtonLabel (B_DEFAULT_BUTTON, "Send");
 		myPanel->SetTarget (sMsgr);
 		myPanel->Show();
 	}
-
 	else if (secondWord.ICompare ("CHAT") == 0
 	&&       theNick != "-9z99")
 	{

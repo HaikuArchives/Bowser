@@ -9,6 +9,7 @@ http://bowser.sourceforge.net
  * Added /visit command - /visit <url> loads URL in default text/html app.
  * Fixed redraw bug in Channel List Window (thanks AnEvilYak)
  * Fixed mouse over bug in Color preferences (thanks AnEvilYak)
+ * Can now specify a file directly in /dcc send <nick> <file>
 
 
 [d41a]

@@ -228,7 +228,6 @@ IRCView::DisplayChunk (
 	}
 
 	if (scrolling) {
-		printf ("***Scroll in IRCView::DisplayChunk -> %ld\n", TextLength());
 		ScrollToOffset (TextLength());
 	}
 
@@ -312,7 +311,6 @@ int32 IRCView::FirstMarker (const char *cData)
 void IRCView::ClearView()
 {
 	SetText("");
-	printf ("***Scroll in IRCView::ClearView -> 0\n");
 	ScrollToOffset(0);
 }
 
@@ -324,7 +322,6 @@ IRCView::FrameResized (float width, float height)
 	textrect.right  = textrect.left + width - 7;
 	textrect.bottom = textrect.top + height - 1;
 	SetTextRect(textrect);
-	printf ("***Scroll in IRCView::FrameResized -> %ld\n", TextLength());
 	ScrollToOffset (TextLength());
 }
 
