@@ -295,7 +295,9 @@ DCCReceive::Transfer (void *arg)
 	{
 		bigtime_t last (system_time()), now;
 		int cps (0), period (0);
-		char buffer[8196];
+		char buffer[8196];		
+		bigtime_t start = system_time();
+
 
 		while (view->running && bytes_received < size)
 		{
@@ -307,8 +309,8 @@ DCCReceive::Transfer (void *arg)
 			file.Write (buffer, read);
 			bytes_received += read;
 
-			uint32 feed_back (htonl (bytes_received));
-			send (view->s, &feed_back, sizeof (uint32), 0);
+//			uint32 feed_back (htonl (bytes_received));
+//			send (view->s, &feed_back, sizeof (uint32), 0);
 
 			now = system_time();
 			period += read;
@@ -316,7 +318,7 @@ DCCReceive::Transfer (void *arg)
 
 			if (now - last > 500000)
 			{
-				cps = (int)ceil (period / ((now - last) / 1000000.0));
+				cps = (int)ceil (bytes_received / ((now - start) / 1000000.0));
 				last = now;
 				period = 0;
 				hit = true;
@@ -330,9 +332,10 @@ DCCReceive::Transfer (void *arg)
 	{
 		view->success = bytes_received == size;
 		update_mime_info(path.Path(), false, false, true);
-		
+		file.Unset();	
 		view->Stopped (false);
 	}
+	
 	
 	
 	exit_thread(0);
@@ -511,6 +514,7 @@ DCCSend::Transfer (void *arg)
 		char buffer[1024];
 		int period (0), cps (0);
 		ssize_t count;
+		bigtime_t start = system_time();
 
 		while (view->running
 		&&    (count = file.Read (buffer, 1024)) > 0)
@@ -524,8 +528,8 @@ DCCSend::Transfer (void *arg)
 			}
 
 			bytes_sent += sent;
-			uint32 confirm;
-			recv (view->s, &confirm, sizeof (confirm), 0);
+//			uint32 confirm;
+//			recv (view->s, &confirm, sizeof (confirm), 0);
 
 			now = system_time();
 			period += sent;
@@ -534,7 +538,7 @@ DCCSend::Transfer (void *arg)
 
 			if (now - last > 500000)
 			{
-				cps = (int) ceil (period / ((now - last) / 1000000.0));
+				cps = (int) ceil (bytes_sent / ((now - start) / 1000000.0));
 				last = now;
 				period = 0;
 				hit = true;
@@ -547,6 +551,8 @@ DCCSend::Transfer (void *arg)
 		file.GetSize (&size);
 		view->success = bytes_sent == size;
 	}
+	
+	file.Unset();
 
 	if (view->running) view->Stopped (false);
 

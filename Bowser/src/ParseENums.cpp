@@ -23,6 +23,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		Lock();
 		isConnected  = true;
 		isConnecting = false;
+		SetPulseRate (10000000);
 		Unlock();
 
 		BMessage msg (M_SERVER_CONNECTED);

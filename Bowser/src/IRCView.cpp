@@ -244,7 +244,8 @@ IRCView::DisplayChunk (
         return TextLength(); 
 } 
 
-int32 IRCView::URLLength (const char *outTemp) 
+int32
+IRCView::URLLength (const char *outTemp) 
 { 
         int32 x = 0; 
 
@@ -270,7 +271,8 @@ int32 IRCView::URLLength (const char *outTemp)
         return x; 
 } 
 
-int32 IRCView::FirstMarker (const char *cData) 
+int32
+IRCView::FirstMarker (const char *cData) 
 { 
         BString data (cData); 
         int32 urlMarkers[6]; 
@@ -320,7 +322,8 @@ int32 IRCView::FirstMarker (const char *cData)
         return marker < data.Length() ? marker : -1; 
 } 
 
-void IRCView::ClearView() 
+void
+IRCView::ClearView() 
 { 
         SetText(""); 
         ScrollToOffset(0); 

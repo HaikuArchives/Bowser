@@ -81,6 +81,7 @@ MessageWindow::MessageWindow (
 	SetTitle(titleString.String());
 	SetSizeLimits(300,2000,150,2000);
 
+
 }
 
 MessageWindow::~MessageWindow()
@@ -156,7 +157,7 @@ MessageWindow::MessageReceived (BMessage *msg)
 			}
 			else if (myNick.ICompare (oldNick) == 0)
 			{
-				status->SetItemValue (1, newNick);
+				status->SetItemValue (STATUS_NICK, newNick);
 				ClientWindow::MessageReceived (msg);
 			}
 

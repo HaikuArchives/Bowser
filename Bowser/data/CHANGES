@@ -15,6 +15,7 @@ http://bowser.sourceforge.net
  * Channel topic is now shown in SatusView
  * StatusView items now autosize to their contents.
  * Added Lag Checker to StatusView
+ * Displayed cps rate for DCC xfers is averaged better now... not as erratic.
 
 
 [d42b]
