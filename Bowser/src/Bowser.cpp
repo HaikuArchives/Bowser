@@ -44,6 +44,7 @@ class AppSettings : public Settings
 									hideSetupState,
 									showSetupState,
 									showTopicState,
+									statusTopicState,
 									altwSetupState,
 									altwServerState,
 									autoRejoinState;
@@ -1047,7 +1048,7 @@ BowserApp::MessageReceived (BMessage *msg)
 					sd->notifyRunner = new BMessageRunner (
 						be_app_messenger,
 						msg,
-						10000,
+						3000000,
 						1);
 				}
 			}
@@ -1421,6 +1422,23 @@ BowserApp::GetShowTopicState (void) const
 }
 
 void
+BowserApp::StatusTopicState (bool state)
+{
+	settings->statusTopicState = state;
+
+	BMessage msg (M_STATE_CHANGE);
+
+	msg.AddBool ("statustopic", state);
+	Broadcast (&msg);
+}
+
+bool
+BowserApp::GetStatusTopicState (void) const
+{
+	return settings->statusTopicState;
+}
+
+void
 BowserApp::AltwSetupState (bool state)
 {
 	settings->altwSetupState = state;
@@ -1775,6 +1793,7 @@ AppSettings::AppSettings (void)
 	  hideSetupState (false),
 	  showSetupState (false),
 	  showTopicState (true),
+	  statusTopicState (false),
 	  altwSetupState (true),
 	  altwServerState (true),
 	  autoRejoinState (false),
@@ -1974,6 +1993,9 @@ AppSettings::RestorePacked (BMessage *msg)
 		
 	if (msg->HasBool ("Show Topic"))
 		msg->FindBool ("Show Topic", &showTopicState);
+		
+	if (msg->HasBool ("Status Topic"))
+		msg->FindBool ("Status Topic", &statusTopicState);
 
 	if (msg->HasBool ("AltW Setup"))
 		msg->FindBool ("AltW Setup", &altwSetupState);
@@ -2238,6 +2260,7 @@ AppSettings::SavePacked (BMessage *msg)
 	msg->AddBool ("Hide Setup", hideSetupState);
 	msg->AddBool ("Show Setup", showSetupState);
     msg->AddBool ("Show Topic", showTopicState);
+    msg->AddBool ("Status Topic", statusTopicState);
     msg->AddBool ("AltW Setup", altwSetupState);
     msg->AddBool ("AltW Server", altwServerState);
     msg->AddBool ("Auto Rejoin", autoRejoinState);

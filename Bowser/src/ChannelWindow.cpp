@@ -420,7 +420,11 @@ ChannelWindow::MessageReceived (BMessage *msg)
 			BString buffer;
 
 			msg->FindString ("topic", &theTopic);
-			status->SetItemValue(STATUS_TOPIC, theTopic);
+			
+			if (bowser_app->GetStatusTopicState())
+			{
+				status->SetItemValue(STATUS_TOPIC, theTopic);
+			}
 			
 			if(bowser_app->GetShowTopicState())
 			{

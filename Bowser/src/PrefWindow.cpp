@@ -57,6 +57,16 @@ PreferenceWindow::PreferenceWindow (void)
 	showTopic->SetValue (bowser_app->GetShowTopicState()
 		? B_CONTROL_ON : B_CONTROL_OFF);
 	AddChild (showTopic);
+
+	statusTopic = new BCheckBox (
+		BRect (0, 125, bounds.right, 149),
+		"statustopic",
+		"Show channel topic in Statusbar",
+		new BMessage (M_STATUS_TOPIC));
+	statusTopic->SetValue (bowser_app->GetStatusTopicState()
+		? B_CONTROL_ON : B_CONTROL_OFF);
+	AddChild (statusTopic);
+
 	
 	AltWSetup = new BCheckBox (
 		BRect (0, 150, bounds.right, 174),
@@ -68,14 +78,13 @@ PreferenceWindow::PreferenceWindow (void)
 	AddChild (AltWSetup);
 	
 	AltWServer = new BCheckBox (
-		BRect (0, 150, bounds.right, 174),
+		BRect (0, 175, bounds.right, 199),
 		"altwserver",
 		"Enable Alt+W for Server Windows",
 		new BMessage (M_ALTW_SERVER));
 	AltWServer->SetValue (bowser_app->GetAltwServerState()
 		? B_CONTROL_ON : B_CONTROL_OFF);
 	AddChild (AltWServer);
-
 }
 
 
@@ -96,6 +105,7 @@ PreferenceWindow::AttachedToWindow (void)
 	hideSetup->SetTarget (this);
 	showSetup->SetTarget (this);
 	showTopic->SetTarget (this);
+	statusTopic->SetTarget (this);
 	AltWSetup->SetTarget (this);
 	AltWServer->SetTarget (this);
 
@@ -104,6 +114,7 @@ PreferenceWindow::AttachedToWindow (void)
 	hideSetup->ResizeToPreferred();
 	showSetup->ResizeToPreferred();
 	showTopic->ResizeToPreferred();
+	statusTopic->ResizeToPreferred();
 	AltWSetup->ResizeToPreferred();
 	AltWServer->ResizeToPreferred();
 
@@ -111,7 +122,8 @@ PreferenceWindow::AttachedToWindow (void)
 	hideSetup->MoveTo (0, windowFollows->Frame().bottom + 1);
 	showSetup->MoveTo (0, hideSetup->Frame().bottom + 1);
 	showTopic->MoveTo (0, showSetup->Frame().bottom + 1);
-	AltWSetup->MoveTo (0, showTopic->Frame().bottom + 1);
+	statusTopic->MoveTo (0, showTopic->Frame().bottom + 1);
+	AltWSetup->MoveTo (0, statusTopic->Frame().bottom + 1);
 	AltWServer->MoveTo (0, AltWSetup->Frame().bottom + 1);
 
 	float biggest (messageBox->Frame().right);
@@ -127,6 +139,9 @@ PreferenceWindow::AttachedToWindow (void)
 	
 	if (showTopic->Frame().right > biggest)
 		biggest = showTopic->Frame().right;
+
+	if (statusTopic->Frame().right > biggest)
+		biggest = statusTopic->Frame().right;
 	
 	if (AltWSetup->Frame().right > biggest)
 		biggest = AltWSetup->Frame().right;
@@ -165,6 +180,11 @@ PreferenceWindow::MessageReceived (BMessage *msg)
 		case M_SHOW_TOPIC:
 			bowser_app->ShowTopicState (
 				showTopic->Value() == B_CONTROL_ON);
+			break;
+
+		case M_STATUS_TOPIC:
+			bowser_app->StatusTopicState (
+				statusTopic->Value() == B_CONTROL_ON);
 			break;
 
 		case M_ALTW_SETUP:

@@ -256,5 +256,6 @@ class TimedNick
 										{ }
 };
 
+const uint32 M_BOWSER_BUGS				= 'cwbb';
 
 #endif

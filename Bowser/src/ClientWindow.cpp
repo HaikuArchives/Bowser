@@ -172,17 +172,21 @@ ClientWindow::Init (void)
 	mWindow->AddItem (item = new BMenuItem ("Preferences" B_UTF8_ELLIPSIS, msg,
 		'P'));
 	item->SetTarget (bowser_app);
-	menubar->AddItem (mWindow);
 
 	mWindow->AddSeparatorItem();
 	msg = new BMessage (M_SCROLL_TOGGLE);
 	mWindow->AddItem (mScrolling = new BMenuItem ("Auto Scrolling", msg, 'S'));
 	mScrolling->SetMarked (true);
+	menubar->AddItem (mWindow);
 
 	mHelp = new BMenu ("Help");
 	mHelp->AddItem (item = new BMenuItem ("About Bowser",
 		new BMessage (B_ABOUT_REQUESTED), 'A', B_SHIFT_KEY));
 	item->SetTarget (bowser_app);
+	mHelp->AddSeparatorItem();
+	mHelp->AddItem (item = new BMenuItem ("Bugs",
+		new BMessage (M_BOWSER_BUGS)));	
+	
 	menubar->AddItem (mHelp);
 	AddChild (menubar);
 	
@@ -209,7 +213,6 @@ ClientWindow::Init (void)
 	input->SetDivider (0);
 	input->TextView()->SetFontAndColor (&inputFont);
 	input->ResizeToPreferred();
-	//input->TextView()->SetMaxBytes(512);
 	input->MoveTo (
 		2,
 		status->Frame().top - input->Frame().Height() - 1);
@@ -765,17 +768,32 @@ ClientWindow::MessageReceived (BMessage *msg)
 		}
 
 		case M_HISTORY_SELECT:
-			
+		{	
 			if (history->HasHistory())
 			{
 				history->DoPopUp (true);
 				break;
 			}
-
+		}
+		
 		case M_SCROLL_TOGGLE:
+		{
 			scrolling = scrolling ? false : true;
 			mScrolling->SetMarked (scrolling);
 			break;
+		}
+
+		case M_BOWSER_BUGS:
+		{
+			const char *arguments[] = {"http://sourceforge.net/bugs/?group_id=695", 0};
+		
+			be_roster->Launch (
+				"text/html",
+				1,
+				const_cast<char **>(arguments));
+
+			break;
+		}
 
 		default:
 			BWindow::MessageReceived (msg);
@@ -919,7 +937,7 @@ ClientWindow::TimedSubmit (void *arg)
 			snooze (35000);
 		}
 	}
-
+	
 	delete msg;
 	return 0;
 }
@@ -1369,7 +1387,7 @@ ClientWindow::DnsCmd (const char *data)
 		thread_id lookupThread = spawn_thread (
 			DNSLookup,
 			"dns_lookup",
-			B_NORMAL_PRIORITY,
+			B_LOW_PRIORITY,
 			msg);
 
 		resume_thread (lookupThread);

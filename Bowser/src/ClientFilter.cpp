@@ -258,8 +258,6 @@ ClientInputFilter::HandleDrop (const char *buffer)
 		msg.AddBool ("lines", result == 1);
 		window->PostMessage (&msg);
 	}
-	
-	window->input->SetText ("");
 
 }
 

@@ -1,7 +1,7 @@
-Bowser d42c
+Bowser d43
 http://bowser.sourceforge.net
 
-[d42c]
+[d43]
  * New DCC system
  * Fixed crashing bug which happened on some server notices.
  * Tab completion now works in Query and DCC Chat windows
@@ -22,6 +22,7 @@ http://bowser.sourceforge.net
  * Now shows time Channel Topic was set
  * Alt+V (pasting) is handled by the Input Box's filter now... you have the option
    of sending multiple lines now.
+ * Having nicks in your Notify list doesn't lag you to death now
 
 
 [d42b]

@@ -185,7 +185,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		thread_id lookupThread = spawn_thread (
 			DNSLookup,
 			"dns_lookup",
-			B_NORMAL_PRIORITY,
+			B_LOW_PRIORITY,
 			msg);
 
 		resume_thread (lookupThread);
