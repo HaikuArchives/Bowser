@@ -52,7 +52,7 @@ AboutWindow::AboutWindow (const char *version)
 		background->AddChild (graphic);
 		
 		graphic->SetViewBitmap (bmp);
-		EasterEggOn = true;
+		EasterEggOn = false;
 		delete bmp;
 
 		bounds.Set (
