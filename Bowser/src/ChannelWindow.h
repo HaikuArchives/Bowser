@@ -55,7 +55,7 @@ class ChannelWindow : public ClientWindow
 
 	int32					userCount,
 							opsCount;
-
+	friend class		ClientWindow;
 	NamesView			*namesList;
 	BScrollView			*namesScroll;
 };

@@ -69,6 +69,7 @@ class ClientWindow : public BWindow
 										ctcpReqColor,
 										nickColor,
 										quitColor,
+										whoisColor,
 										myNickColor,
 										actionColor,
 										opColor;
@@ -229,8 +230,6 @@ class ClientWindow : public BWindow
 	void								DnsCmd (const char *);
 	
 	BString								DurationString(int64);
-	
-	thread_id							lookupThread;	// run by DnsCmd
 	
 	void								CTCPAction (BString theTarget, BString
 											theMsg);

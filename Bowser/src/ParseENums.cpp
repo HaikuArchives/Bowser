@@ -92,7 +92,6 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	||  secondWord == "259"  // admin info 
 	||  secondWord == "261"  // trace log file
 	||  secondWord == "262"  // end of trace
-	||  secondWord == "302"  // userhost and usrip reply
 	||  secondWord == "328"
 	||  secondWord == "351"  // version info
 	||  secondWord == "352"  // who info
@@ -171,7 +170,28 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		PostActive (&msg);
 		return true;
 	}
+	
+	if (secondWord == "302") // userhost and usrip reply
+	{
+		BString tempString (GetAddress (GetWord (data, 4).String()));
+		BMessage *msg (new BMessage);
+		msg->AddString ("lookup", tempString.String());
+		ClientWindow *client (ActiveClient());
+		if (client)
+			msg->AddPointer("client", client);
+		else
+			msg->AddPointer("client", this);
+		 
+		thread_id lookupThread = spawn_thread (
+			DNSLookup,
+			"dns_lookup",
+			B_NORMAL_PRIORITY,
+			msg);
 
+		resume_thread (lookupThread);
+		return true;
+	}  
+	
 	if (secondWord == "303") // IsOn response
 	{
 		BString nick (GetWord (data, 4));
@@ -791,10 +811,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 			if (difference > 0)
 			{
 				int32 secs (difference / 1000000);
-				int32 milli (difference / 1000);
-				printf ("  difference: %ld\n", difference);
-				printf ("milliseconds: %ld\n", milli);
-				printf ("     seconds: %ld\n", secs);
+				int32 milli (difference / 1000 - secs * 1000);
 				char lag[15] = "";
 				sprintf (lag, "%ld.%03ld", secs, milli);
 				myLag = lag;

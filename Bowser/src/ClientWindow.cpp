@@ -15,6 +15,7 @@
 #include "IRCDefines.h"
 #include "MessageWindow.h"
 #include "HistoryMenu.h"
+#include "Names.h"
 #include "IRCView.h"
 #include "StringManip.h"
 #include "Settings.h"
@@ -253,6 +254,7 @@ ClientWindow::Init (void)
 	nickColor		= bowser_app->GetColor (C_NICK);
 	ctcpReqColor	= bowser_app->GetColor (C_CTCP_REQ);
 	quitColor		= bowser_app->GetColor (C_QUIT);
+	whoisColor		= bowser_app->GetColor (C_WHOIS);
 	myNickColor		= bowser_app->GetColor (C_MYNICK);
 	actionColor		= bowser_app->GetColor (C_ACTION);
 	opColor			= bowser_app->GetColor (C_OP);
@@ -957,7 +959,6 @@ ClientWindow::Display (
 	const BFont *font,
 	bool timeStamp)
 {
-	printf("i be here at the hood\n");
 	if (timeStamp && timeStampState)
 		text->DisplayChunk (
 			TimeStamp().String(),
@@ -1298,7 +1299,7 @@ ClientWindow::UptimeCmd (const char *data)
 		BString tempString;
 			
 		tempString << "Uptime: " << expandedString << "\n";
-		Display (tempString.String(), &quitColor);
+		Display (tempString.String(), &whoisColor);
 		
 	}
 		
@@ -1308,14 +1309,34 @@ void
 ClientWindow::DnsCmd (const char *data)
 {
 	BString parms (GetWord(data, 2));
-	
+	ChannelWindow *window;
+	if ((window = dynamic_cast<ChannelWindow *>(this)))
+	{
+			int32 count (window->namesList->CountItems());
+			
+			for (int32 i = 0; i < count; ++i)
+			{
+				NameItem *item ((NameItem *)(window->namesList->ItemAt (i)));
+				
+				if (!item->Name().ICompare (parms.String(), strlen (parms.String()))) //nick
+				{
+					BMessage send (M_SERVER_SEND);
+					AddSend (&send, "USERHOST ");
+					AddSend (&send, item->Name().String());
+					AddSend (&send, endl);
+					PostMessage(&send);	
+					return;				
+				}
+			}
+	}
+		
 	if (parms != "-9z99")
 	{
 		BMessage *msg (new BMessage);
 		msg->AddString ("lookup", parms.String());
 		msg->AddPointer ("client", this);
 		
-		lookupThread = spawn_thread (
+		thread_id lookupThread = spawn_thread (
 			DNSLookup,
 			"dns_lookup",
 			B_NORMAL_PRIORITY,
@@ -2436,7 +2457,6 @@ ClientWindow::DurationString (int64 value)
 int32
 ClientWindow::DNSLookup (void *arg)
 {
-//	ClientWindow *window((ClientWindow *)arg);
 	BMessage *msg (reinterpret_cast<BMessage *>(arg));
 	const char *lookup;
 	ClientWindow *client;
@@ -2451,7 +2471,7 @@ ClientWindow::DNSLookup (void *arg)
 	
 	if(isalpha(resolve[0]))
 	{
-		hostent *hp = gethostbyname(resolve.String());
+		hostent *hp = gethostbyname (resolve.String());
 				
 		if(hp)
 		{
@@ -2470,9 +2490,9 @@ ClientWindow::DNSLookup (void *arg)
 	}
 	else
 	{
-		ulong addr = inet_addr(resolve.String());
+		ulong addr = inet_addr (resolve.String());
 				
-		hostent *hp = gethostbyaddr((const char *)&addr, 4, AF_INET);
+		hostent *hp = gethostbyaddr ((const char *)&addr, 4, AF_INET);
 		if(hp)
 		{
 			output << "Resolved " << resolve.String() << " to " << hp->h_name;
@@ -2482,11 +2502,11 @@ ClientWindow::DNSLookup (void *arg)
 			output << "Unable to resolve " << resolve.String();
 		}
 	}
-	
 	output << "\n";
-	printf ("dnslookup: %s\n", output.String());
-	client->Display (output.String(), &(client->quitColor));
-	printf ("after display\n");
+	
+	BMessage dnsMsg (M_DISPLAY);
+	client->PackDisplay (&dnsMsg, output.String(), &(client->whoisColor));
+	client->PostMessage(&dnsMsg);	
 	
 	return 0;
 
