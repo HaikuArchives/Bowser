@@ -25,7 +25,7 @@ ServerWindow::ParseEvents (const char *data)
 		tempString << "PONG " << myNick << " " << theServer;
 		SendData (tempString.String());
 		tempString = "";
-		tempString << "PONG " << theServer;
+		tempString << "PONG " << theServer; // fix for some noncompliant servers
 		SendData (tempString.String());
 		return true;
 	}
