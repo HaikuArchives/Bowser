@@ -31,23 +31,23 @@ PreferenceWindow::PreferenceWindow (void)
 		? B_CONTROL_ON : B_CONTROL_OFF);
 	AddChild (windowFollows);
 	
-	hideServer = new BCheckBox (
+	hideSetup = new BCheckBox (
 		BRect (0, 50, bounds.right, 74),
-		"hideserver",
+		"hidesetup",
 		"Hide setup window on connect",
-		new BMessage (M_HIDE_SERVER));
-	hideServer->SetValue (bowser_app->GetHideServerState()
+		new BMessage (M_HIDE_SETUP));
+	hideSetup->SetValue (bowser_app->GetHideSetupState()
 		? B_CONTROL_ON : B_CONTROL_OFF);
-	AddChild (hideServer);
+	AddChild (hideSetup);
 
-	showServer = new BCheckBox (
+	showSetup = new BCheckBox (
 		BRect (0, 75, bounds.right, 99),
-		"showserver",
+		"showsetup",
 		"Activate setup window on disconnect",
-		new BMessage (M_ACTIVATE_SERVER));
-	showServer->SetValue (bowser_app->GetShowServerState()
+		new BMessage (M_ACTIVATE_SETUP));
+	showSetup->SetValue (bowser_app->GetShowSetupState()
 		? B_CONTROL_ON : B_CONTROL_OFF);
-	AddChild (showServer);
+	AddChild (showSetup);
 	
 	showTopic = new BCheckBox (
 		BRect (0, 125, bounds.right, 149),
@@ -75,31 +75,31 @@ PreferenceWindow::AttachedToWindow (void)
 
 	messageBox->SetTarget (this);
 	windowFollows->SetTarget (this);
-	hideServer->SetTarget (this);
-	showServer->SetTarget (this);
+	hideSetup->SetTarget (this);
+	showSetup->SetTarget (this);
 	showTopic->SetTarget (this);
 
 	messageBox->ResizeToPreferred();
 	windowFollows->ResizeToPreferred();
-	hideServer->ResizeToPreferred();
-	showServer->ResizeToPreferred();
+	hideSetup->ResizeToPreferred();
+	showSetup->ResizeToPreferred();
 	showTopic->ResizeToPreferred();
 
 	windowFollows->MoveTo (0, messageBox->Frame().bottom + 1);
-	hideServer->MoveTo (0, windowFollows->Frame().bottom + 1);
-	showServer->MoveTo (0, hideServer->Frame().bottom + 1);
-	showTopic->MoveTo (0, showServer->Frame().bottom + 1);
+	hideSetup->MoveTo (0, windowFollows->Frame().bottom + 1);
+	showSetup->MoveTo (0, hideSetup->Frame().bottom + 1);
+	showTopic->MoveTo (0, showSetup->Frame().bottom + 1);
 
 	float biggest (messageBox->Frame().right);
 
 	if (windowFollows->Frame().right > biggest)
 		biggest = windowFollows->Frame().right;
 
-	if (hideServer->Frame().right > biggest)
-		biggest = hideServer->Frame().right;
+	if (hideSetup->Frame().right > biggest)
+		biggest = hideSetup->Frame().right;
 
-	if (showServer->Frame().right > biggest)
-		biggest = showServer->Frame().right;
+	if (showSetup->Frame().right > biggest)
+		biggest = showSetup->Frame().right;
 	
 	if (showTopic->Frame().right > biggest)
 		biggest = showTopic->Frame().right;
@@ -122,14 +122,14 @@ PreferenceWindow::MessageReceived (BMessage *msg)
 				windowFollows->Value() == B_CONTROL_ON);
 			break;
 	
-		case M_HIDE_SERVER:
-			bowser_app->HideServerState (
-				hideServer->Value() == B_CONTROL_ON);
+		case M_HIDE_SETUP:
+			bowser_app->HideSetupState (
+				hideSetup->Value() == B_CONTROL_ON);
 			break;
 
-		case M_ACTIVATE_SERVER:
-			bowser_app->ShowServerState (
-				showServer->Value() == B_CONTROL_ON);
+		case M_ACTIVATE_SETUP:
+			bowser_app->ShowSetupState (
+				showSetup->Value() == B_CONTROL_ON);
 			break;
 
 		case M_SHOW_TOPIC:

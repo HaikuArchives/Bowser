@@ -238,6 +238,8 @@ SetupWindow::SetupWindow (
 	AddChild (bgView);
 
 	ResizeTo (bgView->Frame().Width(), bgView->Frame().Height());
+
+	AddShortcut('P', B_COMMAND_KEY, new BMessage(M_PREFS_BUTTON));
 	
 	// Connect at startup. -jamie
 	for (int32 i = 0; i < servers->CountItems(); ++i)

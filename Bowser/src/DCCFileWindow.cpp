@@ -2,6 +2,7 @@
 #include <File.h>
 #include <Path.h>
 #include <StatusBar.h>
+#include <Mime.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -231,7 +232,11 @@ int32 DCCFileWindow::DCCReceive()
 	tempString << dFile;
 	SetTitle(tempString.String());
 	closesocket(mySocket);
+	
+	BPath myPath(dFile.String(), NULL, false);
+	update_mime_info(myPath.Path(), false, false, true);
 	delete myFile;
+
 
 	PostMessage (B_QUIT_REQUESTED);
 
@@ -297,7 +302,7 @@ int32 DCCFileWindow::DCCSend()
 
 	int32 myLength = 0, sendInPass = 0, bytesSent = 0;
 	int32 fileSize = atol(dSize.String());
-	char myBuffer[2048];
+	char myBuffer[1024];
 	
 	bigtime_t last (system_time()), now;
 	int cps (0), period (0);

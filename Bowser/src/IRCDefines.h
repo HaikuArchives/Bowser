@@ -212,8 +212,8 @@ const uint32 M_OTHER_NICK_MODIFIED					= 0x1418;
 const uint32 M_AUTO_NICK_MODIFIED					= 0x1419;
 const uint32 M_EVENT_MODIFIED						= 0x1420;
 const uint32 M_COMMAND_MODIFIED						= 0x1421;
-const uint32 M_HIDE_SERVER							= 0x1422;
-const uint32 M_ACTIVATE_SERVER						= 0x1423;
+const uint32 M_HIDE_SETUP							= 0x1422;
+const uint32 M_ACTIVATE_SETUP						= 0x1423;
 const uint32 M_SHOW_TOPIC							= 0x1424;
 const uint32 M_AUTO_REJOIN							= 0x1425;
 

@@ -35,10 +35,10 @@ class BowserApp : public BApplication
 	bool						GetParanoidState (void) const;
 	void						WindowFollowsState (bool);
 	bool						GetWindowFollowsState (void) const;
-	void						HideServerState (bool);
-	bool						GetHideServerState (void) const;
-	void						ShowServerState (bool);
-	bool						GetShowServerState (void) const;
+	void						HideSetupState (bool);
+	bool						GetHideSetupState (void) const;
+	void						ShowSetupState (bool);
+	bool						GetShowSetupState (void) const;
 	void						ShowTopicState (bool);
 	bool						GetShowTopicState (void) const;
 	void						AutoRejoinState (bool);

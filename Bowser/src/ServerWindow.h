@@ -116,6 +116,9 @@ class ServerWindow : public ClientWindow
 									initialMotd,
 									identd;
 	BString						cmds;
+
 };
+
+const uint32 M_HIDE_SERVER					= 'swhw'; // Erin and Patches
 
 #endif

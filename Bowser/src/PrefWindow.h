@@ -10,8 +10,8 @@ class PreferenceWindow : public BView
 {
 	BCheckBox					*messageBox,
 									*windowFollows,
-									*hideServer,
-									*showServer,
+									*hideSetup,
+									*showSetup,
 									*showTopic;
 
 	public:

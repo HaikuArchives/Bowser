@@ -36,8 +36,8 @@ class AppSettings : public Settings
 									messageOpenState,
 									messageFocusState,
 									windowFollowsState,
-									hideServerState,
-									showServerState,
+									hideSetupState,
+									showSetupState,
 									showTopicState,
 									autoRejoinState;
 	BString						alsoKnownAs,
@@ -1334,37 +1334,37 @@ BowserApp::GetWindowFollowsState (void) const
 }
 
 void
-BowserApp::HideServerState (bool state)
+BowserApp::HideSetupState (bool state)
 {
-	settings->hideServerState = state;
+	settings->hideSetupState = state;
 
 	BMessage msg (M_STATE_CHANGE);
 
-	msg.AddBool ("hideserver", state);
+	msg.AddBool ("hidesetup", state);
 	Broadcast (&msg);
 }
 
 bool
-BowserApp::GetHideServerState (void) const
+BowserApp::GetHideSetupState (void) const
 {
-	return settings->hideServerState;
+	return settings->hideSetupState;
 }
 
 void
-BowserApp::ShowServerState (bool state)
+BowserApp::ShowSetupState (bool state)
 {
-	settings->showServerState = state;
+	settings->showSetupState = state;
 
 	BMessage msg (M_STATE_CHANGE);
 
-	msg.AddBool ("showserver", state);
+	msg.AddBool ("showsetup", state);
 	Broadcast (&msg);
 }
 
 bool
-BowserApp::GetShowServerState (void) const
+BowserApp::GetShowSetupState (void) const
 {
-	return settings->showServerState;
+	return settings->showSetupState;
 }
 
 void
@@ -1702,8 +1702,8 @@ AppSettings::AppSettings (void)
 	  messageOpenState (true),
 	  messageFocusState (true),
 	  windowFollowsState (true),
-	  hideServerState (false),
-	  showServerState (false),
+	  hideSetupState (false),
+	  showSetupState (false),
 	  showTopicState (true),
 	  autoRejoinState (false),
 	  alsoKnownAs ("bowserUser beosUser"),
@@ -1893,11 +1893,11 @@ AppSettings::RestorePacked (BMessage *msg)
 	if (msg->HasBool ("Window Follows"))
 		msg->FindBool ("Window Follows", &windowFollowsState);
 
-	if (msg->HasBool ("Hide Server"))
-		msg->FindBool ("Hide Server", &hideServerState);
+	if (msg->HasBool ("Hide Setup"))
+		msg->FindBool ("Hide Setup", &hideSetupState);
 
-	if (msg->HasBool ("Show Server"))
-		msg->FindBool ("Show Server", &showServerState);
+	if (msg->HasBool ("Show Setup"))
+		msg->FindBool ("Show Setup", &showSetupState);
 		
 	if (msg->HasBool ("Show Topic"))
 		msg->FindBool ("Show Topic", &showTopicState);
@@ -2156,8 +2156,8 @@ AppSettings::SavePacked (BMessage *msg)
 	msg->AddBool ("Message Open", messageOpenState);
 	msg->AddBool ("Message Focus", messageFocusState);
 	msg->AddBool ("Window Follows", windowFollowsState);
-	msg->AddBool ("Hide Server", hideServerState);
-	msg->AddBool ("Show Server", showServerState);
+	msg->AddBool ("Hide Setup", hideSetupState);
+	msg->AddBool ("Show Setup", showSetupState);
     msg->AddBool ("Show Topic", showTopicState);
     msg->AddBool ("Auto Rejoin", autoRejoinState);
 	msg->AddInt32 ("NotificationMask", notificationMask);

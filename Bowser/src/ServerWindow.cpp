@@ -83,6 +83,8 @@ ServerWindow::ServerWindow (
 	joinColor    = bowser_app->GetColor (C_JOIN);
 	noticeColor  = bowser_app->GetColor (C_NOTICE);
 	textColor    = bowser_app->GetColor (C_SERVER);
+	
+	AddShortcut('W', B_COMMAND_KEY, new BMessage(M_HIDE_SERVER)); 
 
 	status->AddItem (new StatusItem (
 		serverName.String(), 0),
@@ -209,7 +211,7 @@ ServerWindow::QuitRequested()
 	aMsg.AddString ("server", serverName.String());
 	bowser_app->PostMessage (&aMsg);
 	
-	if (bowser_app->GetShowServerState())
+	if (bowser_app->GetShowSetupState())
 	{
 		bowser_app->PostMessage (M_SETUP_ACTIVATE);
 	}
@@ -460,6 +462,13 @@ ServerWindow::MessageReceived (BMessage *msg)
 			break;
 		}
 
+		case M_HIDE_SERVER:
+		{
+			Minimize(true);
+
+			break;
+		}
+
 		default:
 			ClientWindow::MessageReceived (msg);
 	}
@@ -487,7 +496,7 @@ ServerWindow::Establish (void *arg)
 	ServerWindow *server;
 	bool identd;
 	
-	if(bowser_app->GetHideServerState())
+	if(bowser_app->GetHideSetupState())
 	{
 		bowser_app->PostMessage (M_SETUP_HIDE);
 	}
