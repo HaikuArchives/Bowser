@@ -25,8 +25,6 @@ http://bowser.sourceforge.net
  * Channel modes are now timestamped
  * Nick changes are now timestamped
  * Can now choose point 15 fonts
- * home.* and members.* URLs are highlighted & clickable if they are typed without
-   a http://
  * Added compatablilty for some out of spec /me's from other clients 
  * Fixed some oddities in the Color Preferences panel
  * Added options to Window Preferences to disable Alt+W for Setup and Server
