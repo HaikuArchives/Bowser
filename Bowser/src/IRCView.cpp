@@ -1,5 +1,6 @@
 
 #define MAX_BYTES			32000
+#define MELTDOWN_BYTES		500000
 #define REMOVE_BYTES		1000
 
 #include <Alert.h>

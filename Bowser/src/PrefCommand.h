@@ -18,4 +18,6 @@ class PreferenceCommand : public BView
 	virtual void				MessageReceived (BMessage *);
 };
 
+const uint32 M_COMMAND_MODIFIED						= 'pcmo';
+
 #endif

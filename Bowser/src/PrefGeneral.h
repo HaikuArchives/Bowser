@@ -21,4 +21,9 @@ class PreferenceGeneral : public BView
 	virtual void				MessageReceived (BMessage *);
 };
 
+const uint32 M_STAMP_BOX							= 'pgsb';
+const uint32 M_STAMP_PARANOID						= 'pgpa';
+const uint32 M_NICKNAME_BIND						= 'pgnb';
+const uint32 M_AUTO_REJOIN							= 'pgar';
+
 #endif

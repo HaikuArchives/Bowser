@@ -191,9 +191,6 @@ const uint32 M_SOPTIONS_CONNECT_ON_STARTUP			= 0x2003;
 
 // Preferences
 const uint32 M_PREFERENCE_GROUP						= 0x1400;
-const uint32 M_STAMP_BOX							= 0x1401;
-const uint32 M_STAMP_PARANOID						= 0x1402;
-const uint32 M_NICKNAME_BIND						= 0x1403;
 const uint32 M_MESSAGE_OPEN     					= 0x1404;
 const uint32 M_MESSAGE_FOCUS						= 0x1405;
 const uint32 M_WINDOW_FOLLOWS						= 0x1406;
@@ -211,11 +208,10 @@ const uint32 M_AKA_MODIFIED							= 0x1417;
 const uint32 M_OTHER_NICK_MODIFIED					= 0x1418;
 const uint32 M_AUTO_NICK_MODIFIED					= 0x1419;
 const uint32 M_EVENT_MODIFIED						= 0x1420;
-const uint32 M_COMMAND_MODIFIED						= 0x1421;
+
 const uint32 M_HIDE_SETUP							= 0x1422;
 const uint32 M_ACTIVATE_SETUP						= 0x1423;
 const uint32 M_SHOW_TOPIC							= 0x1424;
-const uint32 M_AUTO_REJOIN							= 0x1425;
 
 
 // Color (Part of Preferinces)
