@@ -4,6 +4,7 @@
 
 #include <Alert.h>
 #include <FilePanel.h>
+#include <Invoker.h>
 
 #include "IRCDefines.h"
 #include "ServerWindow.h"

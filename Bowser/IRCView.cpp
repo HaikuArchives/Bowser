@@ -5,6 +5,7 @@
 #include <Alert.h>
 #include <TextControl.h>
 #include <Font.h>
+#include <Roster.h>
 
 #include <list>
 #include <stdio.h>

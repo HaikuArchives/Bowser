@@ -13,6 +13,8 @@
 #include <ScrollBar.h>
 #include <Region.h>
 #include <StopWatch.h>
+#include <Window.h>
+#include <Clipboard.h>
 
 #include "IRCState.h"
 #include "RunView.h"

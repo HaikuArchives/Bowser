@@ -884,7 +884,7 @@ ServerWindow::Broadcast (BMessage *msg)
 void
 ServerWindow::RepliedBroadcast (BMessage *msg)
 {
-	BMessage cMsg (msg);
+	BMessage cMsg (*msg);
 	BAutolock lock (this);
 
 	for (int32 i = 0; i < clients.CountItems(); ++i)

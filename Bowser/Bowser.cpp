@@ -587,7 +587,7 @@ BowserApp::MessageReceived (BMessage *msg)
 
 					if (strcasecmp (cmd, item->Text()) == 0)
 					{
-						BMessage aMsg (msg);
+						BMessage aMsg (*msg);
 
 						if (sd->ignoreWindow)
 						{

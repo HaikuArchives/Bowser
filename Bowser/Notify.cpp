@@ -14,6 +14,7 @@
 #include <Messenger.h>
 #include <MessageRunner.h>
 #include <Screen.h>
+#include <Roster.h>
 
 #include "IRCDefines.h"
 #include "Notify.h"

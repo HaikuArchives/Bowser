@@ -282,7 +282,7 @@ IgnoreWindow::MessageReceived (BMessage *msg)
 		case M_IGNORE_REMOVE:
 		{
 			BListItem *item (listView->ItemAt (listView->CurrentSelection()));
-			BMessage sMsg (msg);
+			BMessage sMsg (*msg);
 			BString serverName (GetWord (Title(), 2));
 
 			sMsg.AddString ("server", serverName.String());
