@@ -26,7 +26,7 @@ http://bowser.sourceforge.net
  * Fixed the Add... menu entry in the Notify Window
  * Window Titlebars are updated with an astrick (*) if they contain new content
  * Added status messages to the connection process
- * New Ident system
+ * Fixed weird issues with Color Preferences Panel
 
 
 [d42b]

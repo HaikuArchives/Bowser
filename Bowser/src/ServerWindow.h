@@ -65,7 +65,7 @@ class ServerWindow : public ClientWindow
 	ClientWindow				*Client (const char *);
 	ClientWindow				*ActiveClient (void);
 	BList							resumes;	
-	void							DisplayAll (const char *, bool = false);
+	void							DisplayAll (const char *, bool = false, const rgb_color * = 0, const BFont * = 0);
 
 
 	void							SendData (const char *);

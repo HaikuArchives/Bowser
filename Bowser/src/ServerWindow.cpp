@@ -889,7 +889,6 @@ ServerWindow::Establish (void *arg)
 			|| !FD_ISSET (endPoint->Socket(), &wset)
 			|| length < 0)
 			{
-				// TODO Alert box baby!
 				printf ("Negative from endpoint receive! (%ld)\n", length);
 				printf ("(%d) %s\n",
 					endPoint->Error(),
@@ -899,9 +898,22 @@ ServerWindow::Establish (void *arg)
 					FD_ISSET (endPoint->Socket(), &eset) ? "true" : "false",
 					FD_ISSET (endPoint->Socket(), &rset) ? "true" : "false",
 					FD_ISSET (endPoint->Socket(), &wset) ? "true" : "false");
-					
+		
+				server->isConnected = false;
+			
+				// update lag meter
+				server->myLag = "CONNECTION PROBLEM";
+				BMessage lagmsg (M_LAG_CHANGED);
+				server->PostMessage (&lagmsg);
+		
+				// let the user know
+				BString tempString;
+				tempString << "[@] Disconnected from " << server->serverName << "\n";
+				server->Display (tempString.String(), &(server->errorColor));
+				server->DisplayAll (tempString.String(), false, &(server->errorColor), &(server->serverFont));						
 	
-				msgr.SendMessage (B_QUIT_REQUESTED);
+				
+				//msgr.SendMessage (B_QUIT_REQUESTED);
 				server->Unlock();
 				break;
 			}
@@ -948,7 +960,24 @@ ServerWindow::SendData (const char *cData)
 
 	if (endPoint == 0
 	|| (length = endPoint->Send (send_buffer, strlen (send_buffer))) < 0)
-			PostMessage (B_QUIT_REQUESTED);
+	{
+		// doh, we aren't even connected.
+		
+		//PostMessage (B_QUIT_REQUESTED);
+		
+		isConnected = false;
+		
+		// update lag meter
+		myLag = "CONNECTION PROBLEM";
+		BMessage msg(M_LAG_CHANGED);
+		PostMessage(&msg);
+		
+		// let the user know
+		BString tempString;
+		tempString << "[@] Disconnected from " << serverName << "\n";
+		Display (tempString.String(), &errorColor);
+		DisplayAll (tempString.String(), false, &errorColor, &serverFont);	
+	}
 	
 	#ifdef DEV_BUILD
 	data.RemoveAll ("\n");
@@ -1053,7 +1082,11 @@ ServerWindow::RepliedBroadcast (BMessage *msg)
 
 
 void
-ServerWindow::DisplayAll (const char *buffer, bool channelOnly)
+ServerWindow::DisplayAll (
+	const char *buffer,
+	bool channelOnly,
+	const rgb_color *color,
+	const BFont *font)
 {
 	for (int32 i = 0; i < clients.CountItems(); ++i)
 	{
@@ -1063,7 +1096,7 @@ ServerWindow::DisplayAll (const char *buffer, bool channelOnly)
 		{
 			BMessage msg (M_DISPLAY);
 
-			PackDisplay (&msg, buffer);
+			PackDisplay (&msg, buffer, color, font);
 
 			client->PostMessage (&msg);
 		}
