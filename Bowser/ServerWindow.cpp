@@ -110,7 +110,7 @@ ServerWindow::ServerWindow (
 
 	loginThread = spawn_thread (
 		Establish,
-		"Cheating at Solitaire",
+		"complimentary_tote_bag",
 		B_NORMAL_PRIORITY,
 		msg);
 

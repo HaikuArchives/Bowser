@@ -185,6 +185,7 @@ class ClientWindow : public BWindow
 	void								OpCmd (const char *);
 	void								DopCmd (const char *);
 	void								ModeCmd (const char *);
+	void								Mode2Cmd (const char *);
 	void								MotdCmd (const char *);
 	void								TopicCmd (const char *);
 	void								NamesCmd (const char *);
@@ -200,6 +201,9 @@ class ClientWindow : public BWindow
 	void								ExcludeCmd (const char *);
 	void								NotifyCmd (const char *);
 	void								UnnotifyCmd (const char *);
+	void								PreferencesCmd (const char *);
+	void								AboutCmd (const char *);
+	void								VisitCmd (const char *);
 	void								SleepCmd (const char *);
 	
 	void								CTCPAction (BString theTarget, BString

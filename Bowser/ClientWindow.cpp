@@ -1,4 +1,3 @@
-
 #include <FilePanel.h>
 #include <MenuBar.h>
 #include <MenuItem.h>
@@ -6,6 +5,7 @@
 #include <ScrollView.h>
 #include <View.h>
 #include <TextControl.h>
+#include <Roster.h>
 
 #include <map>
 #include <ctype.h>
@@ -269,57 +269,60 @@ ClientWindow::Init (void)
 	cmdWrap = new CommandWrapper;
 
 	// Add Commands (make cmdWrap static?)
-	cmdWrap->cmds["/PING"]		= &ClientWindow::PingCmd;
-	cmdWrap->cmds["/VERSION"]	= &ClientWindow::VersionCmd;
-	cmdWrap->cmds["/NOTICE"]	= &ClientWindow::NoticeCmd;
-	cmdWrap->cmds["/ADMIN"]		= &ClientWindow::AdminCmd;
-	cmdWrap->cmds["/INFO"]		= &ClientWindow::InfoCmd;
-	cmdWrap->cmds["/RAW"]		= &ClientWindow::RawCmd;
-	cmdWrap->cmds["/QUOTE"]		= &ClientWindow::RawCmd;
-	cmdWrap->cmds["/STATS"]		= &ClientWindow::StatsCmd;
-	cmdWrap->cmds["/OPER"]		= &ClientWindow::OperCmd;
-	cmdWrap->cmds["/REHASH"]	= &ClientWindow::RehashCmd;
-	cmdWrap->cmds["/WALLOPS"]	= &ClientWindow::WallopsCmd;
-	cmdWrap->cmds["/KILL"]		= &ClientWindow::KillCmd;
-	cmdWrap->cmds["/TRACE"]		= &ClientWindow::TraceCmd;
-	cmdWrap->cmds["/QUIT"]		= &ClientWindow::QuitCmd;
-	cmdWrap->cmds["/BACK"]		= &ClientWindow::BackCmd;
-	cmdWrap->cmds["/AWAY"]		= &ClientWindow::AwayCmd;
-	cmdWrap->cmds["/ME"]		= &ClientWindow::MeCmd;
-	cmdWrap->cmds["/DESCRIBE"]	= &ClientWindow::DescribeCmd;
-	cmdWrap->cmds["/JOIN"]		= &ClientWindow::JoinCmd;
-	cmdWrap->cmds["/NICK"]		= &ClientWindow::NickCmd;
-	cmdWrap->cmds["/MSG"]		= &ClientWindow::MsgCmd;
-	cmdWrap->cmds["/CTCP"]		= &ClientWindow::CtcpCmd;
-	cmdWrap->cmds["/KICK"]		= &ClientWindow::KickCmd;
-	cmdWrap->cmds["/WHOIS"]		= &ClientWindow::WhoIsCmd;
-	cmdWrap->cmds["/PART"]		= &ClientWindow::PartCmd;
-	cmdWrap->cmds["/OP"]		= &ClientWindow::OpCmd;
-	cmdWrap->cmds["/DEOP"]		= &ClientWindow::DopCmd;
-	cmdWrap->cmds["/DOP"]		= &ClientWindow::DopCmd;
-	cmdWrap->cmds["/MODE"]		= &ClientWindow::ModeCmd;
-	cmdWrap->cmds["/MOTD"]		= &ClientWindow::MotdCmd;
-	cmdWrap->cmds["/T"]			= &ClientWindow::TopicCmd;
-	cmdWrap->cmds["/TOPIC"]		= &ClientWindow::TopicCmd;
-	cmdWrap->cmds["/NAMES"]		= &ClientWindow::NamesCmd;
-	cmdWrap->cmds["/Q"]			= &ClientWindow::QueryCmd;
-	cmdWrap->cmds["/QUERY"]		= &ClientWindow::QueryCmd;
-	cmdWrap->cmds["/WHO"]		= &ClientWindow::WhoCmd;
-	cmdWrap->cmds["/WHOWAS"]	= &ClientWindow::WhoWasCmd;
-	cmdWrap->cmds["/DCC"]		= &ClientWindow::DccCmd;
-	cmdWrap->cmds["/CLEAR"]		= &ClientWindow::ClearCmd;
-	cmdWrap->cmds["/INVITE"]	= &ClientWindow::InviteCmd;
-	cmdWrap->cmds["/LIST"]		= &ClientWindow::ListCmd;
-	cmdWrap->cmds["/IGNORE"]	= &ClientWindow::IgnoreCmd;
-	cmdWrap->cmds["/UNIGNORE"]	= &ClientWindow::UnignoreCmd;
-	cmdWrap->cmds["/EXCLUDE"]	= &ClientWindow::ExcludeCmd;
-	cmdWrap->cmds["/NOTIFY"]	= &ClientWindow::NotifyCmd;
-	cmdWrap->cmds["/UNNOTIFY"]	= &ClientWindow::UnnotifyCmd;
-	cmdWrap->cmds["/J"]			= &ClientWindow::JoinCmd;
-	cmdWrap->cmds["/M"]			= &ClientWindow::MsgCmd;
-	cmdWrap->cmds["/W"]			= &ClientWindow::WhoIsCmd;
-	cmdWrap->cmds["/K"]			= &ClientWindow::KickCmd;
-	cmdWrap->cmds["/SLEEP"]		= &ClientWindow::SleepCmd;
+	cmdWrap->cmds["/PING"]			= &ClientWindow::PingCmd;
+	cmdWrap->cmds["/VERSION"]		= &ClientWindow::VersionCmd;
+	cmdWrap->cmds["/NOTICE"]		= &ClientWindow::NoticeCmd;
+	cmdWrap->cmds["/ADMIN"]			= &ClientWindow::AdminCmd;
+	cmdWrap->cmds["/INFO"]			= &ClientWindow::InfoCmd;
+	cmdWrap->cmds["/RAW"]			= &ClientWindow::RawCmd;
+	cmdWrap->cmds["/QUOTE"]			= &ClientWindow::RawCmd;
+	cmdWrap->cmds["/STATS"]			= &ClientWindow::StatsCmd;
+	cmdWrap->cmds["/OPER"]			= &ClientWindow::OperCmd;
+	cmdWrap->cmds["/REHASH"]		= &ClientWindow::RehashCmd;
+	cmdWrap->cmds["/WALLOPS"]		= &ClientWindow::WallopsCmd;
+	cmdWrap->cmds["/KILL"]			= &ClientWindow::KillCmd;
+	cmdWrap->cmds["/TRACE"]			= &ClientWindow::TraceCmd;
+	cmdWrap->cmds["/QUIT"]			= &ClientWindow::QuitCmd;
+	cmdWrap->cmds["/BACK"]			= &ClientWindow::BackCmd;
+	cmdWrap->cmds["/AWAY"]			= &ClientWindow::AwayCmd;
+	cmdWrap->cmds["/ME"]			= &ClientWindow::MeCmd;
+	cmdWrap->cmds["/DESCRIBE"]		= &ClientWindow::DescribeCmd;
+	cmdWrap->cmds["/JOIN"]			= &ClientWindow::JoinCmd;
+	cmdWrap->cmds["/NICK"]			= &ClientWindow::NickCmd;
+	cmdWrap->cmds["/MSG"]			= &ClientWindow::MsgCmd;
+	cmdWrap->cmds["/CTCP"]			= &ClientWindow::CtcpCmd;
+	cmdWrap->cmds["/KICK"]			= &ClientWindow::KickCmd;
+	cmdWrap->cmds["/WHOIS"]			= &ClientWindow::WhoIsCmd;
+	cmdWrap->cmds["/PART"]			= &ClientWindow::PartCmd;
+	cmdWrap->cmds["/OP"]			= &ClientWindow::OpCmd;
+	cmdWrap->cmds["/DEOP"]			= &ClientWindow::DopCmd;
+	cmdWrap->cmds["/DOP"]			= &ClientWindow::DopCmd;
+	cmdWrap->cmds["/MODE"]			= &ClientWindow::ModeCmd;
+	cmdWrap->cmds["/MOTD"]			= &ClientWindow::MotdCmd;
+	cmdWrap->cmds["/T"]				= &ClientWindow::TopicCmd;
+	cmdWrap->cmds["/TOPIC"]			= &ClientWindow::TopicCmd;
+	cmdWrap->cmds["/NAMES"]			= &ClientWindow::NamesCmd;
+	cmdWrap->cmds["/Q"]				= &ClientWindow::QueryCmd;
+	cmdWrap->cmds["/QUERY"]			= &ClientWindow::QueryCmd;
+	cmdWrap->cmds["/WHO"]			= &ClientWindow::WhoCmd;
+	cmdWrap->cmds["/WHOWAS"]		= &ClientWindow::WhoWasCmd;
+	cmdWrap->cmds["/DCC"]			= &ClientWindow::DccCmd;
+	cmdWrap->cmds["/CLEAR"]			= &ClientWindow::ClearCmd;
+	cmdWrap->cmds["/INVITE"]		= &ClientWindow::InviteCmd;
+	cmdWrap->cmds["/LIST"]			= &ClientWindow::ListCmd;
+	cmdWrap->cmds["/IGNORE"]		= &ClientWindow::IgnoreCmd;
+	cmdWrap->cmds["/UNIGNORE"]		= &ClientWindow::UnignoreCmd;
+	cmdWrap->cmds["/EXCLUDE"]		= &ClientWindow::ExcludeCmd;
+	cmdWrap->cmds["/NOTIFY"]		= &ClientWindow::NotifyCmd;
+	cmdWrap->cmds["/UNNOTIFY"]		= &ClientWindow::UnnotifyCmd;
+	cmdWrap->cmds["/J"]				= &ClientWindow::JoinCmd;
+	cmdWrap->cmds["/M"]				= &ClientWindow::Mode2Cmd;
+	cmdWrap->cmds["/W"]				= &ClientWindow::WhoIsCmd;
+	cmdWrap->cmds["/K"]				= &ClientWindow::KickCmd;
+	cmdWrap->cmds["/SLEEP"]			= &ClientWindow::SleepCmd;
+	cmdWrap->cmds["/ABOUT"]			= &ClientWindow::AboutCmd;
+	cmdWrap->cmds["/PREFERENCES"]	= &ClientWindow::PreferencesCmd;
+	cmdWrap->cmds["/VISIT"]			= &ClientWindow::VisitCmd;
 }
 
 ClientWindow::~ClientWindow (void)
@@ -1359,6 +1362,27 @@ ClientWindow::ModeCmd (const char *data)
 		AddSend (&send, endl);
 	}
 }
+
+void
+ClientWindow::Mode2Cmd (const char *data)
+{
+	BString theMode (RestOfString (data, 3));
+	BString theTarget (GetWord (data, 2));
+
+	if (theTarget != "-9z99")
+	{
+		BMessage send (M_SERVER_SEND);
+
+		AddSend (&send, "MODE ");
+
+		if (theMode == "-9z99")
+			AddSend (&send, theTarget);
+		else
+			AddSend (&send, theTarget << " " << theMode);
+
+		AddSend (&send, endl);
+	}
+}
 	
 void
 ClientWindow::PingCmd (const char *data)
@@ -1890,6 +1914,39 @@ ClientWindow::UnnotifyCmd (const char *data)
 		msg.AddRect ("frame", Frame());
 		msg.AddString ("server", serverName.String());
 		bowser_app->PostMessage (&msg);
+	}
+}
+
+void
+ClientWindow::PreferencesCmd (const char *data)
+{
+	be_app_messenger.SendMessage (M_PREFS_BUTTON);
+}
+
+void
+ClientWindow::AboutCmd (const char *data)
+{
+	be_app_messenger.SendMessage (B_ABOUT_REQUESTED);
+}
+
+void
+ClientWindow::VisitCmd (const char *data)
+{
+	BString buffer (data);
+	int32 place;
+
+	if ((place = buffer.FindFirst (" ")) >= 0)
+	{
+		buffer.Remove (0, place + 1);
+
+		const char *arguments[] = {buffer.String(), 0};
+		
+		
+
+		be_roster->Launch (
+			"text/html",
+			1,
+			const_cast<char **>(arguments));
 	}
 }
 

@@ -4,6 +4,9 @@ http://bowser.sourceforge.net
 
 [d41b]
  * Support for new numerics: 105, 253, 328
+ * Added /about command - opens About window
+ * Added /preferences command - opens Preferences window
+ * Added /visit command - /visit <url> loads URL in default text/html app.
 
 [d41a]
  * New CTCP options in nick list menu
