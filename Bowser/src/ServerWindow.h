@@ -134,11 +134,15 @@ class ServerWindow : public ClientWindow
 									noticeColor;
 	const char					**events;
 	uint32						localAddress;
-
+	
+	
+	
 	bool							motd,
 									initialMotd,
 									identd;
+	int32							parseWhois;
 	BString						cmds;
+	BString						hostAddress;
 	int32 s; 				// socket
 
 };

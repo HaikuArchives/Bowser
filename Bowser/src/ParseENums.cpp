@@ -1,4 +1,5 @@
 #include <Menu.h>
+#include <NetEndpoint.h>
 
 #include "IRCDefines.h"
 #include "ListWindow.h"
@@ -20,12 +21,10 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if (secondWord == "001") // welcome to irc messages
 	{
-		Lock();
 		isConnected  = true;
 		isConnecting = false;
 		initialMotd = true;
 		retry = 0;
-		Unlock();
 
 		myLag = "0.000";
 		PostMessage (M_LAG_CHANGED);
@@ -33,7 +32,6 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		BMessage msg (M_SERVER_CONNECTED);
 		msg.AddString ("server", serverName.String());
 		bowser_app->PostMessage (&msg);
-
 
 		BString theNick (GetWord (data, 3));
 		myNick = theNick;
@@ -47,6 +45,14 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 		BString title ("Bowser: ");
 		title += id;
+		
+		if (parseWhois == 0)
+		{	
+			BString command ("WHOIS ");
+			command << myNick << "\n";
+			endPoint->Send (command.String(), strlen(command.String()));
+			parseWhois = 1;
+		}	
 		
 		if (title != Title())
 		{
@@ -173,6 +179,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		
 	if (secondWord == "301") // whois | away reason (5th param)
 	{
+		if (parseWhois != 2) return true;
 		BString tempString ("[x] "),
 				theReason (RestOfString(data, 5));
 		theReason.RemoveFirst(":");
@@ -255,16 +262,19 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	
 	if (secondWord == "307") // whois | user has identified
 	{
+		if (parseWhois != 2) return true;
 		BString theInfo (RestOfString (data, 5));
 		theInfo.RemoveFirst (":");
 
 		BMessage display (M_DISPLAY);
 		BString buffer;
-
-		buffer << "[x] " << theInfo << "\n";
-		PackDisplay (&display, buffer.String(), &whoisColor, &serverFont);
-		PostActive (&display);
-
+		
+		if (parseWhois == 2)
+		{
+			buffer << "[x] " << theInfo << "\n";
+			PackDisplay (&display, buffer.String(), &whoisColor, &serverFont);
+			PostActive (&display);
+		}
 		return true;
 	}
 	
@@ -275,26 +285,35 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 				theAddress (GetWord (data, 6)),
 				theName (RestOfString (data, 8));
 		theName.RemoveFirst (":");
-
+		
 		BMessage display (M_DISPLAY);
 		BString buffer;
 
-		buffer << "[x] " << theNick << " (" << theIdent
-			<< "@" << theAddress << ")\n" << "[x] "
-			<< theName << "\n";
+		if (parseWhois == 2)
+		{
+			buffer << "[x] " << theNick << " (" << theIdent
+				<< "@" << theAddress << ")\n" << "[x] "
+				<< theName << "\n";
 
-		PackDisplay (
-			&display,
-			buffer.String(),
-			&whoisColor,
-			&serverFont);
-		PostActive (&display);
+			PackDisplay (
+				&display,
+				buffer.String(),
+				&whoisColor,
+				&serverFont);
+			PostActive (&display);
+		}
+		
+		if (theNick == myNick && hostAddress == "")
+		{
+			hostAddress = theAddress;
+		}
 
 		return true;
 	}
 
 	if (secondWord == "312") // whois | server
 	{
+		if (parseWhois != 2) return true;
 		BString theNick (GetWord (data, 4)),
 				theServer (GetWord (data, 5)),
 				theInfo (RestOfString (data, 6));
@@ -312,6 +331,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if (secondWord == "313") // IRC operator (uh oh)
 	{
+		if (parseWhois != 2) return true;
 		BString theNick (GetWord (data, 4)),
 				tempString ("[x] "),
 				info (RestOfString (data, 5));
@@ -356,6 +376,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if (secondWord == "317") // whois | idle/signon (5th, 6th)
 	{
+		if (parseWhois != 2) return true;
 		BString theNick (GetWord (data, 4)),
 				tempString ("[x] "),
 				tempString2 ("[x] "),
@@ -387,6 +408,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 	if (secondWord == "318") // end of whois
 	{
+		parseWhois = 2;
 		return true;
 	}
 
@@ -711,7 +733,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 			PostMessage (&msg);
 		}
 
-		initialMotd = false;
+//		initialMotd = false;
 		return true;
 	}
 

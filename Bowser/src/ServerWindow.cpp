@@ -74,7 +74,9 @@ ServerWindow::ServerWindow (
 		motd (motd_),
 		initialMotd (true),
 		identd (identd_),
-		cmds (cmds_)
+		parseWhois (0),
+		cmds (cmds_),
+		hostAddress ("")
 {
 	SetSizeLimits(200,2000,150,2000);
 
@@ -140,7 +142,7 @@ ServerWindow::ServerWindow (
 
 ServerWindow::~ServerWindow (void)
 {
-	if (endPoint)     delete endPoint;
+	if (endPoint != NULL)     delete endPoint;
 	if (send_buffer)  delete [] send_buffer;
 	if (parse_buffer) delete [] parse_buffer;
 	identLock.Unlock();
@@ -521,6 +523,7 @@ ServerWindow::MessageReceived (BMessage *msg)
 
 		case CHAT_ACTION: // DCC chat
 		{
+			// ToDo: Update to use hostAddress
 			ClientWindow *client;
 			const char *theNick;
 			BString theId;
@@ -583,10 +586,8 @@ ServerWindow::MessageReceived (BMessage *msg)
 			// binds.  calling getsockname on a
 			// a binded socket will return the
 			// LAN ip over the DUN one 
-			struct sockaddr_in sin;
-			int sinsize (sizeof (struct sockaddr_in));
-
-			getsockname (endPoint->Socket(), (struct sockaddr *)&sin, &sinsize);			
+			
+			hostent *hp = gethostbyname(hostAddress.String());		
 			
 			DCCSend *view;
 			view = new DCCSend (
@@ -594,7 +595,7 @@ ServerWindow::MessageReceived (BMessage *msg)
 				path.Path(),
 				ssize.String(),
 				sMsgr,
-				sin.sin_addr);
+				*((struct in_addr*)(hp->h_addr_list)[0]));
 			BMessage msg (M_DCC_FILE_WIN);
 			msg.AddPointer ("view", view);
 			be_app->PostMessage (&msg);
@@ -690,13 +691,15 @@ ServerWindow::Establish (void *arg)
 	msg->FindBool ("identd", &identd);
 	msg->FindBool ("reconnecting", &reconnecting);
 	msg->FindPointer ("server", reinterpret_cast<void **>(&server));
-	
-	
-	if (reconnecting)
+		
+	if (reconnecting && server->Lock())
 	{
 		if (server->retry > 0) {
+			server->Unlock();
 			snooze (2000000); // wait 2 seconds
+			server->Lock();
 		}
+		
 		server->retry++;
 		BMessage statusMsgR (M_DISPLAY);
 		BString tempStringR;
@@ -704,6 +707,7 @@ ServerWindow::Establish (void *arg)
 		server->PackDisplay (&statusMsgR, tempStringR.String(), &(server->errorColor));
 		server->PostMessage (&statusMsgR);
 		server->DisplayAll (tempStringR.String(), false, &(server->errorColor), &(server->serverFont));
+		server->Unlock();
 	}
 		
 	
@@ -747,7 +751,12 @@ ServerWindow::Establish (void *arg)
 			server->Unlock();
 		}
 
-		if (endPoint) delete endPoint;
+		if (endPoint)
+		{
+			delete endPoint;
+			endPoint = 0;
+		}
+		
 		return 0;
 	}
 
@@ -756,6 +765,7 @@ ServerWindow::Establish (void *arg)
 	if (!msgr.IsValid())
 	{
 		delete endPoint;
+		endPoint = 0;
 		return 0;
 	}
 
@@ -878,7 +888,8 @@ ServerWindow::Establish (void *arg)
 		server->PostMessage (M_SERVER_DISCONNECT);
 
 		delete endPoint;
-
+		endPoint = 0;
+		
 		return 0;
 	}
 		
@@ -973,6 +984,8 @@ ServerWindow::Establish (void *arg)
 				
 				server->PostMessage (M_SERVER_DISCONNECT);
 				delete endPoint;
+				endPoint = 0;
+				
 				break;
 			}
 		}
@@ -1016,8 +1029,8 @@ ServerWindow::SendData (const char *cData)
 		&dest_length,
 		&state);
 
-	if (endPoint == 0
-	|| (length = endPoint->Send (send_buffer, strlen (send_buffer))) < 0)
+	if ((endPoint != 0 && (length = endPoint->Send (send_buffer, strlen (send_buffer))) < 0)
+		|| endPoint == 0)
 	{
 		// doh, we aren't even connected.
 		
@@ -1163,7 +1176,7 @@ ServerWindow::PostActive (BMessage *msg)
 	if (client)
 		client->PostMessage (msg);
 	else
-		ServerWindow::MessageReceived (msg);
+		PostMessage (msg);
 }
 
 
