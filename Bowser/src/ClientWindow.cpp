@@ -934,7 +934,7 @@ ClientWindow::TimedSubmit (void *arg)
 
 			// A small attempt to appease the
 			// kicker gods
-			snooze (35000);
+			snooze (50000);
 		}
 	}
 	
@@ -1053,35 +1053,6 @@ ClientWindow::SlashParser (const char *data)
 
 	return false;
 }
-
-//bool
-//ClientWindow::AcceptsPaste(BClipboard *clipboard)
-//{
-//	printf("called AcceptsPaste\n");
-//	const char *text;
-//
-//	int32 textLen;
-//
-//	BMessage *clip = (BMessage *)NULL;
-//
-//	if (clipboard->Lock()) {
-//
-//	   if ((clip = clipboard->Data()))
-//	    if (clip->FindData("text/plain", B_MIME_TYPE, 
-//	    	(const void **)&text, &textLen) != B_OK)
-//	    	{
-//	    		clipboard->Unlock();
-//	    		return false;
-//	    	}
-//	   	clipboard->Unlock();
-//	   	BMessage mimeMsg(B_MIME_TYPE);
-//	   	mimeMsg.AddData("text/plain", B_MIME_TYPE,
-//	   		(const void *)&text, textLen, true);
-//	   	PostMessage(&mimeMsg);
-//	   	return true;
-//	}
-//	return false;
-//}
 
 void
 ClientWindow::ChannelMessage (

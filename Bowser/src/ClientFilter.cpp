@@ -257,6 +257,8 @@ ClientInputFilter::HandleDrop (const char *buffer)
 	{
 		msg.AddBool ("lines", result == 1);
 		window->PostMessage (&msg);
+		window->input->MakeFocus(false);
+		window->input->MakeFocus(true);
 	}
 
 }

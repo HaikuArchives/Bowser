@@ -102,7 +102,6 @@ class ClientWindow : public BWindow
 
 	virtual void					Parser (const char *);
 	virtual bool					SlashParser (const char *);
-//	virtual bool					AcceptsPaste(BClipboard *);
 	virtual void					StateChange (BMessage *);
 
 	void								AddSend (BMessage *, const char *);
