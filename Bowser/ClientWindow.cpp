@@ -311,6 +311,7 @@ ClientWindow::Init (void)
 	cmdWrap->cmds["/M"]			= &ClientWindow::MsgCmd;
 	cmdWrap->cmds["/W"]			= &ClientWindow::WhoIsCmd;
 	cmdWrap->cmds["/K"]			= &ClientWindow::KickCmd;
+	cmdWrap->cmds["/SLEEP"]		= &ClientWindow::SleepCmd;
 }
 
 ClientWindow::~ClientWindow (void)
@@ -1852,6 +1853,18 @@ ClientWindow::UnnotifyCmd (const char *data)
 		msg.AddRect ("frame", Frame());
 		msg.AddString ("server", serverName.String());
 		bowser_app->PostMessage (&msg);
+	}
+}
+
+void
+ClientWindow::SleepCmd (const char *data)
+{
+	BString rest (RestOfString (data, 2));
+
+	if (rest != "-9z99")
+	{
+		int32 time = atoi(rest.String());
+		snooze(time * 1000 * 100); // deciseconds? 10 = one second
 	}
 }
 

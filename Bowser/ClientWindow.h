@@ -199,6 +199,7 @@ class ClientWindow : public BWindow
 	void								ExcludeCmd (const char *);
 	void								NotifyCmd (const char *);
 	void								UnnotifyCmd (const char *);
+	void								SleepCmd (const char *);
 	
 	void								CTCPAction (BString theTarget, BString theMsg);
 
