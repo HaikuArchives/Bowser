@@ -15,7 +15,7 @@ class NameItem : public BListItem
 										NameItem (
 											const char *,
 											int32);
-	virtual							~NameItem();
+	virtual							~NameItem (void);
 	BString							Name (void) const;
 	BString							Address (void) const;
 	int32								Status (void) const;
@@ -39,8 +39,8 @@ class NamesView : public BListView
 	public:
 
 										NamesView (BRect frame);
-	virtual							~NamesView();
-	virtual void					AttachedToWindow();
+	virtual							~NamesView (void);
+	virtual void					AttachedToWindow (void);
 	virtual void					MouseDown(BPoint myPoint);
 
 	void								SetColor (int32, rgb_color);

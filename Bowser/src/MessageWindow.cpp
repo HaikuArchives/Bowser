@@ -84,12 +84,12 @@ MessageWindow::MessageWindow (
 
 }
 
-MessageWindow::~MessageWindow()
+MessageWindow::~MessageWindow (void)
 {
 }
 
 
-bool MessageWindow::QuitRequested()
+bool MessageWindow::QuitRequested (void)
 {
 	if (dChat)
 	{

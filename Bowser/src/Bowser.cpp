@@ -111,7 +111,7 @@ BowserApp::BowserApp()
 
 }
 
-BowserApp::~BowserApp()
+BowserApp::~BowserApp (void)
 {
 	delete settings;
 	

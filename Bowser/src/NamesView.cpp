@@ -102,12 +102,12 @@ NamesView::NamesView(BRect frame)
 	SetViewColor (bgColor);
 }
 
-NamesView::~NamesView()
+NamesView::~NamesView (void)
 {
 	delete myPopUp;
 }
 
-void NamesView::AttachedToWindow()
+void NamesView::AttachedToWindow (void)
 {
 	myPopUp->SetTargetForItems(Window());
 	CTCPPopUp->SetTargetForItems(Window());

@@ -32,7 +32,7 @@ ChannelWindow::ChannelWindow (
 		serverName_,
 		sMsgr_,
 		nick,
-		BRect(110,110,730,420)),
+		BRect (110,110,730,420)),
 
 		chanMode (""),
 		chanLimit (""),
@@ -418,7 +418,7 @@ ChannelWindow::MessageReceived (BMessage *msg)
 			
 			if (bowser_app->GetStatusTopicState())
 			{
-				status->SetItemValue(STATUS_TOPIC, theTopic);
+				status->SetItemValue (STATUS_TOPIC, theTopic);
 			}
 			
 			if(bowser_app->GetShowTopicState())
@@ -489,9 +489,9 @@ ChannelWindow::MessageReceived (BMessage *msg)
 			const char *chan;
 			const char *msgz;
 
-			msg->FindString("mode", &mode);
-			msg->FindString("chan", &chan);
-			msg->FindString("msgz", &msgz);
+			msg->FindString ("mode", &mode);
+			msg->FindString ("chan", &chan);
+			msg->FindString ("msgz", &msgz);
 						
 			if (id.ICompare (chan) == 0)
 			{
@@ -507,7 +507,7 @@ ChannelWindow::MessageReceived (BMessage *msg)
 				chanMode = mode;
 				status->SetItemValue (STATUS_MODES, chanMode.String());
 			}
-			BMessage dispMsg(M_DISPLAY);
+			BMessage dispMsg (M_DISPLAY);
 			PackDisplay (&dispMsg, msgz, &opColor, 0, bowser_app->GetStampState());
 			PostMessage(&dispMsg);
 			break;

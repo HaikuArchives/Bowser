@@ -254,7 +254,7 @@ SetupWindow::SetupWindow (
 }
 
 bool
-SetupWindow::QuitRequested()
+SetupWindow::QuitRequested (void)
 {
 	// We must ask the servers to shutdown.
 	// They will, but things need to happen
@@ -711,7 +711,7 @@ SetupWindow::MessageReceived (BMessage *msg)
 	}
 }
 
-SetupWindow::~SetupWindow()
+SetupWindow::~SetupWindow (void)
 {
 }
 
