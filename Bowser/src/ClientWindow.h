@@ -124,7 +124,7 @@ class ClientWindow : public BWindow
 
 
 	public:
-
+	
 	typedef void (ClientWindow::*CmdFunc) (const char *);
 
 										ClientWindow (

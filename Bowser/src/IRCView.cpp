@@ -98,31 +98,84 @@ IRCView::~IRCView()
 void 
 IRCView::MouseDown (BPoint myPoint) 
 { 
-        int32 start, finish; 
+        int32 start, finish;
+        int32 buttons (0),
+			modifiers (0),
+			clicks (0);
+
+		lasty = myPoint.y;
+		
+		
+		BMessage *msg (Window()->CurrentMessage());
+		msg->FindInt32 ("buttons", &buttons);
+		msg->FindInt32 ("clicks",  &clicks);
+		msg->FindInt32 ("modifiers", &modifiers);
 
         BTextView::MouseDown (myPoint); 
-        GetSelection (&start, &finish); 
-
-        if (start == finish) 
-        { 
-                list<URL> &urls (settings->urls); 
-                list<URL>::const_iterator it; 
-                int32 offset (OffsetAt (myPoint)); 
-
-                for (it = urls.begin(); it != urls.end(); ++it) 
-
-                        if (offset >= it->offset 
-                        &&  offset <  it->offset + it->display.Length()) 
-                        { 
-                                const char *arguments[] = {it->url.String(), 0}; 
-
-                                be_roster->Launch ("text/html", 
-                                        1, const_cast<char **>(arguments)); 
-
-                                settings->parentInput->MakeFocus (true); 
-                        } 
-        } 
+        GetSelection (&start, &finish);
+        
+        if (buttons == B_TERTIARY_MOUSE_BUTTON
+		&& (modifiers & B_SHIFT_KEY)   == 0
+		&& (modifiers & B_OPTION_KEY)  == 0
+		&& (modifiers & B_COMMAND_KEY) == 0
+		&& (modifiers & B_CONTROL_KEY) == 0)
+		{
+			tracking  = true;
+			MakeSelectable (false);
+		}
+		else {
+			
+	        if (start == finish) 
+	        { 
+				list<URL> &urls (settings->urls); 
+				list<URL>::const_iterator it; 
+	            int32 offset (OffsetAt (myPoint)); 
+	
+	            for (it = urls.begin(); it != urls.end(); ++it) 
+	
+	            if (offset >= it->offset 
+	            &&  offset <  it->offset + it->display.Length()) 
+	            { 
+	            	const char *arguments[] = {it->url.String(), 0}; 
+	
+	                be_roster->Launch ("text/html", 
+	            		1, const_cast<char **>(arguments)); 
+	
+	            	settings->parentInput->MakeFocus (true); 
+	            }
+			}
+		} 
 } 
+
+void
+IRCView::MouseMoved (BPoint point, uint32 transit, const BMessage *)
+{
+	if (tracking)
+	{
+//		switch (transit)
+//			{
+//				case B_ENTERED_VIEW:
+//					break;
+//				case B_EXITED_VIEW:
+//					break;
+//			}
+	
+		float movetoy = point.y - lasty;
+		ScrollBy (0, movetoy);
+		//ScrollTo (point.x, point.y);
+	}
+}
+
+
+void
+IRCView::MouseUp (BPoint point)
+{
+	if (tracking)
+	{
+		MakeSelectable (true);
+		tracking = false;
+	}
+}
 
 void 
 IRCView::KeyDown (const char * bytes, int32 numBytes) 
@@ -236,7 +289,7 @@ IRCView::DisplayChunk (
                         parent->SetScrollPos(TextHeight(0, curLine));           
         } 
 
-        if (scrolling) 
+        if (scrolling && !tracking)
         { 
                 if (TextLength() > 0) 
                 ScrollToOffset (TextLength()); 
