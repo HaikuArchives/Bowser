@@ -970,6 +970,7 @@ ServerWindow::Establish (void *arg)
 
 				// tell the user all about it
 				//server->isConnected = false;
+				endPoint->Close();
 				delete endPoint;
 							
 				server->PostMessage (M_SERVER_DISCONNECT);
