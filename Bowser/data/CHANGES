@@ -24,7 +24,9 @@ http://bowser.sourceforge.net
    of sending multiple lines now.
  * Having nicks in your Notify list doesn't lag you to death now
  * Fixed the Add... menu entry in the Notify Window
- * Window Titlebars are updated with an astrick (*) if they contain new content 
+ * Window Titlebars are updated with an astrick (*) if they contain new content
+ * Added status messages to the connection process
+ * New Ident system
 
 
 [d42b]

@@ -99,34 +99,12 @@ IRCView::~IRCView()
 void 
 IRCView::MouseDown (BPoint myPoint) 
 { 
-        int32 start, finish;
-        int32 buttons (0),
-			modifiers (0),
-			clicks (0);
-
-		lasty = myPoint.y;
+        int32	start,
+        		finish;	
 		
-		
-		BMessage *msg (Window()->CurrentMessage());
-		msg->FindInt32 ("buttons", &buttons);
-		msg->FindInt32 ("clicks",  &clicks);
-		msg->FindInt32 ("modifiers", &modifiers);
-
-        BTextView::MouseDown (myPoint); 
+		BTextView::MouseDown (myPoint); 
         GetSelection (&start, &finish);
-        
-        if (buttons == B_TERTIARY_MOUSE_BUTTON
-		&& (modifiers & B_SHIFT_KEY)   == 0
-		&& (modifiers & B_OPTION_KEY)  == 0
-		&& (modifiers & B_COMMAND_KEY) == 0
-		&& (modifiers & B_CONTROL_KEY) == 0)
-		{
-			tracking  = true;
-			MakeSelectable (false);
-		}
-		else {
-			
-	        if (start == finish) 
+       		if (start == finish) 
 	        { 
 				list<URL> &urls (settings->urls); 
 				list<URL>::const_iterator it; 
@@ -145,39 +123,7 @@ IRCView::MouseDown (BPoint myPoint)
 	            	settings->parentInput->MakeFocus (true); 
 	            }
 			}
-		} 
 } 
-
-void
-IRCView::MouseMoved (BPoint point, uint32 transit, const BMessage *)
-{
-	if (tracking)
-	{	
-		float movetoy;
-		if (point.y > lasty)
-		{
-			movetoy = (point.y - lasty);
-		}
-		else
-		{
-			movetoy = (point.y - lasty - lasty);  // make negative?
-		}
-			
-		ScrollBy (0, movetoy);
-		//ScrollTo (point.x, point.y);
-	}
-}
-
-
-void
-IRCView::MouseUp (BPoint point)
-{
-	if (tracking)
-	{
-		MakeSelectable (true);
-		tracking = false;
-	}
-}
 
 void 
 IRCView::KeyDown (const char * bytes, int32 numBytes) 

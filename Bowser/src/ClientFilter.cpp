@@ -5,6 +5,7 @@
 #include <TextControl.h>
 #include <TextView.h>
 #include <Clipboard.h>
+#include <Roster.h>
 
 #include <stdio.h>
 #include <string.h>

@@ -49,7 +49,8 @@ class ServerWindow : public ClientWindow
 	virtual void				MenusBeginning (void);
 	virtual void			DispatchMessage (BMessage *, BHandler *);
 	void						Pulse (void);
-
+	
+	static int32				Ident(void *);
 	static int32				Establish (void *);
 	uint32						LocalAddress (void) const;
 	void							PostActive (BMessage *);
@@ -117,6 +118,7 @@ class ServerWindow : public ClientWindow
 	size_t						parse_size;			// size of buffer
 
 	thread_id					loginThread;		// thread that receives
+	thread_id					identThread;
 
 	BList							clients;				// windows this server "owns"
 

@@ -21,8 +21,6 @@ class IRCView : public BTextView
 
 								~IRCView (void);
 	virtual void			MouseDown (BPoint);
-	virtual void			MouseMoved (BPoint, uint32, const BMessage *);
-	virtual void			MouseUp (BPoint);
 	virtual void			KeyDown(const char * bytes, int32 numBytes);
 	virtual void			FrameResized (float, float);
 

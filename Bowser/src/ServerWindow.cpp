@@ -1,6 +1,7 @@
 
 #include <NetEndpoint.h>
 #include <NetAddress.h>
+
 #include <UTF8.h>
 #include <Path.h>
 #include <Alert.h>
@@ -109,7 +110,6 @@ ServerWindow::ServerWindow (
 	status->SetItemValue (STATUS_NICK, myNick.String());
 	
 	SetPulseRate (0);
-	ClientWindow *client (ActiveClient());
 
 	// We pack it all up and ship it off to the
 	// the establish thread.  Establish can
@@ -123,14 +123,20 @@ ServerWindow::ServerWindow (
 	msg->AddString ("nick", myNick.String());
 	msg->AddBool ("identd", identd);
 	msg->AddPointer ("server", this);
-	msg->AddPointer ("client", client);
+
+	if (identd)
+	{
+		identThread = spawn_thread(Ident, "Ident daemon",
+			B_LOW_PRIORITY, this);
+		resume_thread(identThread);
+	}
 
 	loginThread = spawn_thread (
 		Establish,
 		"complimentary_tote_bag",
 		B_NORMAL_PRIORITY,
 		msg);
-
+	
 	resume_thread (loginThread);
 
 	BMessage aMsg (M_SERVER_STARTUP);
@@ -143,6 +149,7 @@ ServerWindow::~ServerWindow (void)
 	if (endPoint)     delete endPoint;
 	if (send_buffer)  delete [] send_buffer;
 	if (parse_buffer) delete [] parse_buffer;
+	identLock.Unlock();
 
 	char *nick;
 	while ((nick = (char *)lnicks->RemoveItem (0L)) != 0)
@@ -164,16 +171,16 @@ ServerWindow::QuitRequested()
 	if (msg->HasBool ("bowser:shutdown"))
 		msg->FindBool ("bowser:shutdown", &shutdown);
 
-	if (isConnecting && !hasWarned && !shutdown)
-	{
-		Display ("* To avoid network instability, it is HIGHLY recommended\n", 0);
-		Display ("* that you have finished the connection process before\n", 0);
-		Display ("* closing Bowser. If you _still_ want to try to quit,\n", 0);
-		Display ("* click the close button again.\n", 0);
-
-		hasWarned = true;
-		return false;
-	}
+//	if (isConnecting && !hasWarned && !shutdown)
+//	{
+//		Display ("* To avoid network instability, it is HIGHLY recommended\n", 0);
+//		Display ("* that you have finished the connection process before\n", 0);
+//		Display ("* closing Bowser. If you _still_ want to try to quit,\n", 0);
+//		Display ("* click the close button again.\n", 0);
+//
+//		hasWarned = true;
+//		return false;
+//	}
 
 	if (msg->HasString ("bowser:quit"))
 	{
@@ -608,12 +615,67 @@ ServerWindow::Pulse (void)
 ///////////////////////////////////////////////////////////////////////////
 
 int32
+ServerWindow::Ident (void *arg)
+{
+	ServerWindow *server (reinterpret_cast<ServerWindow *>(arg));
+	BNetEndpoint identPoint, *accepted;
+
+//	BMessage statusMsg1 (M_DISPLAY);
+//	server->PackDisplay (&statusMsg1, "[@] Spawning Ident daemon...\n", &(server->errorColor));
+//	server->PostMessage(&statusMsg1);
+	
+	struct sockaddr_in sin;
+	
+	int sinsize (sizeof (struct sockaddr_in));
+
+	getsockname (identPoint.Socket(), (struct sockaddr *)&sin, &sinsize);			
+			
+		
+	BNetAddress identAddress (sin.sin_addr, 113);
+	BNetBuffer buffer;
+	
+	char received[64];
+
+	if (identPoint.InitCheck()             == B_OK
+		&&  identPoint.Bind (identAddress)     == B_OK
+		&&  identPoint.Listen()                == B_OK
+		&& (accepted = identPoint.Accept(20000))    != 0	// 20 sec timeout
+		&&  accepted->Receive (buffer, 64)     >= 0	
+		&&  buffer.RemoveString (received, 64) == B_OK)
+		{
+			int32 len;
+				received[63] = 0;
+			while ((len = strlen (received))
+			&&     isspace (received[len - 1]))
+				received[len - 1] = 0;
+
+			BNetBuffer output;
+			BString string;
+			
+			string.Append (received);
+			string.Append (" : USERID : BeOS : ");
+			string.Append (server->lident);
+			string.Append ("\r\n");
+
+			output.AppendString (string.String());
+			accepted->Send (output);
+			string.RemoveAll(string);
+			accepted->Close ();
+			
+//			BMessage statusMsg1 (M_DISPLAY);
+//			server->PackDisplay (&statusMsg1, "[@] Replied to Ident request...\n[@] Deactivating daemon\n", &(server->errorColor));
+//			server->PostMessage(&statusMsg1);
+			}
+		
+	return 0;
+}
+
+int32
 ServerWindow::Establish (void *arg)
 {
 	BMessage *msg (reinterpret_cast<BMessage *>(arg));
 	const char *id, *port, *ident, *name, *nick;
 	ServerWindow *server;
-	ClientWindow *client;
 	bool identd;
 	
 	if(bowser_app->GetHideSetupState())
@@ -628,7 +690,6 @@ ServerWindow::Establish (void *arg)
 	msg->FindString ("nick", &nick);
 	msg->FindBool ("identd", &identd);
 	msg->FindPointer ("server", reinterpret_cast<void **>(&server));
-	msg->FindPointer ("client", reinterpret_cast<void **>(&client));
 	
 	BMessage statusMsg0 (M_DISPLAY);
 	BString tempString0;
@@ -721,48 +782,9 @@ ServerWindow::Establish (void *arg)
 		getsockname (endPoint->Socket(), (struct sockaddr *)&sin, &namelen);
 		server->localAddress = sin.sin_addr.s_addr;
 
-		if (identd)
-		{
-			BMessage statusMsg1 (M_DISPLAY);
-			server->PackDisplay (&statusMsg1, "[@] Creating Identd on port 113...\n[@] Waiting for Identd request...\n", &(server->errorColor));
-			server->PostMessage(&statusMsg1);
-			
-			BNetEndpoint identPoint, *accepted;
-			BNetAddress identAddress (sin.sin_addr, 113);
-			BNetBuffer buffer;
-			char received[64];
-
-			if (msgr.IsValid()
-			&&  identPoint.InitCheck()             == B_OK
-			&&  identPoint.Bind (identAddress)     == B_OK
-			&&  identPoint.Listen()                == B_OK
-			&& (accepted = identPoint.Accept())    != 0
-			&&  accepted->Receive (buffer, 64)     >= 0
-			&&  buffer.RemoveString (received, 64) == B_OK)
-			{
-				int32 len;
-	
-				received[63] = 0;
-				while ((len = strlen (received))
-				&&     isspace (received[len - 1]))
-					received[len - 1] = 0;
-
-				BNetBuffer output;
-				BString string;
-
-				string.Append (received);
-				string.Append (" : USERID : BeOS : ");
-				string.Append (ident);
-				string.Append ("\r\n");
-
-				output.AppendString (string.String());
-				accepted->Send (output);
-				BMessage statusMsg2 (M_DISPLAY);
-				server->PackDisplay (&statusMsg2, "[@] Replied to Identd request...\n[@] Closing Identd...\n", &(server->errorColor));
-				server->PostMessage(&statusMsg2);
-				delete accepted;
-			}
-		}
+		BMessage statusMsg2 (M_DISPLAY);
+		server->PackDisplay (&statusMsg2, "[@] Handshaking...\n", &(server->errorColor));
+		server->PostMessage(&statusMsg2);
 
 		BString string;
 
