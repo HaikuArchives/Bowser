@@ -166,7 +166,7 @@ BowserApp::AboutRequested()
 	buffer << "by Andrew Bazan (abazan@berbee.com),\n";
 	buffer << "Todd Lair (bowser@tvl-p.com),\n";
 	buffer << "Jamie Wilkinson (jamie@tave.com),\n";
-	buffer << "and Wade Paris (guru@startrek.com)\n";
+	buffer << "and Wade Majors (guru@startrek.com)\n";
 
 	BAlert *aboutAlert = new BAlert("About", buffer.String(),
 		"Cool", NULL, NULL, B_WIDTH_AS_USUAL, B_INFO_ALERT);

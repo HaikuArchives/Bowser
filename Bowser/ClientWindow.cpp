@@ -111,17 +111,20 @@ ClientWindow::Init (void)
 	msg = new BMessage (M_IGNORE_WINDOW);
 	msg->AddString ("server", serverName.String());
 	msg->AddRect ("frame", Frame());
-	mServer->AddItem (mIgnore = new BMenuItem ("Ignored List" B_UTF8_ELLIPSIS, msg, 'I'));
+	mServer->AddItem (mIgnore = new BMenuItem ("Ignored List" B_UTF8_ELLIPSIS,
+		msg, 'I'));
 
 	msg = new BMessage (M_LIST_COMMAND);
 	msg->AddString ("server", serverName.String());
 	msg->AddRect ("frame", Frame());
-	mServer->AddItem (mList = new BMenuItem ("Channel List" B_UTF8_ELLIPSIS, msg, 'L'));
+	mServer->AddItem (mList = new BMenuItem ("Channel List" B_UTF8_ELLIPSIS,
+		msg, 'L'));
 
 	msg = new BMessage (M_NOTIFY_WINDOW);
 	msg->AddString ("server", serverName.String());
 	msg->AddRect ("frame", Frame());
-	mServer->AddItem (mNotifyWindow = new BMenuItem ("Notify List" B_UTF8_ELLIPSIS, msg, 'N'));
+	mServer->AddItem (mNotifyWindow = new BMenuItem ("Notify List"
+		B_UTF8_ELLIPSIS, msg, 'N'));
 
 	mServer->AddSeparatorItem();
 	mServer->AddItem (item = new BMenuItem ("Quit",
@@ -147,12 +150,14 @@ ClientWindow::Init (void)
 	sMsgr.Target (&sLooper);
 	msg = new BMessage (CYCLE_WINDOWS);
 	msg->AddPointer ("server", sLooper ? sLooper : this);
-	mWindow->AddItem (item = new BMenuItem ("Next Server", msg, ',', B_SHIFT_KEY));
+	mWindow->AddItem (item = new BMenuItem ("Next Server", msg, ',',
+		B_SHIFT_KEY));
 	item->SetTarget (bowser_app);
 
 	msg = new BMessage (CYCLE_BACK);
 	msg->AddPointer ("server", sLooper ? sLooper : this);
-	mWindow->AddItem (item = new BMenuItem ("Previous Server", msg, '.', B_SHIFT_KEY));
+	mWindow->AddItem (item = new BMenuItem ("Previous Server", msg, '.',
+		B_SHIFT_KEY));
 	item->SetTarget (bowser_app);
 
 	mWindow->AddSeparatorItem();
@@ -162,7 +167,8 @@ ClientWindow::Init (void)
 	item->SetTarget (bowser_app);
 
 	msg = new BMessage (M_PREFS_BUTTON);
-	mWindow->AddItem (item = new BMenuItem ("Preferences" B_UTF8_ELLIPSIS, msg, 'P'));
+	mWindow->AddItem (item = new BMenuItem ("Preferences" B_UTF8_ELLIPSIS, msg,
+		'P'));
 	item->SetTarget (bowser_app);
 	menubar->AddItem (mWindow);
 
@@ -263,8 +269,8 @@ ClientWindow::Init (void)
 	cmdWrap = new CommandWrapper;
 
 	// Add Commands (make cmdWrap static?)
-	cmdWrap->cmds["/PING"]     = &ClientWindow::PingCmd;
-	cmdWrap->cmds["/VERSION"]  = &ClientWindow::VersionCmd;
+	cmdWrap->cmds["/PING"]		= &ClientWindow::PingCmd;
+	cmdWrap->cmds["/VERSION"]	= &ClientWindow::VersionCmd;
 	cmdWrap->cmds["/NOTICE"]	= &ClientWindow::NoticeCmd;
 	cmdWrap->cmds["/ADMIN"]		= &ClientWindow::AdminCmd;
 	cmdWrap->cmds["/INFO"]		= &ClientWindow::InfoCmd;
@@ -278,7 +284,8 @@ ClientWindow::Init (void)
 	cmdWrap->cmds["/QUIT"]		= &ClientWindow::QuitCmd;
 	cmdWrap->cmds["/BACK"]		= &ClientWindow::BackCmd;
 	cmdWrap->cmds["/AWAY"]		= &ClientWindow::AwayCmd;
-	cmdWrap->cmds["/ME"]			= &ClientWindow::MeCmd;
+	cmdWrap->cmds["/ME"]		= &ClientWindow::MeCmd;
+	cmdWrap->cmds["/DESCRIBE"]	= &ClientWindow::DescribeCmd;
 	cmdWrap->cmds["/JOIN"]		= &ClientWindow::JoinCmd;
 	cmdWrap->cmds["/NICK"]		= &ClientWindow::NickCmd;
 	cmdWrap->cmds["/MSG"]		= &ClientWindow::MsgCmd;
@@ -286,7 +293,7 @@ ClientWindow::Init (void)
 	cmdWrap->cmds["/KICK"]		= &ClientWindow::KickCmd;
 	cmdWrap->cmds["/WHOIS"]		= &ClientWindow::WhoIsCmd;
 	cmdWrap->cmds["/PART"]		= &ClientWindow::PartCmd;
-	cmdWrap->cmds["/OP"]			= &ClientWindow::OpCmd;
+	cmdWrap->cmds["/OP"]		= &ClientWindow::OpCmd;
 	cmdWrap->cmds["/DEOP"]		= &ClientWindow::DopCmd;
 	cmdWrap->cmds["/DOP"]		= &ClientWindow::DopCmd;
 	cmdWrap->cmds["/MODE"]		= &ClientWindow::ModeCmd;
@@ -304,9 +311,9 @@ ClientWindow::Init (void)
 	cmdWrap->cmds["/LIST"]		= &ClientWindow::ListCmd;
 	cmdWrap->cmds["/IGNORE"]	= &ClientWindow::IgnoreCmd;
 	cmdWrap->cmds["/UNIGNORE"]	= &ClientWindow::UnignoreCmd;
-	cmdWrap->cmds["/EXCLUDE"]  = &ClientWindow::ExcludeCmd;
+	cmdWrap->cmds["/EXCLUDE"]	= &ClientWindow::ExcludeCmd;
 	cmdWrap->cmds["/NOTIFY"]	= &ClientWindow::NotifyCmd;
-	cmdWrap->cmds["/UNNOTIFY"] = &ClientWindow::UnnotifyCmd;
+	cmdWrap->cmds["/UNNOTIFY"]	= &ClientWindow::UnnotifyCmd;
 	cmdWrap->cmds["/J"]			= &ClientWindow::JoinCmd;
 	cmdWrap->cmds["/M"]			= &ClientWindow::MsgCmd;
 	cmdWrap->cmds["/W"]			= &ClientWindow::WhoIsCmd;
@@ -485,7 +492,8 @@ ClientWindow::MessageReceived (BMessage *msg)
 			}	
 			input->MakeFocus (true);
 			// We don't like your silly selecting-on-focus.
-			input->TextView()->Select (input->TextView()->TextLength(), input->TextView()->TextLength()); 
+			input->TextView()->Select (input->TextView()->TextLength(),
+				input->TextView()->TextLength()); 
 
 			break;
 		}
@@ -626,7 +634,8 @@ ClientWindow::MessageReceived (BMessage *msg)
 
 			for (int32 i = 0; i < count; ++i)
 			{
-				TimedNick *tNick (reinterpret_cast<TimedNick *>(nickTimes.ItemAt (i)));
+				TimedNick *tNick (reinterpret_cast<TimedNick *>(nickTimes.ItemAt
+					(i)));
 
 				if (now > tNick->when + atoi (autoNickTime.String()) * 1000000)
 				{
@@ -671,7 +680,8 @@ ClientWindow::MessageReceived (BMessage *msg)
 
 				int32 place;
 
-				while ((place = FirstKnownAs (tempString, knownAs, &me)) != B_ERROR)
+				while ((place = FirstKnownAs (tempString, knownAs, &me)) !=
+					B_ERROR)
 				{
 					BString buffer;
 
@@ -1183,6 +1193,31 @@ ClientWindow::MeCmd (const char *data)
 }
 
 void
+ClientWindow::DescribeCmd (const char *data)
+{
+    BString theTarget (GetWord (data, 2));
+	BString theAction (RestOfString (data, 3));
+	
+	if (theAction != "-9z99") {
+	
+		BMessage send (M_SERVER_SEND);
+
+		AddSend (&send, "PRIVMSG ");
+		AddSend (&send, theTarget);
+		AddSend (&send, " :\1ACTION ");
+		AddSend (&send, theAction);
+		AddSend (&send, "\1");
+		AddSend (&send, endl);
+	
+		BString theActionMessage ("[ACTION]-> ");
+		theActionMessage << theTarget << " -> " << theAction << "\n";
+
+		Display (theActionMessage.String(), 0);
+	}
+
+}
+
+void
 ClientWindow::QuitCmd (const char *data)
 {
 	BString theRest (RestOfString (data, 2));
@@ -1461,7 +1496,8 @@ ClientWindow::AwayCmd (const char *data)
 	const char *expansions[1];
 	expansions[0] = theReason.String();
 	
-	tempString = ExpandKeyed (bowser_app->GetCommand (CMD_AWAY).String(), "R", expansions);
+	tempString = ExpandKeyed (bowser_app->GetCommand (CMD_AWAY).String(), "R",
+		expansions);
 	tempString.RemoveFirst("\n");
 
 	BMessage send (M_SERVER_SEND);

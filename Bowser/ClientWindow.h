@@ -168,6 +168,7 @@ class ClientWindow : public BWindow
 	void								WallopsCmd (const char *);
 	void								TraceCmd (const char *);
 	void								MeCmd (const char *);
+	void								DescribeCmd (const char *);
 	void								AwayCmd (const char *);
 	void								BackCmd (const char *);
 	void								JoinCmd (const char *);
@@ -201,7 +202,8 @@ class ClientWindow : public BWindow
 	void								UnnotifyCmd (const char *);
 	void								SleepCmd (const char *);
 	
-	void								CTCPAction (BString theTarget, BString theMsg);
+	void								CTCPAction (BString theTarget, BString
+											theMsg);
 
 	private:
 
