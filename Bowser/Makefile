@@ -16,7 +16,7 @@ LIBS := -lbe -lnet -lnetapi -ltextencoding -ltranslation -ltracker
 
 OBJDIR := obj
 DEPDIR := dep
-SRCDIR := .
+SRCDIR := src
 DATADIR := data
 
 # compiler, linker, ...
@@ -42,7 +42,7 @@ ZIP := zip -r -9 -y
 
 # the engine
 
-MAKEFILE := makefile
+MAKEFILE := Makefile
 
 FULLNAME := $(subst \ ,_,$(BINARY))-$(VERSION)
 
@@ -97,13 +97,13 @@ $(DEPDIR)/%.d : $(SRCDIR)/%.cpp
 
 $(FULLNAME)-$(BE_HOST_CPU).zip : $(BINARIES) $(DATA) $(MAKEFILE) $(EXTRADATA)
 	@rm -rf $@~
-	@mkdir -p $@~/$(FULLNAME)-$(BE_HOST_CPU)/
-	@copyattr -d -r $(BINARIES) $(DATADIR)/* $@~/$(FULLNAME)-$(BE_HOST_CPU)/
+	@mkdir -p $@~/$(FULLNAME)/
+	@copyattr -d -r $(BINARIES) $(DATADIR)/* $@~/$(FULLNAME)/
 ifneq "$(EXTRADATA)" ""
-	@unzip $(EXTRADATA) -d $@~/$(FULLNAME)-$(BE_HOST_CPU)/
+	@unzip $(EXTRADATA) -d $@~/$(FULLNAME)/
 endif
 	@find $@~ -type f | xargs mimeset
-	@cd $@~ && $(ZIP) $@ $(FULLNAME)-$(BE_HOST_CPU)
+	@cd $@~ && $(ZIP) $@ $(FULLNAME)
 	@mv -f $@~/$@ .
 	@rm -rf $@~
 
