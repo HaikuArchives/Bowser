@@ -2522,7 +2522,6 @@ ClientWindow::StateChange (BMessage *msg)
 	{
 		BFont *font;
 		int32 which;
-
 		msg->FindInt32 ("which", &which);
 		msg->FindPointer ("font", reinterpret_cast<void **>(&font));
 
@@ -2534,13 +2533,19 @@ ClientWindow::StateChange (BMessage *msg)
 
 		if (which == F_INPUT)
 		{
+			/// BTextControl is stupid about font sensitivity. ///
+			BString tempData (input->TextView()->Text());			
 			inputFont = *font;
+			input->TextView()->SetText ("Todd is a frog"); // heh.
+			
 			input->TextView()->SetFontAndColor (&inputFont);
 			input->ResizeToPreferred();
 			input->MoveTo (
 				2,
 				status->Frame().top - input->Frame().Height() - 1);
-
+			
+			input->TextView()->SetText (tempData.String());
+		
 			history->ResizeTo (
 				history->Frame().Width(),
 				input->Frame().Height() - 1);

@@ -36,7 +36,8 @@ http://bowser.sourceforge.net
     - Cmd+Home & Cmd+End move to the top or bottom
  * Logging support!
     - Separate folders for each server
-    - mIRC compliant time/date stamping 
+    - mIRC compliant time/date stamping
+ * The background color and font color for the input box is now configurable
 
 
 [d42b]
