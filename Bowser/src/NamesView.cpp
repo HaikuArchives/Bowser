@@ -40,7 +40,6 @@ NamesView::NamesView(BRect frame)
 	myPopUp->AddItem( CTCPPopUp );
 		
 	myMessage = new BMessage(POPUP_ACTION);
-	//BString tempPing("PRIVMSG -9x99 :\1PING ");
 	myMessage->AddString("action", "PRIVMSG -9x99 :\1PING ");
 	CTCPPopUp->AddItem(new BMenuItem("PING", myMessage));
 

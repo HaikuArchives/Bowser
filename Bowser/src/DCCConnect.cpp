@@ -153,7 +153,6 @@ DCCConnect::Stopped (bool forced)
 	msg.AddPointer ("source", this);
 	msg.AddBool ("stopped", true);
 	Window()->PostMessage (&msg);
-	exit_thread(0);
 }
 
 void
@@ -211,6 +210,7 @@ DCCReceive::DCCReceive (
 
 DCCReceive::~DCCReceive (void)
 {
+	kill_thread(tid);
 }
 
 void
@@ -361,6 +361,7 @@ DCCSend::DCCSend (
 
 DCCSend::~DCCSend (void)
 {
+	kill_thread(tid);
 }
 
 void
