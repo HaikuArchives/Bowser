@@ -60,6 +60,7 @@ class ClientWindow : public BWindow
 	rgb_color						textColor,
 										ctcpReqColor,
 										nickColor,
+										quitColor,
 										myNickColor,
 										actionColor,
 										opColor;
@@ -217,7 +218,7 @@ class ClientWindow : public BWindow
 	void								SleepCmd (const char *);
 	void								UptimeCmd (const char *);
 	
-	BString								UptimeString(void);
+	BString								DurationString(int64);
 	
 	void								CTCPAction (BString theTarget, BString
 											theMsg);

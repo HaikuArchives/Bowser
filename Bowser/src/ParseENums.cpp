@@ -322,48 +322,22 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 		BString tempString("[x] ");
 		BString tempString2("[x] ");
-		BString theTime = GetWord(data, 5);
-		BString signOnTime(GetWord(data, 6));
-		tempString << "Idle time: " << theTime << " seconds\n";
+		BString theTime (GetWord(data, 5));
+		BString signOnTime (GetWord(data, 6));
+		int64 idleTime = strtoul(theTime.String(), NULL, 0);
+		tempString << "Idle: " << DurationString(idleTime * 1000 * 1000) << "\n";
 		
-		tempString2 << "Signon: ";
-		
-		
-		int32 myTime = (int32)time(NULL);
 		int32 serverTime = strtoul(signOnTime.String(), NULL, 0);
-		if ((myTime - serverTime) < 0)
-			tempString2 << theNick << " is a time traveler, or your clock is wrong\n";
-		else
-		{
-			myTime = abs(myTime - serverTime);
+		struct tm *ptr; 
+    	time_t st;
+    	char str[80];    
+    	st = serverTime; 
+    	ptr = localtime(&st);
+    	strftime(str,80,"%A %b %d %Y %I:%M %p %Z",ptr);
+    	BString signOnTimeParsed (str);
+    	signOnTimeParsed.RemoveAll ("\n");
 		
-			int32 curr = myTime / (3600 * 24); 
-			if (curr)
-			{
-				tempString2 << curr << " day";
-				if (curr > 1) tempString2 << "s";
-				tempString2 << ", ";
-			}
-			myTime %= (3600 * 24);
-			curr = myTime / 3600;
-			if (curr)
-			{
-				tempString2 << curr << " hour";
-				if (curr > 1) tempString2 << "s";
-				tempString2 << ", ";
-			}
-			myTime %= 3600;
-			curr = myTime / 60;
-			if (curr)
-			{
-				tempString2 << curr << " minute";
-				if (curr > 1) tempString2 << "s";
-				tempString2 << ", ";
-			}
-			tempString2 << myTime % 60 << " second";
-			if ((myTime % 60) != 1) tempString2 << "s";
-			tempString2 << "\n";
-		}
+		tempString2 << "Signon: " << signOnTimeParsed << "\n";
 		
 		BMessage msg (M_DISPLAY);
 		PackDisplay (&msg, tempString.String(), &whoisColor, &serverFont);

@@ -248,20 +248,21 @@ ClientWindow::Init (void)
 	// have to lock the app everytime we want to get this information.
 	// When it changes, the application looper will let us know
 	// through a M_STATE_CHANGE message
-	textColor    = bowser_app->GetColor (C_TEXT);
-	nickColor    = bowser_app->GetColor (C_NICK);
-	ctcpReqColor   = bowser_app->GetColor (C_CTCP_REQ);
-	myNickColor  = bowser_app->GetColor (C_MYNICK);
-	actionColor  = bowser_app->GetColor (C_ACTION);
-	opColor      = bowser_app->GetColor (C_OP);
+	textColor		= bowser_app->GetColor (C_TEXT);
+	nickColor		= bowser_app->GetColor (C_NICK);
+	ctcpReqColor	= bowser_app->GetColor (C_CTCP_REQ);
+	quitColor		= bowser_app->GetColor (C_QUIT);
+	myNickColor		= bowser_app->GetColor (C_MYNICK);
+	actionColor		= bowser_app->GetColor (C_ACTION);
+	opColor			= bowser_app->GetColor (C_OP);
 
-	myFont       = *(bowser_app->GetClientFont (F_TEXT));
-	serverFont   = *(bowser_app->GetClientFont (F_SERVER));
-	canNotify    = bowser_app->CanNotify();
-	alsoKnownAs  = bowser_app->GetAlsoKnownAs();
-	otherNick    = bowser_app->GetOtherNick();
-	autoNickTime = bowser_app->GetAutoNickTime();
-	notifyMask   = bowser_app->GetNotificationMask();
+	myFont			= *(bowser_app->GetClientFont (F_TEXT));
+	serverFont		= *(bowser_app->GetClientFont (F_SERVER));
+	canNotify		= bowser_app->CanNotify();
+	alsoKnownAs		= bowser_app->GetAlsoKnownAs();
+	otherNick		= bowser_app->GetOtherNick();
+	autoNickTime	= bowser_app->GetAutoNickTime();
+	notifyMask		= bowser_app->GetNotificationMask();
 
 	scrolling    = true;
 
@@ -322,6 +323,8 @@ ClientWindow::Init (void)
 	cmdWrap->cmds["/CHANSERV"]		= &ClientWindow::ChanServCmd;
 	cmdWrap->cmds["/MEMOSERV"]		= &ClientWindow::MemoServCmd;
 	cmdWrap->cmds["/USERHOST"]		= &ClientWindow::UserhostCmd;
+	cmdWrap->cmds["/UPTIME"]		= &ClientWindow::UptimeCmd;
+
 	
 	// no parms
 	// TODO:	add wrapper that doesn't send const char *
@@ -331,8 +334,6 @@ ClientWindow::Init (void)
 	cmdWrap->cmds["/BACK"]			= &ClientWindow::BackCmd;
 	cmdWrap->cmds["/ABOUT"]			= &ClientWindow::AboutCmd;
 	cmdWrap->cmds["/PREFERENCES"]	= &ClientWindow::PreferencesCmd;
-	cmdWrap->cmds["/UPTIME"]		= &ClientWindow::UptimeCmd;
-
 }
 
 ClientWindow::~ClientWindow (void)
@@ -1257,9 +1258,11 @@ ClientWindow::MemoServCmd (const char *data)
 void
 ClientWindow::UptimeCmd (const char *data)
 {
-	if (id != serverName) {
+	BString parms (GetWord(data, 2));
 	
-		BString uptime (UptimeString());
+	if ((id != serverName) && (parms == "-9z99"))
+	{
+		BString uptime (DurationString(system_time()));
 		BString expandedString;
 		
 		const char *expansions[1];
@@ -1277,6 +1280,25 @@ ClientWindow::UptimeCmd (const char *data)
 		
 		ChannelMessage (expandedString.String(), myNick.String());
 	}
+	else if ((parms == "-l") || (id == serverName)) // echo locally
+	{
+		//BString uptime (UptimeString());
+		BString uptime (DurationString(system_time()));
+		BString expandedString;
+		
+		const char *expansions[1];
+		expansions[0] = uptime.String();
+		expandedString = ExpandKeyed (bowser_app->GetCommand (CMD_UPTIME).String(), "U",
+			expansions);
+		expandedString.RemoveFirst("\n");
+		
+		BString tempString;
+			
+		tempString << "Uptime: " << expandedString << "\n";
+		Display (tempString.String(), &quitColor);
+		
+	}
+		
 }
 
 void
@@ -2132,6 +2154,9 @@ ClientWindow::SleepCmd (const char *data)
 
 	if (rest != "-9z99")
 	{
+		// this basically locks up the window its run from,
+		// but I can't think of a better way with our current
+		// commands implementation
 		int32 time = atoi(rest.String());
 		snooze(time * 1000 * 100); // deciseconds? 10 = one second
 	}
@@ -2355,10 +2380,11 @@ ClientWindow::ScrollRange (float *min, float *max)
 }
 
 BString
-ClientWindow::UptimeString (void)
+ClientWindow::DurationString (int64 value)
 {
-	BString uptime;
-	bigtime_t micro = system_time();
+	printf ("value: %Ld\n",value);
+	BString duration;
+	bigtime_t micro = value;
 	bigtime_t milli = micro/1000;
 	bigtime_t sec = milli/1000;
 	bigtime_t min = sec/60;
@@ -2367,18 +2393,18 @@ ClientWindow::UptimeString (void)
 
 	char message[512] = "";
 	if (days)
-		sprintf(message, "%Ld day%s, ",days,days!=1?"s":"");
+		sprintf(message, "%Ldday%s ",days,days!=1?"s":"");
 	
 	if (hours%24)
-		sprintf(message, "%s%Ld hour%s, ",message, hours%24,(hours%24)!=1?"s":"");
+		sprintf(message, "%s%Ldhr%s ",message, hours%24,(hours%24)!=1?"s":"");
 	
 	if (min%60)
-		sprintf(message, "%s%Ld minute%s, ",message, min%60, (min%60)!=1?"s":"");
+		sprintf(message, "%s%Ldmin%s ",message, min%60, (min%60)!=1?"s":"");
 
-	sprintf(message, "%s%Ld second%s",message, sec%60,(sec%60)!=1?"s":"");
+	sprintf(message, "%s%Ldsec%s",message, sec%60,(sec%60)!=1?"s":"");
 
-	uptime << message;
+	duration << message;
 
-	return uptime;
+	return duration;
 }
 

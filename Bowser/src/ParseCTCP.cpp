@@ -90,7 +90,7 @@ ServerWindow::ParseCTCP(BString theNick, BString theMsg)
 	else if(theCTCP == "UPTIME")
 	{
 		
-		BString uptime (UptimeString());
+		BString uptime (DurationString(system_time()));
 		BString expandedString;
 		
 		const char *expansions[1];

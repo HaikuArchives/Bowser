@@ -10,16 +10,18 @@ http://bowser.sourceforge.net
  * Alt+W on the Server window now does a clean Quit
  * /m command added. Used in server window it acts like /mode yournick <parms>,
    used in a channel it acts like /mode #channel <parms>
+ * Modified Idle/SignOn time parsing for /whois
+ * "/uptime -l" switch echos the uptime locally instead of sending to server
 
 [d42b]
  * Source changes (new makefile, etc)
  * New optimizations
  * DCC Xfer window tweaked
- * New /sleep <seconds> command, useful for Connect Commands, pauses
-   Bowser before continuing.
+ * New /sleep <deciseconds> command, useful for Connect Commands, pauses
+   Bowser before continuing. (10 deciseconds = 1 second)
    eg (Connect Commands):
    		/nickserv identify mypass
-   		/sleep 1
+   		/sleep 10
    		/j #channel
  * Various prompts are now non-modal windows, and look a little better
  * Fixed "Add Nickname" prompt dimensions in Notify window
