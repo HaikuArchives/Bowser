@@ -1,7 +1,6 @@
 
 #include <CheckBox.h>
 
-#include "IRCDefines.h"
 #include "Bowser.h"
 #include "PrefGeneral.h"
 
