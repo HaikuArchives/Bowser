@@ -1223,6 +1223,7 @@ ClientWindow::AddSend (BMessage *msg, int32 value)
 void
 ClientWindow::StateChange (BMessage *msg)
 {
+	printf ("ClientWindow::StateChange %s\n", id.String());
 	if (msg->HasData ("color", B_RGB_COLOR_TYPE))
 	{
 		const rgb_color *color;

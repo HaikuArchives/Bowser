@@ -1284,6 +1284,7 @@ ChannelWindow::ModeEvent (BMessage *msg)
 void
 ChannelWindow::StateChange (BMessage *msg)
 {
+	printf ("ChannelWindow::StateChange %s\n", id.String());
 	ClientWindow::StateChange (msg);
 
 	if (msg->HasData ("color", B_RGB_COLOR_TYPE))

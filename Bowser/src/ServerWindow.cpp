@@ -1183,6 +1183,7 @@ ServerWindow::FilterCrap (const char *data)
 void
 ServerWindow::StateChange (BMessage *msg)
 {
+	printf ("ServerWindow::StateChange %s\n", id.String());
 	// Important to call ClientWindow's State change first
 	// We correct some things it sets
 	ClientWindow::StateChange (msg);
