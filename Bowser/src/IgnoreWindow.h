@@ -1,4 +1,3 @@
-
 #ifndef IGNOREWINDOW_H_
 #define IGNOREWINDOW_H_
 

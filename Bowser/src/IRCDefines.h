@@ -12,28 +12,29 @@
 #define NOTIFY_CONT_FLASH_BIT							0x0008
 #define NOTIFY_OTHER_FLASH_BIT						0x0010
 
-#define C_TEXT												0
-#define C_BACKGROUND										1
+#define C_TEXT											0
+#define C_BACKGROUND									1
 #define C_NAMES											2
 #define C_NAMES_BACKGROUND								3
-#define C_URL												4
-#define C_SERVER											5
-#define C_NOTICE											6
-#define C_ACTION											7
-#define C_QUIT												8
+#define C_URL											4
+#define C_SERVER										5
+#define C_NOTICE										6
+#define C_ACTION										7
+#define C_QUIT											8
 #define C_ERROR											9
-#define C_NICK												10
-#define C_MYNICK											11
-#define C_JOIN												12
-#define C_KICK												13
+#define C_NICK											10
+#define C_MYNICK										11
+#define C_JOIN											12
+#define C_KICK											13
 #define C_WHOIS											14
-#define C_OP												15
+#define C_OP											15
 #define C_VOICE											16
 #define C_CTCP_REQ										17
 #define C_CTCP_RPY										18
-#define C_IGNORE											19
+#define C_IGNORE										19
 
 #define MAX_COLORS										20
+
 
 #define F_TEXT												0
 #define F_SERVER											1

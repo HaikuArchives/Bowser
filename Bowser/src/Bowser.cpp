@@ -1,3 +1,9 @@
+//
+// Note #01 - Nov-25-2000 -Wade
+// I've enabled new g++ optimization flags that threw up warnings about stuff,
+// i fixed them and left the old versions in comments. grep "Note #01" for instances
+// 
+
 
 class BowserApp * bowser_app;
 

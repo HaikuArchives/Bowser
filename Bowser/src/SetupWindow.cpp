@@ -876,7 +876,7 @@ SetupWindow::Validate (void)
 		BAlert *alert (new BAlert (
 			"No Port",
 			"You must specify a port number, so I can connect "
-			"to the IRC server.  Come on, you know that!",
+			"to the IRC server.  Come on, you know that!\n\nTry \"6667\" if you're unsure what to do (in life or this situation)",
 			"Whoops",
 			0, 0,
 			B_WIDTH_FROM_WIDEST,

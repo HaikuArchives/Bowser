@@ -19,6 +19,7 @@ class BColorControl;
 class ColorLabel : public BControl
 {
 	rgb_color			color;
+	rgb_color			alpha;
 
 	bool					tracking;
 	bigtime_t			mousedown;

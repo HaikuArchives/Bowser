@@ -89,6 +89,7 @@ NamesView::NamesView(BRect frame)
 	tmpString << bowser_app->GetCommand (CMD_KICK);
 	myMessage->AddString("action", tmpString.String());
 	myPopUp->AddItem(new BMenuItem("Kick", myMessage));
+
 	
 	// PopUp Menus tend to have be_plain_font
 	myPopUp->SetFont (be_plain_font);

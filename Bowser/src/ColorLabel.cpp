@@ -295,7 +295,8 @@ ColorLabel::ShiftColor (rgb_color c, float percent) const
 	{
 		SHIFT_COMPONENT(c.red,   percent),
 		SHIFT_COMPONENT(c.green, percent),
-		SHIFT_COMPONENT(c.blue,  percent)
+		SHIFT_COMPONENT(c.blue,  percent),
+		SHIFT_COMPONENT(c.alpha,  0)
 	};
 
 	return result;

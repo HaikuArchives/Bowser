@@ -1,5 +1,9 @@
-Bowser d42a
+Bowser d42b
 http://bowser.sourceforge.net
+
+[d42b]
+ * Source changes (new makefile, etc)
+ * DCC Xfer window tweaked
 
 [d42a]
  * Improved DCC Send performance dramatically for users on fast pipes

@@ -36,7 +36,8 @@ class DCCFileWindow : public BWindow
 		long realSize;
 		ServerWindow *caller;
 
-		rgb_color whoisColor;
+		rgb_color dccColor;
+
 };
 
 #endif

@@ -35,6 +35,7 @@ class ChannelItem : public BListItem
 	const char				*Topic (void) const;
 
 	virtual void			DrawItem (BView *, BRect, bool = false);
+//	virtual void			DrawItem (BView *, BRect); // Note #01
 };
 
 ListWindow::ListWindow (
@@ -521,7 +522,8 @@ ListWindow::MessageReceived (BMessage *msg)
 }
 
 void
-ListWindow::FrameResized (float width, float height)
+//ListWindow::FrameResized (float width, float high)
+ListWindow::FrameResized (float width)	// Note #01
 {
 	if (!processing)
 	{
@@ -617,6 +619,7 @@ ChannelItem::Topic (void) const
 
 void
 ChannelItem::DrawItem (BView *owner, BRect frame, bool complete)
+//ChannelItem::DrawItem (BView *owner, BRect frame) // Item #01
 {
 	ListWindow *listWindow ((ListWindow *)owner->Window());
 

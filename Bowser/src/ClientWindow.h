@@ -21,6 +21,7 @@ class ServerWindow;
 class WindowSettings;
 class ClientInputFilter;
 class CommandWrapper;
+class CommandWrapperNP;
 class StatusView;
 class HistoryMenu;
 
@@ -76,7 +77,9 @@ class ClientWindow : public BWindow
 
 	CommandWrapper					*cmdWrap;
 
+
 	friend							ClientInputFilter;
+
 
 
 	virtual void					Display (

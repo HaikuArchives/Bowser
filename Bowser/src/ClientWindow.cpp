@@ -283,7 +283,6 @@ ClientWindow::Init (void)
 	cmdWrap->cmds["/KILL"]			= &ClientWindow::KillCmd;
 	cmdWrap->cmds["/TRACE"]			= &ClientWindow::TraceCmd;
 	cmdWrap->cmds["/QUIT"]			= &ClientWindow::QuitCmd;
-	cmdWrap->cmds["/BACK"]			= &ClientWindow::BackCmd;
 	cmdWrap->cmds["/AWAY"]			= &ClientWindow::AwayCmd;
 	cmdWrap->cmds["/ME"]			= &ClientWindow::MeCmd;
 	cmdWrap->cmds["/DESCRIBE"]		= &ClientWindow::DescribeCmd;
@@ -293,7 +292,6 @@ ClientWindow::Init (void)
 	cmdWrap->cmds["/CTCP"]			= &ClientWindow::CtcpCmd;
 	cmdWrap->cmds["/KICK"]			= &ClientWindow::KickCmd;
 	cmdWrap->cmds["/WHOIS"]			= &ClientWindow::WhoIsCmd;
-	cmdWrap->cmds["/PART"]			= &ClientWindow::PartCmd;
 	cmdWrap->cmds["/OP"]			= &ClientWindow::OpCmd;
 	cmdWrap->cmds["/DEOP"]			= &ClientWindow::DopCmd;
 	cmdWrap->cmds["/DOP"]			= &ClientWindow::DopCmd;
@@ -307,7 +305,6 @@ ClientWindow::Init (void)
 	cmdWrap->cmds["/WHO"]			= &ClientWindow::WhoCmd;
 	cmdWrap->cmds["/WHOWAS"]		= &ClientWindow::WhoWasCmd;
 	cmdWrap->cmds["/DCC"]			= &ClientWindow::DccCmd;
-	cmdWrap->cmds["/CLEAR"]			= &ClientWindow::ClearCmd;
 	cmdWrap->cmds["/INVITE"]		= &ClientWindow::InviteCmd;
 	cmdWrap->cmds["/LIST"]			= &ClientWindow::ListCmd;
 	cmdWrap->cmds["/IGNORE"]		= &ClientWindow::IgnoreCmd;
@@ -320,13 +317,18 @@ ClientWindow::Init (void)
 	cmdWrap->cmds["/W"]				= &ClientWindow::WhoIsCmd;
 	cmdWrap->cmds["/K"]				= &ClientWindow::KickCmd;
 	cmdWrap->cmds["/SLEEP"]			= &ClientWindow::SleepCmd;
-	cmdWrap->cmds["/ABOUT"]			= &ClientWindow::AboutCmd;
-	cmdWrap->cmds["/PREFERENCES"]	= &ClientWindow::PreferencesCmd;
 	cmdWrap->cmds["/VISIT"]			= &ClientWindow::VisitCmd;
 	cmdWrap->cmds["/NICKSERV"]		= &ClientWindow::NickServCmd;
 	cmdWrap->cmds["/CHANSERV"]		= &ClientWindow::ChanServCmd;
 	cmdWrap->cmds["/MEMOSERV"]		= &ClientWindow::MemoServCmd;
 	cmdWrap->cmds["/USERHOST"]		= &ClientWindow::UserhostCmd;
+	
+	// no parms
+	cmdWrap->cmds["/CLEAR"]			= &ClientWindow::ClearCmd;
+	cmdWrap->cmds["/PART"]			= &ClientWindow::PartCmd;
+	cmdWrap->cmds["/BACK"]			= &ClientWindow::BackCmd;
+	cmdWrap->cmds["/ABOUT"]			= &ClientWindow::AboutCmd;
+	cmdWrap->cmds["/PREFERENCES"]	= &ClientWindow::PreferencesCmd;
 
 }
 
@@ -1010,7 +1012,11 @@ ClientWindow::SlashParser (const char *data)
 	{
 		CmdFunc &cmd (it->second);
 
-		(this->*cmd) (data);
+//		if (first != "-9z99")
+			(this->*cmd) (data);
+//		else
+//			(this->*cmd) (void);
+
 		return true;
 	}
 

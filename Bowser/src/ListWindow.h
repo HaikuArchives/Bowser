@@ -48,7 +48,8 @@ class ListWindow : public BWindow
 	virtual					~ListWindow (void);
 	virtual bool			QuitRequested (void);
 	virtual void			MessageReceived (BMessage *);
-	virtual void			FrameResized (float, float);
+//	virtual void			FrameResized (float, float);
+	virtual void			FrameResized (float);	// Note #01
 
 	static int				SortChannels (const void *, const void *);
 	static int				SortUsers (const void *, const void *);

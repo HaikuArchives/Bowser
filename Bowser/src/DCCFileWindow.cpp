@@ -40,7 +40,8 @@ DCCFileWindow::DCCFileWindow (
 	dType = theType;
 	caller = theCaller;
 
-	whoisColor = bowser_app->GetColor (C_WHOIS);
+	const rgb_color DCC_COLOR		= {50,150,255, 255};	
+	dccColor = DCC_COLOR;
 
 	BView *bgView = new BView(Bounds(), "Background", B_FOLLOW_ALL, B_WILL_DRAW);
 	bgView->SetViewColor(222, 222, 222, 255);
@@ -70,7 +71,7 @@ DCCFileWindow::DCCFileWindow (
 
 	myStatus = new BStatusBar(r, "status", "bps: ", tempString);
 	myStatus->SetMaxValue(atol(theSize.String()));
-	myStatus->SetBarColor(whoisColor);
+	myStatus->SetBarColor(dccColor);
 	bgView->AddChild(myStatus);
 
 	Show();
@@ -128,10 +129,6 @@ void DCCFileWindow::MessageReceived(BMessage *message)
 					B_RGB_COLOR_TYPE,
 					reinterpret_cast<const void **>(&color),
 					&size);
-
-				if (which == C_WHOIS)
-					whoisColor = *color;
-
 			}
 			break;
 
