@@ -2,6 +2,7 @@
 #ifndef MESSAGEWINDOW_H_
 #define MESSAGEWINDOW_H_
 
+#include <TextControl.h>
 #include <String.h>
 
 #include "ClientWindow.h"
@@ -30,7 +31,7 @@ class MessageWindow : public ClientWindow
 	virtual void				Show (void);
 	virtual void				Parser (const char *);
 	virtual void				DroppedFile (BMessage *);
-//	virtual void				TabExpansion (void);
+	virtual void				TabExpansion (void);
 
 	void							UpdateString (void);
 	

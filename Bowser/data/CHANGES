@@ -4,6 +4,7 @@ http://bowser.sourceforge.net
 [d42c]
  * New DCC system
  * Fixed crashing bug which happened on some server notices.
+ * Tab completion now works in Query and DCC Chat windows
 
 [d42b]
  * Source changes (new makefile, etc)
