@@ -20,6 +20,8 @@ http://bowser.sourceforge.net
  * Tab completion cycles through matching nicknames.
  * Names list is sent to Server Window instead of Channel Window
  * Now shows time Channel Topic was set
+ * Alt+V (pasting) is handled by the Input Box's filter now... you have the option
+   of sending multiple lines now.
 
 
 [d42b]

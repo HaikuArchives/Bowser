@@ -824,9 +824,12 @@ ChannelWindow::TabExpansion (void)
 			else
 			{
 				int32 count (myList.CountItems());
-				insertion = ((NameItem *)myList.ItemAt(lastindex++))->Name();
-				if (lastindex == count) lastindex = 0;
-				lastNick = insertion;
+				if (count > 0)
+				{
+					insertion = ((NameItem *)myList.ItemAt(lastindex++))->Name();
+					if (lastindex == count) lastindex = 0;
+					lastNick = insertion;
+				}
 			}
 
 		if (insertion.Length())
