@@ -183,8 +183,7 @@ class ClientWindow : public BWindow
 	void								ScrollRange(float *, float *);
 	
 	bool							ParseCmd (const char *);
-	
-	static BLocker					notifyLock;
+
 
 	protected:
 										// Commands

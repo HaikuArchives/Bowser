@@ -57,7 +57,7 @@ ServerWindow::DCCGetDialog (
 	msg.AddString ("bowser:port", port.String());
 
 
-	bool handled (false);
+	//bool handled (false);
 
 // ignore this part until some minor details with DCC Prefs are worked out
 /*
@@ -205,6 +205,13 @@ DCCFileFilter::Filter (BMessage *msg, BHandler **handler)
 filter_result
 DCCFileFilter::HandleButton (BMessage *msg)
 {
+
+	switch (msg->what)
+	{
+		// we don't care. just want to get rid of the warning
+	}
+
+
 	filter_result result (B_DISPATCH_MESSAGE);
 	BTextControl *text (dynamic_cast<BTextControl *>(
 		panel->Window()->FindView ("text view")));

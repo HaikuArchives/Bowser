@@ -31,7 +31,6 @@
 #include <stdio.h>
 
 const char *ClientWindow::endl						("\1\1\1\1\1");
-BLocker ClientWindow::notifyLock;
 
 ClientWindow::ClientWindow (
 	const char *id_,
@@ -329,7 +328,6 @@ ClientWindow::Show (void)
 		settings->Restore();
 
 		BWindow::Show();
-		//NotifyRegister();
 
 		return;
 	}
@@ -1069,13 +1067,11 @@ ClientWindow::Display (
 	&&  settings
 	&&  settings->notification[0])
 	{
-		//notifyLock.Lock();
 		BMessage msg (M_NEWS_CLIENT);
 
 		msg.AddString ("id",  id.String());
 		msg.AddInt32  ("sid", sid);
 		bowser_app->PostMessage (&msg);
-		//notifyLock.Unlock();
 	}
 }
 

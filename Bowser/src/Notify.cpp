@@ -18,7 +18,6 @@
 
 #include "IRCDefines.h"
 #include "Notify.h"
-#include "ClientWindow.h"
 
 #include <stdio.h>
 
@@ -258,10 +257,8 @@ NotifyView::MessageReceived (BMessage *msg)
 		{
 			printf ("M_NEW_CLIENT\n");
 			const char *id;
-			//ClientWindow *client;
 
 			msg->FindString ("id", &id);
-			//msg->FindPointer ("client", reinterpret_cast<void **>(&client));
 			
 			NotifyData *nData (new NotifyData);
 
@@ -549,7 +546,6 @@ NotifyView::MessageReceived (BMessage *msg)
 		default:
 			BView::MessageReceived (msg);
 	}
-	//ClientWindow::notifyLock.Unlock();
 	//printf ("done\n");
 }
 

@@ -5,6 +5,11 @@ http://bowser.sourceforge.net
  * Fixed issue with using fonts larger than the default for the input box.
  * New internal /command parsing system. Bowser is now smaller and uses less ram!
  * Unknown /commands are passed to the server
+ * Removed some speed optimizations
+ * Fixed thread race issues with Deskbar Notification and connecting to several
+   servers at once.
+ * You can now select more than one nickname from the nicklist and perform
+   actions on them.
 
 
 [1.0]
