@@ -124,13 +124,6 @@ ServerWindow::ServerWindow (
 	msg->AddBool ("identd", identd);
 	msg->AddPointer ("server", this);
 
-	if (identd)
-	{
-		identThread = spawn_thread(Ident, "Ident daemon",
-			B_LOW_PRIORITY, this);
-		resume_thread(identThread);
-	}
-
 	loginThread = spawn_thread (
 		Establish,
 		"complimentary_tote_bag",
@@ -615,62 +608,6 @@ ServerWindow::Pulse (void)
 ///////////////////////////////////////////////////////////////////////////
 
 int32
-ServerWindow::Ident (void *arg)
-{
-	ServerWindow *server (reinterpret_cast<ServerWindow *>(arg));
-	BNetEndpoint identPoint, *accepted;
-
-//	BMessage statusMsg1 (M_DISPLAY);
-//	server->PackDisplay (&statusMsg1, "[@] Spawning Ident daemon...\n", &(server->errorColor));
-//	server->PostMessage(&statusMsg1);
-	
-	struct sockaddr_in sin;
-	
-	int sinsize (sizeof (struct sockaddr_in));
-
-	getsockname (identPoint.Socket(), (struct sockaddr *)&sin, &sinsize);			
-			
-		
-	BNetAddress identAddress (sin.sin_addr, 113);
-	BNetBuffer buffer;
-	
-	char received[64];
-
-	if (identPoint.InitCheck()             == B_OK
-		&&  identPoint.Bind (identAddress)     == B_OK
-		&&  identPoint.Listen()                == B_OK
-		&& (accepted = identPoint.Accept(20000))    != 0	// 20 sec timeout
-		&&  accepted->Receive (buffer, 64)     >= 0	
-		&&  buffer.RemoveString (received, 64) == B_OK)
-		{
-			int32 len;
-				received[63] = 0;
-			while ((len = strlen (received))
-			&&     isspace (received[len - 1]))
-				received[len - 1] = 0;
-
-			BNetBuffer output;
-			BString string;
-			
-			string.Append (received);
-			string.Append (" : USERID : BeOS : ");
-			string.Append (server->lident);
-			string.Append ("\r\n");
-
-			output.AppendString (string.String());
-			accepted->Send (output);
-			string.RemoveAll(string);
-			accepted->Close ();
-			
-//			BMessage statusMsg1 (M_DISPLAY);
-//			server->PackDisplay (&statusMsg1, "[@] Replied to Ident request...\n[@] Deactivating daemon\n", &(server->errorColor));
-//			server->PostMessage(&statusMsg1);
-			}
-		
-	return 0;
-}
-
-int32
 ServerWindow::Establish (void *arg)
 {
 	BMessage *msg (reinterpret_cast<BMessage *>(arg));
@@ -781,11 +718,54 @@ ServerWindow::Establish (void *arg)
 		//  is the one that we use to accept on)
 		getsockname (endPoint->Socket(), (struct sockaddr *)&sin, &namelen);
 		server->localAddress = sin.sin_addr.s_addr;
+		
+		if (identd)
+		{
+			BMessage statusMsg2 (M_DISPLAY);
+			server->PackDisplay (&statusMsg2, "[@] Spawning Ident daemon (10 sec timeout)...\n", &(server->errorColor));
+			server->PostMessage(&statusMsg2);
 
-		BMessage statusMsg2 (M_DISPLAY);
-		server->PackDisplay (&statusMsg2, "[@] Handshaking...\n", &(server->errorColor));
-		server->PostMessage(&statusMsg2);
+			BNetEndpoint identPoint, *accepted;
+			BNetAddress identAddress (sin.sin_addr, 113);
+			BNetBuffer buffer;
+			char received[64];
 
+			if (msgr.IsValid()
+			&&  identPoint.InitCheck()             == B_OK
+			&&  identPoint.Bind (identAddress)     == B_OK
+			&&  identPoint.Listen()                == B_OK
+			&& (accepted = identPoint.Accept(10000))    != 0   // 10 sec timeout
+			&&  accepted->Receive (buffer, 64)     >= 0
+			&&  buffer.RemoveString (received, 64) == B_OK)
+			{
+				int32 len;
+	
+				received[63] = 0;
+				while ((len = strlen (received))
+				&&     isspace (received[len - 1]))
+					received[len - 1] = 0;
+
+				BNetBuffer output;
+				BString string;
+
+				string.Append (received);
+				string.Append (" : USERID : BeOS : ");
+				string.Append (ident);
+				string.Append ("\r\n");
+
+				output.AppendString (string.String());
+				accepted->Send (output);
+				delete accepted;
+				
+				BMessage statusMsg3 (M_DISPLAY);
+				server->PackDisplay (&statusMsg3, "[@] Replied to Ident request...\n[@] Deactivating daemon\n", &(server->errorColor));
+				server->PostMessage(&statusMsg3);
+			}
+		}
+
+		BMessage statusMsg4 (M_DISPLAY);
+		server->PackDisplay (&statusMsg4, "[@] Handshaking...\n", &(server->errorColor));
+		server->PostMessage(&statusMsg4);
 		BString string;
 
 		string = "USER ";

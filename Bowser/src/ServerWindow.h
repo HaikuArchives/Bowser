@@ -49,8 +49,7 @@ class ServerWindow : public ClientWindow
 	virtual void				MenusBeginning (void);
 	virtual void			DispatchMessage (BMessage *, BHandler *);
 	void						Pulse (void);
-	
-	static int32				Ident(void *);
+
 	static int32				Establish (void *);
 	uint32						LocalAddress (void) const;
 	void							PostActive (BMessage *);

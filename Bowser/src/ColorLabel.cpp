@@ -327,7 +327,8 @@ ColorPicker::ColorPicker (
 			point, 
 			point + BPoint (30, 30)),
 		"Color",
-		B_FLOATING_WINDOW,
+		B_FLOATING_WINDOW_LOOK,
+		B_MODAL_SUBSET_WINDOW_FEEL, 
 		B_NOT_RESIZABLE
 			| B_NOT_ZOOMABLE
 			| B_ASYNCHRONOUS_CONTROLS
@@ -359,8 +360,9 @@ ColorPicker::ColorPicker (
 	view->AddChild (picker);
 	ResizeTo (view->Bounds().Width(), view->Bounds().Height());
 
-	picker->MakeFocus (true);
 	picker->SetValue (color);
+	picker->MakeFocus (true);
+	Activate(true);
 }
 
 ColorPicker::~ColorPicker (void)

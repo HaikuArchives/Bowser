@@ -1371,6 +1371,8 @@ ClientWindow::DnsCmd (const char *data)
 {
 	BString parms (GetWord(data, 2));
 	ChannelWindow *window;
+	MessageWindow *message;
+	
 	if ((window = dynamic_cast<ChannelWindow *>(this)))
 	{
 			int32 count (window->namesList->CountItems());
@@ -1389,6 +1391,21 @@ ClientWindow::DnsCmd (const char *data)
 					return;				
 				}
 			}
+	}
+
+	else if ((message = dynamic_cast<MessageWindow *>(this)))
+	{
+		BString eid (id);
+		eid.RemoveLast (" [DCC]");
+		if (!ICompare(eid, parms))
+		{
+			BMessage send (M_SERVER_SEND);
+			AddSend (&send, "USERHOST ");
+			AddSend (&send, parms.String());
+			AddSend (&send, endl);
+			PostMessage(&send);
+			return;
+		}
 	}
 		
 	if (parms != "-9z99")

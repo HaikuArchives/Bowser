@@ -3,6 +3,7 @@
 #include "IRCDefines.h"
 #include "ColorLabel.h"
 #include "PrefColor.h"
+#include <stdio.h>
 
 static const char *ControlLabels[] =
 {
@@ -140,7 +141,6 @@ PreferenceColor::MessageReceived (BMessage *msg)
 		case M_COLOR_INVOKE:
 		{
 			msg->FindInt32 ("which", &last_invoke);
-
 			if (!picker.IsValid())
 			{
 				ColorPicker *win;
@@ -150,26 +150,25 @@ PreferenceColor::MessageReceived (BMessage *msg)
 					colors[last_invoke]->ValueAsColor(),
 					BMessenger (this),
 					new BMessage (M_COLOR_CHANGE));
+				win->AddToSubset(Window());
 				win->Show();
-
 				picker = BMessenger (win);
 			}
 			else
 			{
-				BMessage msg (M_COLOR_SELECT);
+				BMessage colorMsg (M_COLOR_SELECT);
 				rgb_color color;
 
 				color = colors[last_invoke]->ValueAsColor();
 
-				msg.AddData (
+				colorMsg.AddData (
 					"color",
 					B_RGB_COLOR_TYPE,
 					&color,
 					sizeof (rgb_color));
 
-				picker.SendMessage (&msg);
+				picker.SendMessage (&colorMsg);
 			}
-
 			break;
 		}
 
