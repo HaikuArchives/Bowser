@@ -10,6 +10,13 @@ http://bowser.sourceforge.net
    servers at once.
  * You can now select more than one nickname from the nicklist and perform
    actions on them.
+ * Typing /clear removes all but the last few lines (you don't have to worry
+   about missing something that someone says right as you hit enter). If you
+   type /clear again while there are only a few lines, then it will clear the
+   window entirely.
+ * Fixed a couple of Deskbar-related crashers.
+ * The server window's apparance is now updated in real-time like the other
+   windows (fonts, colors, etc).
 
 
 [1.0]
