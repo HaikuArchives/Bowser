@@ -83,6 +83,11 @@ ServerWindow::ParseCTCP(BString theNick, BString theMsg)
 		BString tempString("NOTICE ");
 		tempString << theNick << " :\1VERSION Bowser[d" 
 			<< VERSION << "] : http://bowser.sourceforge.net : " << sysInfoString;
+			
+		#ifdef DEV_BUILD
+			tempString << " (development build)";
+		#endif
+			
 		tempString << "\1";
 		SendData (tempString.String());
 	}

@@ -251,17 +251,19 @@ int32 IRCView::URLLength (const char *outTemp)
         while (outTemp[x] 
         &&    (isdigit (outTemp[x])             // do these first! 
         ||     isalpha (outTemp[x]) 
-        ||     outTemp[x] == '.' 
-        ||     outTemp[x] == ',' 
-        ||     outTemp[x] == '-' 
-        ||     outTemp[x] == '/' 
-        ||     outTemp[x] == ':' 
-        ||     outTemp[x] == '~' 
-        ||     outTemp[x] == '%' 
-        ||     outTemp[x] == '+' 
-        ||     outTemp[x] == '&' 
-        ||     outTemp[x] == '_' 
-        ||     outTemp[x] == '?' 
+        ||     outTemp[x] == '.'
+        ||     outTemp[x] == ','
+        ||     outTemp[x] == '-'
+        ||     outTemp[x] == '/'
+        ||     outTemp[x] == ':'
+        ||     outTemp[x] == '~'
+        ||     outTemp[x] == '%'
+        ||     outTemp[x] == '+'
+        ||     outTemp[x] == '&'
+        ||     outTemp[x] == '_'
+        ||     outTemp[x] == '?'
+        ||     outTemp[x] == '('
+        ||     outTemp[x] == ')'
         ||     outTemp[x] == '=')) 
                 ++x; 
 

@@ -13,6 +13,7 @@ http://bowser.sourceforge.net
  * Modified Idle/SignOn time parsing for /whois
  * "/uptime -l" switch echos the uptime locally instead of sending to server
 
+
 [d42b]
  * Source changes (new makefile, etc)
  * New optimizations
