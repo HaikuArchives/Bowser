@@ -101,6 +101,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	||  secondWord == "445"  // summon disabled
 	||  secondWord == "446"  // users disabled
 	||  secondWord == "461"  // not enough parms
+	||  secondWord == "465"  // you are banned from this network
 	||  secondWord == "481"  // not an IRC op
 	||  secondWord == "483"  // can't kill server
 	||  secondWord == "491"  // no o-lines for your host

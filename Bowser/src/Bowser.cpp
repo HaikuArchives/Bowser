@@ -1147,8 +1147,12 @@ BowserApp::MessageReceived (BMessage *msg)
 			break;
 		}
 
-
-
+		case M_DCC_COMPLETE:
+		{
+			Broadcast(msg);
+			break;
+		}
+		
 
 		
 		default:

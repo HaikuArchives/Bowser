@@ -24,9 +24,12 @@ class DCCConnect : public BView
 							size,
 							ip,
 							port;
-
+		
 	BStatusBar			*bar;
 	BStringView			*label;
+
+	int32				totalTransferred;
+	int32				finalRateAverage;
 
 	thread_id			tid;
 	BFile				file;

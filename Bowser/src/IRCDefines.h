@@ -232,6 +232,8 @@ const uint32 M_DCC_FILE_WIN							= 0x1210;
 const uint32 M_DCC_FILE_WIN_DONE					= 0x1211;
 const uint32 M_ADD_RESUME_DATA						= 0x1212;
 const uint32 M_DCC_MESSENGER						= 0x1213;
+const uint32 M_DCC_COMPLETE							= 0x1214;
+
 #ifdef DEV_BUILD
 extern bool DumpReceived;
 extern bool DumpSent;

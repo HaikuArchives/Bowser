@@ -502,17 +502,20 @@ ClientWindow::DispatchMessage (BMessage *msg, BHandler *handler)
 		StateChange (msg);
 		return;
 	}
+	
 	else if (msg->what == B_KEY_DOWN)
 	{
-		BRect bounds = input->TextView()->Bounds();
-		BFont current;
-		input->TextView()->GetFontAndColor(0, &current);
-		
-		bounds.left = input->TextView()->LineWidth(0);
-		bounds.right = bounds.left + 2 * current.Size();
-		if (bounds.left > 0) bounds.left -= current.Size();
-		input->TextView()->Invalidate(bounds);
+		if (input->TextView()->LineWidth(0) > 0)
+		{
+			BRect bounds = input->TextView()->Bounds();
+			BFont current;
+			input->TextView()->GetFontAndColor(0, &current);
+			bounds.left = input->TextView()->LineWidth(0);
+			bounds.right = bounds.left + 2 * current.Size();
+			bounds.left -= current.Size();
+		}
 	}
+	
 	BWindow::DispatchMessage (msg, handler);
 }
 
@@ -831,6 +834,59 @@ ClientWindow::MessageReceived (BMessage *msg)
 				1,
 				const_cast<char **>(arguments));
 
+			break;
+		}
+		
+		case M_DCC_COMPLETE:
+		{
+			if (IsActive() || dynamic_cast<ServerWindow *>(this) != NULL)
+			{
+				/// set up ///
+				BString nick,
+				        file,
+				        size,
+			  	        type,
+				        message ("[@] "),
+				        fAck;
+				int32 rate,
+				      xfersize;
+				bool completed (true);
+			
+				msg->FindString ("nick", &nick);
+				msg->FindString ("file", &file);
+				msg->FindString ("size", &size);
+				msg->FindString ("type", &type);
+				msg->FindInt32 ("transferred", &xfersize);
+				msg->FindInt32 ("transferRate", &rate);
+				
+				BPath pFile (file.String());
+
+				fAck << xfersize;
+								
+				if (size.ICompare (fAck))
+					completed = false;
+				
+				
+				/// send mesage ///				
+				if (completed)
+					message << "Completed ";
+				else message << "Terminated ";
+				
+				if (type == "SEND")
+					message << "send of " << pFile.Leaf() << " to ";
+				else message << "receive of " << pFile.Leaf() << " from ";
+				
+				message << nick << " (";
+				
+				if (!completed)
+					message << fAck << "/";
+				
+				message << size << " bytes), ";
+				message	<< rate << " cps\n";
+					
+				const rgb_color disp = bowser_app->GetColor(C_CTCP_RPY);
+				Display (message.String(), &disp); 
+			}
 			break;
 		}
 
@@ -1403,7 +1459,6 @@ ClientWindow::UptimeCmd (const char *data)
 	}
 	else if ((parms == "-l") || (id == serverName)) // echo locally
 	{
-		//BString uptime (UptimeString());
 		BString uptime (DurationString(system_time()));
 		BString expandedString;
 		
@@ -2701,9 +2756,6 @@ ClientWindow::SetupLogging (void)
 		wName.ToLower();
 		
 		path.Append (wName.String());
-		
-		printf ("filename: %s\n", path.Path());
-
 		
 		logFile.SetTo (path.Path(), B_READ_WRITE | B_CREATE_FILE | B_OPEN_AT_END);
 

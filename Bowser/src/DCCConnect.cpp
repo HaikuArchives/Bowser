@@ -39,6 +39,7 @@ DCCConnect::DCCConnect (
 		size (sz),
 		ip (i),
 		port (p),
+		finalRateAverage (0),
 		tid (-1),
 		running (false),
 		success (false),
@@ -129,7 +130,7 @@ DCCConnect::MessageReceived (BMessage *msg)
 	switch (msg->what)
 	{
 		case M_STOP_BUTTON:
-			Stopped ();
+			Stopped();
 			break;
 
 		case M_UPDATE_STATUS:
@@ -153,6 +154,30 @@ DCCConnect::Stopped (void)
 	{
 		file.Unset();
 	}
+
+ 	if (totalTransferred > 0)
+ 	{
+ 	
+ 		BMessage xfermsg (M_DCC_COMPLETE);
+ 		xfermsg.AddString("nick", nick.String());
+ 		xfermsg.AddString("file", file_name.String());
+ 		xfermsg.AddString("size", size.String());
+ 		xfermsg.AddInt32("transferred", totalTransferred);
+ 		xfermsg.AddInt32("transferRate", finalRateAverage);
+ 	
+ 		DCCReceive *recview = dynamic_cast<DCCReceive *>(this);
+ 		if (recview)
+ 		{
+ 			xfermsg.AddString("type", "RECV");
+ 		}
+ 		else
+ 		{
+ 			xfermsg.AddString("type", "SEND");	
+ 		}
+ 	
+ 		bowser_app->PostMessage(&xfermsg);
+ 	}
+ 	
 
 	BMessage msg (M_DCC_FINISH);
 
@@ -293,13 +318,14 @@ DCCReceive::Transfer (void *arg)
 			view->file_name.String(),
 			B_WRITE_ONLY | B_CREATE_FILE | B_ERASE_FILE);
 	
-	uint32 bytes_received (file_size);
-	uint32 size (atol (view->size.String()));
-
+	int32 bytes_received (file_size);
+	int32 size (atol (view->size.String()));
+	int32 cps (0);
+	
 	if (view->file.InitCheck() == B_NO_ERROR)
 	{
 		bigtime_t last (system_time()), now;
-		int cps (0), period (0);
+		int period (0);
 		char buffer[8196];		
 		bigtime_t start = system_time();
 
@@ -312,6 +338,7 @@ DCCReceive::Transfer (void *arg)
 			
 			view->file.Write (buffer, read);
 			bytes_received += read;
+			view->totalTransferred = bytes_received;
 
 			uint32 feed_back (htonl (bytes_received));
 			send (view->s, &feed_back, sizeof (uint32), 0);
@@ -323,6 +350,7 @@ DCCReceive::Transfer (void *arg)
 			if (now - last > 500000)
 			{
 				cps = (int)ceil ((bytes_received - file_size) / ((now - start) / 1000000.0));
+				view->finalRateAverage = cps;
 				last = now;
 				period = 0;
 				hit = true;
@@ -336,12 +364,9 @@ DCCReceive::Transfer (void *arg)
 	{
 		view->success = bytes_received == size;
 		update_mime_info(path.Path(), false, false, true);
-		rgb_color msgColor = bowser_app->GetColor (C_CTCP_RPY);
 		view->file.Unset();	
 		view->Stopped ();
 	}
-	
-	
 	
 	return 0;
 }
@@ -399,7 +424,7 @@ DCCSend::Transfer (void *arg)
 	{
 		view->UpdateStatus ("Unable to establish connection.");
 		view->Unlock();
-		view->Stopped ();
+		view->Stopped();
 		return 0;
 	}
 
@@ -415,7 +440,7 @@ DCCSend::Transfer (void *arg)
 		view->UpdateStatus ("Unable to establish connection.");
 		closesocket (sd);
 		view->Unlock();
-		view->Stopped ();
+		view->Stopped();
 		return 0;
 	}
 	view->UpdateStatus ("Waiting for acceptance.");
@@ -443,7 +468,7 @@ DCCSend::Transfer (void *arg)
 			view->UpdateStatus ("Unable to establish connection.");
 			closesocket (sd);
 			view->Unlock();
-			view->Stopped ();
+			view->Stopped();
 			return 0;
 		}
 	}
@@ -466,7 +491,7 @@ DCCSend::Transfer (void *arg)
 			view->UpdateStatus ("Unable to establish connection.");
 			closesocket (sd);
 			view->Unlock();
-			view->Stopped ();
+			view->Stopped();
 			return 0;
 		}
 
@@ -488,7 +513,7 @@ DCCSend::Transfer (void *arg)
 	view->Unlock();
 	
 	view->file.SetTo(view->file_name.String(), B_READ_ONLY);
-	uint32 bytes_sent (0L);
+	int32 bytes_sent (0L);
 
 	if (view->pos)
 	{
@@ -504,11 +529,13 @@ DCCSend::Transfer (void *arg)
 		<< ".";
 	view->UpdateStatus (status.String());
 
+	int cps (0);
+	
 	if (view->file.InitCheck() == B_NO_ERROR)
 	{
 		bigtime_t last (system_time()), now;
 		char buffer[1400];
-		int period (0), cps (0);
+		int period (0);
 		ssize_t count;
 		bigtime_t start = system_time();
 
@@ -524,6 +551,8 @@ DCCSend::Transfer (void *arg)
 			}
 
 			bytes_sent += sent;
+			view->totalTransferred = bytes_sent;
+	
 			uint32 confirm;
 			recv (view->s, &confirm, sizeof (confirm), 0);
 
@@ -535,6 +564,7 @@ DCCSend::Transfer (void *arg)
 			if (now - last > 500000)
 			{
 				cps = (int) ceil ((bytes_sent - view->pos) / ((now - start) / 1000000.0));
+				view->finalRateAverage = cps;
 				last = now;
 				period = 0;
 				hit = true;
@@ -548,10 +578,8 @@ DCCSend::Transfer (void *arg)
 		view->success = bytes_sent == size;
 	}
 	
-	view->file.Unset();
-
-	if (view->running) view->Stopped ();
-
+	view->file.Unset();	
+	if (view->running) view->Stopped();	
 	return 0;
 }
 
