@@ -181,6 +181,8 @@ class ClientWindow : public BWindow
 	float								ScrollPos(void);
 	void								SetScrollPos(float);
 	void								ScrollRange(float *, float *);
+	
+	bool								ParseCmd (const char *);
 
 	protected:
 										// Commands
@@ -196,7 +198,6 @@ class ClientWindow : public BWindow
 	void								Init (void);
 	void								NotifyRegister (void);
 	
-	bool								ParseCmd (const char *);
 };
 
 class TimedNick

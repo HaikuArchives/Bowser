@@ -15,17 +15,17 @@ NamesView::NamesView(BRect frame)
 	: BListView(
 		frame,
 		"namesList",
-		B_SINGLE_SELECTION_LIST,
+		//B_SINGLE_SELECTION_LIST,
+		B_MULTIPLE_SELECTION_LIST,
 		B_FOLLOW_LEFT | B_FOLLOW_TOP_BOTTOM)
 {
 	myPopUp = new BPopUpMenu("User selection", false, false);
 	
 
-	BMessage *myMessage = new BMessage(POPUP_ACTION);
-	myMessage->AddString("action", "WHOIS -9x99 ");
+	BMessage *myMessage = new BMessage (POPUP_WHOIS);
 	myPopUp->AddItem(new BMenuItem("Whois", myMessage));
 	
-	myMessage = new BMessage(OPEN_MWINDOW);
+	myMessage = new BMessage (OPEN_MWINDOW);
 	myPopUp->AddItem(new BMenuItem("Query", myMessage));
 	
 	myPopUp->AddSeparatorItem();
@@ -39,54 +39,51 @@ NamesView::NamesView(BRect frame)
 	CTCPPopUp = new BMenu("CTCP");
 	myPopUp->AddItem( CTCPPopUp );
 		
-	myMessage = new BMessage(POPUP_ACTION);
-	myMessage->AddString("action", "PRIVMSG -9x99 :\1PING ");
+	myMessage = new BMessage(POPUP_CTCP);
+	myMessage->AddString("action", "ping");
 	CTCPPopUp->AddItem(new BMenuItem("PING", myMessage));
 
-	myMessage = new BMessage(POPUP_ACTION);
-	myMessage->AddString("action", "PRIVMSG -9x99 :\1VERSION\1");
+	myMessage = new BMessage(POPUP_CTCP);
+	myMessage->AddString("action", "version");
 	CTCPPopUp->AddItem(new BMenuItem("VERSION", myMessage));
 	
 	CTCPPopUp->AddSeparatorItem();
 	
-	myMessage = new BMessage(POPUP_ACTION);
-	myMessage->AddString("action", "PRIVMSG -9x99 :\1FINGER\1");
+	myMessage = new BMessage(POPUP_CTCP);
+	myMessage->AddString("action", "finger");
 	CTCPPopUp->AddItem(new BMenuItem("FINGER", myMessage));
 
-	myMessage = new BMessage(POPUP_ACTION);
-	myMessage->AddString("action", "PRIVMSG -9x99 :\1TIME\1");
+	myMessage = new BMessage(POPUP_CTCP);
+	myMessage->AddString("action", "time");
 	CTCPPopUp->AddItem(new BMenuItem("TIME", myMessage));
 
-	myMessage = new BMessage(POPUP_ACTION);
-	myMessage->AddString("action", "PRIVMSG -9x99 :\1CLIENTINFO\1");
+	myMessage = new BMessage(POPUP_CTCP);
+	myMessage->AddString("action", "clientinfo");
 	CTCPPopUp->AddItem(new BMenuItem("CLIENTINFO", myMessage));
 
-	myMessage = new BMessage(POPUP_ACTION);
-	myMessage->AddString("action", "PRIVMSG -9x99 :\1USERINFO\1");
+	myMessage = new BMessage(POPUP_CTCP);
+	myMessage->AddString("action", "userinfo");
 	CTCPPopUp->AddItem(new BMenuItem("USERINFO", myMessage));
 
 	myPopUp->AddSeparatorItem();
 	
-	myMessage = new BMessage(POPUP_ACTION);
-	myMessage->AddString("action", "MODE -9y99 +o -9x99 ");
+	myMessage = new BMessage(POPUP_MODE);
+	myMessage->AddString("action", "op");
 	myPopUp->AddItem(new BMenuItem("Op", myMessage));
 
-	myMessage = new BMessage(POPUP_ACTION);
-	myMessage->AddString("action", "MODE -9y99 -o -9x99 ");
+	myMessage = new BMessage(POPUP_MODE);
+	myMessage->AddString("action", "deop");
 	myPopUp->AddItem(new BMenuItem("Deop", myMessage));
 	
-	myMessage = new BMessage(POPUP_ACTION);
-	myMessage->AddString("action", "MODE -9y99 +v -9x99 ");
+	myMessage = new BMessage(POPUP_MODE);
+	myMessage->AddString("action", "voice");
 	myPopUp->AddItem(new BMenuItem("Voice", myMessage));
 
-	myMessage = new BMessage(POPUP_ACTION);
-	myMessage->AddString("action", "MODE -9y99 -v -9x99 ");
+	myMessage = new BMessage(POPUP_MODE);
+	myMessage->AddString("action", "devoice");
 	myPopUp->AddItem(new BMenuItem("Devoice", myMessage));
 
-	myMessage = new BMessage(POPUP_ACTION);
-	BString tmpString("KICK -9y99 -9x99 :");
-	tmpString << bowser_app->GetCommand (CMD_KICK);
-	myMessage->AddString("action", tmpString.String());
+	myMessage = new BMessage(POPUP_KICK);
 	myPopUp->AddItem(new BMenuItem("Kick", myMessage));
 
 	
@@ -155,8 +152,14 @@ NamesView::MouseDown (BPoint myPoint)
 		&& (modifiers & B_COMMAND_KEY) == 0
 		&& (modifiers & B_CONTROL_KEY) == 0)
 		{
-			Select (selected, false);
-	
+			//Select (selected, false);
+			
+			BListItem *item = ItemAt(IndexOf(myPoint));
+			if(item && !item->IsSelected())
+			{
+				Select(IndexOf(myPoint), false);
+			}
+			
 			myPopUp->Go (
 				ConvertToScreen (myPoint),
 				true,

@@ -532,7 +532,7 @@ ChannelWindow::MessageReceived (BMessage *msg)
 			memset (theNick, 0, 512); // ditto
 			sprintf (theChannel, "%s", id.String());
 			const char *action;
-			msg->FindString("action", &action);
+			msg->FindString ("action", &action);
 			BString theAction (action),
 					myNick (myNick),
 					targetNick;
@@ -560,6 +560,146 @@ ChannelWindow::MessageReceived (BMessage *msg)
 
 			break;
 		}
+		
+		case POPUP_MODE:
+		{
+			const char *inaction;
+			msg->FindString ("action", &inaction);			
+			
+			int32 i = 0,
+			      count = 0,
+			      index = 0;
+			BString victims,
+			        targetNick,
+			        action (inaction),
+			        modechar,
+			        polarity;
+			NameItem *myUser;
+			
+			/// action ///
+			if (action.FindFirst("voice") >= 0)
+			{
+				modechar = "v";
+			}
+			else if (action.FindFirst("op") >= 0)
+			{
+				modechar = "o";
+			}
+			
+			/// polarity ///
+			if (action.FindFirst("de") >= 0)
+			{
+				polarity << " -";
+			}
+			else
+			{
+				polarity << " +";
+			}
+			
+			
+			/// iterate ///			
+   			while ((i = namesList->CurrentSelection(index++)) >= 0) { 				
+				myUser = static_cast<NameItem *>(namesList->ItemAt(i));
+				targetNick = myUser->Name();
+				
+				victims << " " << targetNick;
+				count++;
+			}
+			
+					
+			BString command ("/mode ");
+			command << id << polarity;
+			
+			for(int32 i = 0; i < count; i++) {
+				command << modechar;
+			}
+			
+			command << victims;
+			
+			ParseCmd (command.String());
+			
+		    break;
+		}
+
+		case POPUP_CTCP:
+		{
+			const char *inaction;
+			msg->FindString ("action", &inaction);			
+			
+			int32 i = 0,
+			      index = 0;
+			BString victims,
+			        targetNick,
+			        action (inaction);
+			NameItem *myUser;
+			action.ToUpper();
+			
+			/// iterate ///			
+   			while ((i = namesList->CurrentSelection(index++)) >= 0) { 				
+				myUser = static_cast<NameItem *>(namesList->ItemAt(i));
+				targetNick = myUser->Name();
+				
+				victims << targetNick << ",";
+			}
+			
+			victims.RemoveLast (",");
+			
+			BString command ("/ctcp ");
+			command << victims << " " << action;
+							
+			ParseCmd (command.String());
+			
+		    break;
+		}
+
+		case POPUP_WHOIS:
+		{
+			int32 i = 0,
+			      index = 0;
+			BString victims,
+					targetNick;
+			NameItem *myUser;
+			
+			/// iterate ///			
+   			while ((i = namesList->CurrentSelection(index++)) >= 0) { 				
+				myUser = static_cast<NameItem *>(namesList->ItemAt(i));
+				targetNick = myUser->Name();
+				
+				victims << targetNick << ",";
+			}
+			
+			victims.RemoveLast (",");
+			
+			BString command ("/whois ");
+			command << victims;
+							
+			ParseCmd (command.String());
+			
+		    break;
+		}
+
+		case POPUP_KICK:
+		{
+			int32 i = 0,
+			      index = 0;
+			BString targetNick,
+			        kickMsg (bowser_app->GetCommand (CMD_KICK));
+			NameItem *myUser;
+			
+			/// iterate ///			
+   			while ((i = namesList->CurrentSelection(index++)) >= 0) { 				
+				myUser = static_cast<NameItem *>(namesList->ItemAt(i));
+				targetNick = myUser->Name();
+				
+				BString command ("/kick ");
+				command << targetNick << " " << kickMsg;
+							
+				ParseCmd (command.String());
+			}
+			
+		    break;
+		}
+		
 		case SEND_ACTION: // DCC send
 		{
 			BString targetNick;

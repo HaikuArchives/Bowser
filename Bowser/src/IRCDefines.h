@@ -233,6 +233,10 @@ const uint32 M_DCC_FILE_WIN_DONE					= 0x1211;
 const uint32 M_ADD_RESUME_DATA						= 0x1212;
 const uint32 M_DCC_MESSENGER						= 0x1213;
 const uint32 M_DCC_COMPLETE							= 0x1214;
+const uint32 POPUP_MODE								= 0x1215;
+const uint32 POPUP_CTCP								= 0x1216;
+const uint32 POPUP_WHOIS							= 0x1217;
+const uint32 POPUP_KICK								= 0x1218;
 
 #ifdef DEV_BUILD
 extern bool DumpReceived;

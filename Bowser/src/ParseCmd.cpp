@@ -1028,7 +1028,7 @@ ClientWindow::ParseCmd (const char *data)
 	if (firstWord != "" && firstWord[0] == '/')
 	// != "" is required to prevent a nasty crash with string[0]
 	{
-		BString theCmd (firstWord.RemoveFirst ("/")),
+		BString theCmd (firstWord.RemoveAll ("/")),
 	            theRest (RestOfString (data, 2));
 		
 		BMessage send (M_SERVER_SEND);
