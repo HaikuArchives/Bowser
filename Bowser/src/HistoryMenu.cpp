@@ -28,8 +28,7 @@ HistoryMenu::~HistoryMenu (void)
 }
 
 void
-//HistoryMenu::Draw (BRect update)
-HistoryMenu::Draw (void)	// Note #01
+HistoryMenu::Draw (BRect update)
 {
 	BRect bounds (Bounds());
 
@@ -84,8 +83,7 @@ HistoryMenu::AttachedToWindow (void)
 }
 
 void
-//HistoryMenu::MouseDown (BPoint point)
-HistoryMenu::MouseDown (void) // Note #01
+HistoryMenu::MouseDown (BPoint point)
 {
 	BMessage *msg (Window()->CurrentMessage());
 
@@ -112,8 +110,7 @@ HistoryMenu::MouseDown (void) // Note #01
 }
 
 void
-//HistoryMenu::MouseMoved (BPoint point, uint32 transit, const BMessage *msg)
-HistoryMenu::MouseMoved (uint32 transit) // Note #01
+HistoryMenu::MouseMoved (BPoint point, uint32 transit, const BMessage *msg)
 {
 	if (tracking)
 		switch (transit)

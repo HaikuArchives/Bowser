@@ -37,7 +37,6 @@ CFLAGS += -O3
 CFLAGS += -fno-pic
 CFLAGS += -fomit-frame-pointer
 CFLAGS += -ffast-math
-CFLAGS += -mno-ieee-fp
 CFLAGS += -Wall -W -Wno-multichar -Wp,-Wall
 #CFLAGS += -Werror
 CFLAGS += -DVERSION_STRING=\"$(VERSION)\" -DBINARY_NAME=\"$(BINARY)\"
@@ -83,7 +82,7 @@ all : sourcearchive binarchive
 
 sourcearchive : $(FULLNAME)-src.zip
 
-binarchive : $(FULLNAME)-$(BE_HOST_CPU).zip
+binarchive : $(FULLNAME).zip
 
 $(BINARY) : $(OBJECTS)
 	@echo linking $@
@@ -110,7 +109,8 @@ ifneq "$(EXTRADATA)" ""
 	@unzip $(EXTRADATA) -d $@~/$(FULLNAME)/
 endif
 	@find $@~ -type f | xargs mimeset
-	@rm -rf $@~/$(FULLNAME)/CVS
+	@rm -rf $@~/$(FULLNAME)/CVS $@~/$(FULLNAME)/protocol/CVS $@~/$(FULLNAME)/help/CVS
+	@rm -rf $@~/$(FULLNAME)/CVS $@~/$(FULLNAME)/help/content/CVS $@~/$(FULLNAME)/help/images/CVS
 	@cd $@~ && $(ZIP) $@ $(FULLNAME)
 	@mv -f $@~/$@ .
 	@rm -rf $@~
@@ -123,7 +123,9 @@ ifneq "$(EXTRADATA)" ""
 	@copyattr -d -r $(EXTRADATA) $@~/$(FULLNAME)-src/
 endif
 	@find $@~ -type f | xargs mimeset
-	@rm -rf $@~/$(FULLNAME)-src/CVS
+	@rm -rf $@~/$(FULLNAME)-src/src/CVS $@~/$(FULLNAME)-src/data/CVS
+	@rm -rf $@~/$(FULLNAME)-src/CVS $@~/$(FULLNAME)-src/protocol/CVS $@~/$(FULLNAME)-src/help/CVS
+	@rm -rf $@~/$(FULLNAME)-src/CVS $@~/$(FULLNAME)-src/help/content/CVS $@~/$(FULLNAME)-src/help/images/CVS
 	@cd $@~ && $(ZIP) $@ $(FULLNAME)-src
 	@mv -f $@~/$@ .
 	@rm -rf $@~

@@ -22,13 +22,10 @@ class HistoryMenu : public BView
 
 								HistoryMenu (BRect);
 	virtual					~HistoryMenu (void);
-//	virtual void			Draw (BRect);
-	virtual void			Draw (void); // Note #01
+	virtual void			Draw (BRect);
 	virtual void			AttachedToWindow (void);
-//	virtual void			MouseDown (BPoint);
-	virtual void			MouseDown (void); // Note #01
-//	virtual void			MouseMoved (BPoint, uint32, const BMessage *);
-	virtual void			MouseMoved (uint32); // Note #01
+	virtual void			MouseDown (BPoint);
+	virtual void			MouseMoved (BPoint, uint32, const BMessage *);
 	virtual void			MouseUp (BPoint);
 
 	void						PreviousBuffer (BTextControl *);
