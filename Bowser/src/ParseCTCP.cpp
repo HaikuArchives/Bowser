@@ -70,7 +70,7 @@ ServerWindow::ParseCTCP(BString theNick, BString theMsg)
 				sysInfoString << " Personal Ed. : ";
 						
 			sysInfoString << myInfo.cpu_count << " CPU(s) @ ~"
-				<< myInfo.cpu_clock_speed / 1000000 << "MHz ";
+				<< myInfo.cpu_clock_speed / 1000000 << "MHz";
 					
 		}
 		else
