@@ -11,7 +11,6 @@
 #include <FindDirectory.h>
 #include <map>
 #include <ctype.h>
-#include <netdb.h>
 
 #include "Bowser.h"
 #include "IRCDefines.h"
@@ -317,7 +316,6 @@ ClientWindow::QuitRequested (void)
 void
 ClientWindow::Show (void)
 {
-	printf ("ClientWindow::Show\n");
 	if (!settings)
 	{
 		settings = new WindowSettings (
@@ -506,7 +504,6 @@ ClientWindow::MessageReceived (BMessage *msg)
 			}
 			else
 			{
-				printf ("1111111111in the else zone11111111\n");
 				BString buffer;
 				for (int32 i = 0; msg->HasString ("data", i); ++i)
 				{
@@ -518,13 +515,10 @@ ClientWindow::MessageReceived (BMessage *msg)
 				int32 start, finish;
 				if (msg->FindInt32 ("selstart", &start) == B_OK)
 				{
-					printf ("whatever this means\n");
 					
 					msg->FindInt32 ("selend", &finish);
-					printf ("start: %ld end: %ld\n", start, finish);
 					if (start != finish)
 					{
-						printf ("nuking something\n");
 						input->TextView()->Delete (start, finish);
 					}
 					
@@ -543,7 +537,6 @@ ClientWindow::MessageReceived (BMessage *msg)
 				}
 				else
 				{
-					printf ("am i even being called\n");
 					input->TextView()->Insert (buffer.String());
 					input->TextView()->Select (input->TextView()->TextLength(),
 						input->TextView()->TextLength());
@@ -1225,7 +1218,6 @@ ClientWindow::AddSend (BMessage *msg, int32 value)
 void
 ClientWindow::StateChange (BMessage *msg)
 {
-	printf ("ClientWindow::StateChange %s\n", id.String());
 	if (msg->HasData ("color", B_RGB_COLOR_TYPE))
 	{
 		const rgb_color *color;
@@ -1389,7 +1381,6 @@ ClientWindow::StateChange (BMessage *msg)
 void
 ClientWindow::NotifyRegister (void)
 {
-	printf ("ClientWindow::NotifyRegister\n");
 	BMessage msg (M_NEW_CLIENT);
 
 	msg.AddString ("id", id.String());
@@ -1422,7 +1413,6 @@ ClientWindow::ScrollRange (float *min, float *max)
 BString
 ClientWindow::DurationString (int64 value)
 {
-	printf ("value: %Ld\n",value);
 	BString duration;
 	bigtime_t micro = value;
 	bigtime_t milli = micro/1000;
@@ -1446,64 +1436,6 @@ ClientWindow::DurationString (int64 value)
 	duration << message;
 
 	return duration;
-}
-
-int32
-ClientWindow::DNSLookup (void *arg)
-{
-	BMessage *msg (reinterpret_cast<BMessage *>(arg));
-	const char *lookup;
-	ClientWindow *client;
-	
-	msg->FindString ("lookup", &lookup);
-	msg->FindPointer ("client", reinterpret_cast<void **>(&client));
-	
-	delete msg;
-	
-	BString resolve (lookup),
-			output ("[x] ");
-	
-	if(isalpha(resolve[0]))
-	{
-		hostent *hp = gethostbyname (resolve.String());
-				
-		if(hp)
-		{
-			// ip address is in hp->h_addr_list[0];
-			char addr_buf[16];
-					
-			in_addr *addr = (in_addr *)hp->h_addr_list[0];
-			strcpy(addr_buf, inet_ntoa(*addr));
-
-			output << "Resolved " << resolve.String() << " to " << addr_buf;
-		}
-		else
-		{
-			output << "Unable to resolve " << resolve.String();
-		}
-	}
-	else
-	{
-		ulong addr = inet_addr (resolve.String());
-				
-		hostent *hp = gethostbyaddr ((const char *)&addr, 4, AF_INET);
-		if(hp)
-		{
-			output << "Resolved " << resolve.String() << " to " << hp->h_name;
-		}
-		else
-		{
-			output << "Unable to resolve " << resolve.String();
-		}
-	}
-	output << "\n";
-	
-	BMessage dnsMsg (M_DISPLAY);
-	client->PackDisplay (&dnsMsg, output.String(), &(client->whoisColor));
-	client->PostMessage (&dnsMsg);	
-	
-	return 0;
-
 }
 
 void

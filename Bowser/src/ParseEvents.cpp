@@ -274,7 +274,6 @@ ServerWindow::ParseEvents (const char *data)
 		BString kickee (GetWord (data, 4));
 		BString rest (RestOfString (data, 5));
 		BString channel (GetWord (data, 3));
-		//ClientWindow *client;
 		ClientWindow *client (Client (channel.String()));
 
 		rest.RemoveFirst (":");
@@ -299,9 +298,7 @@ ServerWindow::ParseEvents (const char *data)
 			buffer << channel << " to rejoin channel.\n";
 			PackDisplay (&display3, buffer.String(), &quitColor, 0, true);
 						
-			// dont need to send to server window anymore...
-			// ClientWindow::MessageReceived (&display);
-		
+
 			BMessage msg (M_CHANNEL_GOT_KICKED);
 			msg.AddString ("channel", channel.String());
 			msg.AddMessage ("display", &display);  // "you were kicked"

@@ -180,7 +180,7 @@ DCCFileFilter::~DCCFileFilter (void)
 }
 
 filter_result
-DCCFileFilter::Filter (BMessage *msg, BHandler **handler)
+DCCFileFilter::Filter (BMessage *msg, BHandler **)
 {
 	filter_result result (B_DISPATCH_MESSAGE);
 	

@@ -105,6 +105,7 @@ ChannelWindow::ChannelWindow (
 	bgView->AddChild (namesScroll);
 
 	rgb_color joinColor = bowser_app->GetColor (C_JOIN);
+
 	Display ("*** Now talking in ", &joinColor);
 	Display (id.String(), &joinColor);
 	Display ("\n", &joinColor);
@@ -358,26 +359,16 @@ ChannelWindow::MessageReceived (BMessage *msg)
 		{
 			bool hit (false);
 
-//			Display ("*** Users:", &textColor);
-
 			for (int32 i = 0; msg->HasString ("nick", i); ++i)
 			{
 				const char *nick;
 				bool op, voice, ignored;
-//				rgb_color color = textColor;
 
 				msg->FindString ("nick", i, &nick);
 				msg->FindBool ("op", i, &op);
 				msg->FindBool ("voice", i, &voice);
 				msg->FindBool ("ignored", i, &ignored);
 
-//				if      (ignored) color = namesList->GetColor (C_IGNORE);
-//				else if (op)      color = namesList->GetColor (C_OP);
-//				else if (voice)   color = namesList->GetColor (C_VOICE);
-//
-//				Display (" ", &textColor);
-//				Display (nick, &color);
-			
 				if (FindPosition (nick) < 0)
 				{
 					int32 iStatus (ignored ? STATUS_IGNORE_BIT : 0);
@@ -403,8 +394,6 @@ ChannelWindow::MessageReceived (BMessage *msg)
 					hit = true;
 				}
 			}
-
-//			Display ("\n", &textColor);
 
 			if (hit)
 			{
@@ -731,6 +720,23 @@ ChannelWindow::MessageReceived (BMessage *msg)
 			msg->FindString ("lag", &lag);
 			status->SetItemValue (STATUS_LAG, lag.String());
 			break;
+		}
+
+		case M_REJOIN:
+		{
+			rgb_color errorColor = bowser_app->GetColor (C_ERROR);
+			Display ("[@] Attempting to rejoin...\n", &errorColor, &serverFont);
+		
+			BMessage send (M_SERVER_SEND);	
+			AddSend (&send, "JOIN ");
+			AddSend (&send, id);	
+			if (chanKey != "")
+			{
+				AddSend (&send, " ");
+				AddSend (&send, chanKey);
+			}
+			AddSend (&send, endl);
+			break;		
 		}
 				
 		default:

@@ -139,6 +139,9 @@ const uint32 M_SERVER_SHUTDOWN						= 0x1702;
 const uint32 M_CLIENT_SHUTDOWN						= 0x1703;
 const uint32 M_IGNORED_PRIVMSG						= 0x1704;
 const uint32 M_LAG_CHANGED							= 0x1705;
+const uint32 M_SERVER_DISCONNECT					= 0x1706;
+const uint32 M_REJOIN_ALL							= 0x1707;
+
 // List Messages
 const uint32 M_SORT_CHANNEL							= 0x1800;
 const uint32 M_SORT_USER							= 0x1801;
@@ -166,6 +169,7 @@ const uint32 M_CHANNEL_TOPIC						= 0x1603;
 const uint32 M_CHANNEL_MODE							= 0x1604;
 const uint32 M_INPUT_FOCUS							= 0x1605;
 const uint32 M_CHANNEL_GOT_KICKED					= 0x1606;
+const uint32 M_REJOIN								= 0x1607;
 
 // Setup Window
 const uint32 M_SERVER_SELECT						= 0x1050;
@@ -183,8 +187,7 @@ const uint32 M_NICK_ADD								= 0x1061;
 const uint32 M_NICK_REMOVE							= 0x1062;
 const uint32 M_NICK_LOAD							= 0x1063;
 const uint32 M_LAUNCH_WEB							= 0x1064;
-//const uint32 M_ABOUT_ORGY							= 0x1065;
-//const uint32 M_ABOUT_BUDDYJ							= 0x1066;
+
 
 // Server Options
 const uint32 M_SOPTIONS_MOTD						= 0x2000;

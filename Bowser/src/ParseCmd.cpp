@@ -5,6 +5,8 @@
 #include <FindDirectory.h>
 #include <stdio.h>
 #include <map.h>
+#include <netdb.h>
+#include <ctype.h>
 
 #include "Bowser.h"
 #include "IRCDefines.h"
@@ -1082,6 +1084,64 @@ ClientWindow::ExecPipe (void *arg)
 	}
 		
 	pclose(fp);
+	
+	return 0;
+
+}
+
+int32
+ClientWindow::DNSLookup (void *arg)
+{
+	BMessage *msg (reinterpret_cast<BMessage *>(arg));
+	const char *lookup;
+	ClientWindow *client;
+	
+	msg->FindString ("lookup", &lookup);
+	msg->FindPointer ("client", reinterpret_cast<void **>(&client));
+	
+	delete msg;
+	
+	BString resolve (lookup),
+			output ("[x] ");
+	
+	if (isalpha(resolve[0]))
+	{
+		hostent *hp = gethostbyname (resolve.String());
+				
+		if(hp)
+		{
+			// ip address is in hp->h_addr_list[0];
+			char addr_buf[16];
+					
+			in_addr *addr = (in_addr *)hp->h_addr_list[0];
+			strcpy(addr_buf, inet_ntoa(*addr));
+
+			output << "Resolved " << resolve.String() << " to " << addr_buf;
+		}
+		else
+		{
+			output << "Unable to resolve " << resolve.String();
+		}
+	}
+	else
+	{
+		ulong addr = inet_addr (resolve.String());
+				
+		hostent *hp = gethostbyaddr ((const char *)&addr, 4, AF_INET);
+		if(hp)
+		{
+			output << "Resolved " << resolve.String() << " to " << hp->h_name;
+		}
+		else
+		{
+			output << "Unable to resolve " << resolve.String();
+		}
+	}
+	output << "\n";
+	
+	BMessage dnsMsg (M_DISPLAY);
+	client->PackDisplay (&dnsMsg, output.String(), &(client->whoisColor));
+	client->PostMessage (&dnsMsg);	
 	
 	return 0;
 

@@ -24,6 +24,10 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		isConnected  = true;
 		isConnecting = false;
 		Unlock();
+		
+
+		myLag = "0.000";
+		PostMessage (M_LAG_CHANGED);
 
 		BMessage msg (M_SERVER_CONNECTED);
 		msg.AddString ("server", serverName.String());
@@ -663,7 +667,19 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 			Display (tempString.String(), 0);
 			mServer->SetEnabled(true);
 		}
-
+		
+		if (reconnecting)
+		{
+			BString reString;
+			reString << "[@] Successful reconnect\n";
+			Display (reString.String(), &errorColor);
+			DisplayAll (reString.String(), false, &errorColor, &serverFont);
+			
+			PostMessage (M_REJOIN_ALL);
+			
+			reconnecting = false;
+		}
+		
 		if (initialMotd && cmds.Length())
 		{
 			BMessage msg (M_SUBMIT_RAW);
@@ -858,8 +874,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 				myLag = lag;
 				lagCount = 0;
 				checkingLag = false;
-				BMessage msg(M_LAG_CHANGED);
-				PostMessage(&msg);
+				PostMessage (M_LAG_CHANGED);
 			}			
 		}
 		else
@@ -878,6 +893,18 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 		tempString.RemoveFirst (":");
 		tempString.Append ("\n");
 		Display (tempString.String(), 0);
+		
+		if (reconnecting)
+		{
+			BString reString;
+			reString << "[@] Successful reconnect\n";
+			Display (reString.String(), &errorColor);
+			DisplayAll (reString.String(), false, &errorColor, &serverFont);
+			
+			PostMessage (M_REJOIN_ALL);
+			
+			reconnecting = false;
+		}
 	
 		if (initialMotd && cmds.Length())
 		{

@@ -286,7 +286,7 @@ BowserApp::MessageReceived (BMessage *msg)
 					send.AddString ("server", sd->server.String());
 					send.AddString ("data", "ISON ");
 					send.AddString ("data", item->Text());
-					MessageReceived (&send);
+					PostMessage (&send);
 				}
 				sd->connected++;
 			}
@@ -1077,7 +1077,7 @@ BowserApp::MessageReceived (BMessage *msg)
 				send.AddString ("server", sd->server.String());
 				send.AddString ("data", "ISON ");
 				send.AddString ("data", nick);
-				MessageReceived (&send);
+				PostMessage (&send);
 			}
 			break;
 		}

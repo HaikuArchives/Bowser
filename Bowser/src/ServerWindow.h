@@ -101,6 +101,7 @@ class ServerWindow : public ClientWindow
 
 	bool						isConnected,		// were done connecting
 									isConnecting,		// in process
+									reconnecting,		// we're reconnecting
 									hasWarned,			// warn about quitting
 									isQuitting,			// look out, going down
 									checkingLag;		// waiting for a lag_check reply

@@ -4,7 +4,6 @@
 
 #include <UTF8.h>
 #include <Path.h>
-#include <Alert.h>
 #include <FilePanel.h>
 #include <MenuItem.h>
 #include <Autolock.h>
@@ -59,6 +58,7 @@ ServerWindow::ServerWindow (
 		myLag ("0.000"),
 		isConnected (false),
 		isConnecting (true),
+		reconnecting (false),
 		hasWarned (false),
 		isQuitting (false),
 		checkingLag (false),
@@ -283,6 +283,61 @@ ServerWindow::MessageReceived (BMessage *msg)
 
 			SendData (buffer.String());
 
+			break;
+		}
+		
+		case M_SERVER_DISCONNECT:
+		{
+			// update lag meter
+			myLag = "CONNECTION PROBLEM";
+			PostMessage (M_LAG_CHANGED);
+		
+			// let the user know
+			BString tempString;
+			tempString << "[@] Disconnected from " << serverName << "\n";
+			Display (tempString.String(), &errorColor);
+			DisplayAll (tempString.String(), false, &errorColor, &serverFont);
+			
+			
+			
+			// setup reconnect
+			reconnecting = true;
+			
+			BMessage *msg (new BMessage);
+			msg->AddString ("id", id.String());
+			msg->AddString ("port", lport.String());
+			msg->AddString ("ident", lident.String());
+			msg->AddString ("name", lname.String());
+			msg->AddString ("nick", myNick.String());
+			msg->AddBool ("identd", identd);
+			msg->AddBool ("reconnecting", reconnecting);
+			msg->AddPointer ("server", this);
+
+			loginThread = spawn_thread (
+				Establish,
+				"complimentary_tote_bag",
+				B_NORMAL_PRIORITY,
+				msg);
+	
+			resume_thread (loginThread);
+			
+			break;
+			
+		}
+		
+		case M_REJOIN_ALL:
+		{	
+			bool channelOnly (true);
+			for (int32 i = 0; i < clients.CountItems(); ++i)
+			{
+				ClientWindow *client ((ClientWindow *)clients.ItemAt (i));
+	
+				if (!channelOnly || dynamic_cast<ChannelWindow *>(client))
+				{
+					BMessage msg (M_REJOIN);
+					client->PostMessage (&msg);
+				}
+			}
 			break;
 		}
 		
@@ -616,10 +671,11 @@ ServerWindow::Pulse (void)
 int32
 ServerWindow::Establish (void *arg)
 {
+	printf ("Establish\n");
 	BMessage *msg (reinterpret_cast<BMessage *>(arg));
 	const char *id, *port, *ident, *name, *nick;
 	ServerWindow *server;
-	bool identd;
+	bool identd, reconnecting (false);
 	
 	if(bowser_app->GetHideSetupState())
 	{
@@ -632,11 +688,25 @@ ServerWindow::Establish (void *arg)
 	msg->FindString ("name", &name);
 	msg->FindString ("nick", &nick);
 	msg->FindBool ("identd", &identd);
+	msg->FindBool ("reconnecting", &reconnecting);
 	msg->FindPointer ("server", reinterpret_cast<void **>(&server));
+	
+	
+	if (reconnecting)
+	{
+		snooze (2000000); // wait 2 seconds
+		BMessage statusMsgR (M_DISPLAY);
+		BString tempStringR;
+		tempStringR << "[@] Attempting to reconnect\n";
+		server->PackDisplay (&statusMsgR, tempStringR.String(), &(server->errorColor));
+		server->PostMessage (&statusMsgR);
+		server->DisplayAll (tempStringR.String(), false, &(server->errorColor), &(server->serverFont));
+	}
+		
 	
 	BMessage statusMsg0 (M_DISPLAY);
 	BString tempString0;
-	tempString0 << "[@] Attempting connection to " << id << ":" << port << "...\n";
+	tempString0 << "[@] Attempting a connection to " << id << ":" << port << "...\n";
 	server->PackDisplay (&statusMsg0, tempString0.String(), &(server->errorColor));
 	server->PostMessage(&statusMsg0);
 
@@ -645,29 +715,18 @@ ServerWindow::Establish (void *arg)
 
 	if (address.SetTo (id, atoi (port)) != B_NO_ERROR)
 	{
-		BString buffer;
-
-		buffer << "The address \"" << id << "\" and port \""
-			<< port << "\" seem to have a problem.  I can't figure "
-			"it out.";
-
-		BAlert *alert (new BAlert (
-			"Invalid Address",
-			buffer.String(),
-			"Sheesh",
-			0,
-			0,
-			B_WIDTH_AS_USUAL,
-			B_STOP_ALERT));
-		alert->Go();
+		BMessage statusMsgI (M_DISPLAY);
+		BString tempStringI ("[@] The address \"");
+		tempStringI << id << "\" and port \"" << port << "\" seem to be invalid. Make sure your Internet connection is operational.\n";
+		server->PackDisplay (&statusMsgI, tempStringI.String(), &(server->errorColor));
+		server->PostMessage (&statusMsgI);
 
 		if (msgr.LockTarget())
 		{
 			server->isConnecting = false;
 			server->Unlock();
 		}
-
-		msgr.SendMessage (B_QUIT_REQUESTED);
+		
 		return 0;
 	}
 	
@@ -675,21 +734,11 @@ ServerWindow::Establish (void *arg)
 
 	if (!endPoint || endPoint->InitCheck() != B_NO_ERROR)
 	{
-		BString buffer;
-
-		buffer << "Cannot create a connection to address "
-			<< "\"" << id << "\" and port \""
-			<< port << "\".  I can't figure it out.";
-
-		BAlert *alert (new BAlert (
-			"Invalid Address",
-			buffer.String(),
-			"Sheesh",
-			0,
-			0,
-			B_WIDTH_AS_USUAL,
-			B_STOP_ALERT));
-		alert->Go();
+		BMessage statusMsgC (M_DISPLAY);
+		BString tempStringC ("[@] Could not create connection to address \"");
+		tempStringC << id << "\" and port \"" << port << "\". Make sure your Internet connection is operational.\n";
+		server->PackDisplay (&statusMsgC, tempStringC.String(), &(server->errorColor));
+		server->PostMessage (&statusMsgC);
 
 		if (msgr.LockTarget())
 		{
@@ -709,15 +758,19 @@ ServerWindow::Establish (void *arg)
 		return 0;
 	}
 	
-	BMessage statusMsg1 (M_DISPLAY);
-	server->PackDisplay (&statusMsg1, "[@] Established...\n", &(server->errorColor));
-	server->PostMessage(&statusMsg1);
+	BMessage statusMsgO (M_DISPLAY);
+	server->PackDisplay (&statusMsgO, "[@] Connection open, waiting for reply from server\n", &(server->errorColor));
+	server->PostMessage(&statusMsgO);
 
 	identLock.Lock();
 	if (endPoint->Connect (address) == B_NO_ERROR)
 	{
 		struct sockaddr_in sin;
 		int namelen (sizeof (struct sockaddr_in));
+
+		BMessage statusMsg1 (M_DISPLAY);
+		server->PackDisplay (&statusMsg1, "[@] Established\n", &(server->errorColor));
+		server->PostMessage(&statusMsg1);
 
 		// Here we save off the local address for DCC and stuff
 		// (Need to make sure that the address we use to connect
@@ -728,7 +781,7 @@ ServerWindow::Establish (void *arg)
 		if (identd)
 		{
 			BMessage statusMsg2 (M_DISPLAY);
-			server->PackDisplay (&statusMsg2, "[@] Spawning Ident daemon (10 sec timeout)...\n", &(server->errorColor));
+			server->PackDisplay (&statusMsg2, "[@] Spawning Ident daemon (10 sec timeout)\n", &(server->errorColor));
 			server->PostMessage(&statusMsg2);
 
 			BNetEndpoint identPoint, *accepted;
@@ -764,13 +817,17 @@ ServerWindow::Establish (void *arg)
 				delete accepted;
 				
 				BMessage statusMsg3 (M_DISPLAY);
-				server->PackDisplay (&statusMsg3, "[@] Replied to Ident request...\n[@] Deactivating daemon\n", &(server->errorColor));
+				server->PackDisplay (&statusMsg3, "[@] Replied to Ident request\n", &(server->errorColor));
 				server->PostMessage(&statusMsg3);
 			}
+			
+			BMessage statusMsgD (M_DISPLAY);
+			server->PackDisplay (&statusMsgD, "[@] Deactivated daemon\n", &(server->errorColor));
+			server->PostMessage(&statusMsgD);
 		}
 
 		BMessage statusMsg4 (M_DISPLAY);
-		server->PackDisplay (&statusMsg4, "[@] Handshaking...\n", &(server->errorColor));
+		server->PackDisplay (&statusMsg4, "[@] Handshaking\n", &(server->errorColor));
 		server->PostMessage(&statusMsg4);
 		BString string;
 
@@ -798,19 +855,10 @@ ServerWindow::Establish (void *arg)
 	else // No endpoint->connect
 	{
 		identLock.Unlock();
-		BAlert *alert (new BAlert (
-			"Establish Failed",
-			"Could not establish a connection to server.  "
-			"Are you sure your phone is plugged into the "
-			"the phone jack?  If you have an external modem, "
-			"is it on?  Did you pay the phone bill?",
-			"Oh well",
-			0,
-			0,
-			B_WIDTH_FROM_WIDEST,
-			B_STOP_ALERT));
 
-		alert->Go();
+		BMessage statusMsgE (M_DISPLAY);
+		server->PackDisplay (&statusMsgE, "[@] Could not establish a connection to the server. Sorry.\n", &(server->errorColor));
+		server->PostMessage (&statusMsgE);
 
 		if (msgr.LockTarget())
 		{
@@ -818,7 +866,6 @@ ServerWindow::Establish (void *arg)
 			server->Unlock();
 		}
 
-		msgr.SendMessage (B_QUIT_REQUESTED);
 		delete endPoint;
 
 		return 0;
@@ -895,6 +942,9 @@ ServerWindow::Establish (void *arg)
 			|| !FD_ISSET (endPoint->Socket(), &wset)
 			|| length < 0)
 			{
+				// we got disconnected :(
+				
+				// print interesting info
 				printf ("Negative from endpoint receive! (%ld)\n", length);
 				printf ("(%d) %s\n",
 					endPoint->Error(),
@@ -905,21 +955,11 @@ ServerWindow::Establish (void *arg)
 					FD_ISSET (endPoint->Socket(), &rset) ? "true" : "false",
 					FD_ISSET (endPoint->Socket(), &wset) ? "true" : "false");
 		
-				server->isConnected = false;
-			
-				// update lag meter
-				server->myLag = "CONNECTION PROBLEM";
-				BMessage lagmsg (M_LAG_CHANGED);
-				server->PostMessage (&lagmsg);
-		
-				// let the user know
-				BString tempString;
-				tempString << "[@] Disconnected from " << server->serverName << "\n";
-				server->Display (tempString.String(), &(server->errorColor));
-				server->DisplayAll (tempString.String(), false, &(server->errorColor), &(server->serverFont));						
-	
+
+				// tell the user all about it
+				server->isConnected = false;				
+				server->PostMessage (M_SERVER_DISCONNECT);
 				
-				//msgr.SendMessage (B_QUIT_REQUESTED);
 				server->Unlock();
 				break;
 			}
@@ -969,20 +1009,11 @@ ServerWindow::SendData (const char *cData)
 	{
 		// doh, we aren't even connected.
 		
-		//PostMessage (B_QUIT_REQUESTED);
+		isConnected = false; // get the most important bool out of the way
 		
-		isConnected = false;
+		PostMessage (M_SERVER_DISCONNECT);
 		
-		// update lag meter
-		myLag = "CONNECTION PROBLEM";
-		BMessage msg(M_LAG_CHANGED);
-		PostMessage(&msg);
 		
-		// let the user know
-		BString tempString;
-		tempString << "[@] Disconnected from " << serverName << "\n";
-		Display (tempString.String(), &errorColor);
-		DisplayAll (tempString.String(), false, &errorColor, &serverFont);	
 	}
 	
 	#ifdef DEV_BUILD

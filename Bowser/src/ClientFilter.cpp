@@ -28,7 +28,7 @@ ClientInputFilter::~ClientInputFilter (void)
 }
 
 filter_result
-ClientInputFilter::Filter (BMessage *msg, BHandler **target)
+ClientInputFilter::Filter (BMessage *msg, BHandler **)
 {
 	filter_result result (B_DISPATCH_MESSAGE);
 	switch (msg->what)
