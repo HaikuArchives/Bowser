@@ -81,7 +81,7 @@ AboutWindow::AboutWindow (const char *version)
 		"crap going for him, so he open sourced it.  Now, there are a myriad of developers "
 		"working to constantly improve upon it.\n\n"
 		"Developers\n\n"
-		"Andrew Bazan (andrewb),\nTodd Lair (tlair),\nBrian Luft (Electroly),\nWade Majors (kurros),\n and Jamie Wilkinson (project).\n\n"
+		"Andrew Bazan (Hiisi),\nRene Gollent (AnEvilYak)\nTodd Lair (tlair),\nBrian Luft (Electroly),\nWade Majors (kurros),\n and Jamie Wilkinson (project).\n\n"
 		"Thanks\n\n"
 		"Special thanks go out to: "
 		"Gord McLeod, Flax, BeTika, Resartus, "
