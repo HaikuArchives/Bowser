@@ -39,6 +39,18 @@ struct URL
 								url  = "http://";
 								url += display;
 							}
+							
+							if (display.Compare ("home.", 5) == 0)
+							{
+								url  = "http://";
+								url += display;
+							}
+							
+							if (display.Compare ("members.", 8) == 0)
+							{
+								url  = "http://";
+								url += display;
+							}
 						
 							if (display.Compare ("ftp.", 4) == 0)
 							{
@@ -272,15 +284,17 @@ int32 IRCView::URLLength (const char *outTemp)
 int32 IRCView::FirstMarker (const char *cData)
 {
 	BString data (cData);
-	int32 urlMarkers[6];
+	int32 urlMarkers[8];
 	int32 marker (data.Length());
 	int32 pos (0);
 
-	const char *tags[6] =
+	const char *tags[8] =
 	{
 		"http://",
 		"https://",
 		"www.",
+		"home.",
+		"members.",
 		"ftp://",
 		"ftp.",
 		"file://"
@@ -294,8 +308,10 @@ int32 IRCView::FirstMarker (const char *cData)
 		urlMarkers[3] = data.FindFirst (tags[3], pos);
 		urlMarkers[4] = data.FindFirst (tags[4], pos);
 		urlMarkers[5] = data.FindFirst (tags[5], pos);
+		urlMarkers[6] = data.FindFirst (tags[6], pos);
+		urlMarkers[7] = data.FindFirst (tags[7], pos);
 
-		for (int32 i = 0; i < 6; ++i)
+		for (int32 i = 0; i < 8; ++i)
 			if (urlMarkers[i] != B_ERROR
 			&&  urlMarkers[i] <  marker)
 			{
@@ -313,7 +329,9 @@ int32 IRCView::FirstMarker (const char *cData)
 	||      urlMarkers[2] != B_ERROR
 	||      urlMarkers[3] != B_ERROR
 	||      urlMarkers[4] != B_ERROR
-	||      urlMarkers[5] != B_ERROR)
+	||      urlMarkers[5] != B_ERROR
+	||      urlMarkers[6] != B_ERROR
+	||      urlMarkers[7] != B_ERROR)
 	&&      pos < data.Length());
 
 	return marker < data.Length() ? marker : -1;

@@ -11,7 +11,9 @@ class PreferenceGeneral : public BView
 	BCheckBox					*stampBox,
 									*paranoidBox,
 									*nickBindBox,
-									*autoRejoin;
+									*autoRejoin,
+									*altwSetup,
+									*altwServer;
 
 	public:
 

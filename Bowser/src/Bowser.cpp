@@ -1393,7 +1393,7 @@ BowserApp::AltwSetupState (bool state)
 
 	BMessage msg (M_STATE_CHANGE);
 
-	msg.AddBool ("altwsetup", state);
+	msg.AddBool ("AltW Setup", state);
 	Broadcast (&msg);
 }
 
@@ -1410,7 +1410,7 @@ BowserApp::AltwServerState (bool state)
 
 	BMessage msg (M_STATE_CHANGE);
 
-	msg.AddBool ("altwserver", state);
+	msg.AddBool ("AltW Server", state);
 	Broadcast (&msg);
 }
 

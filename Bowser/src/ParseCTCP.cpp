@@ -1,5 +1,6 @@
 
 #include <Application.h>
+#include <AppFileInfo.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -29,17 +30,47 @@ ServerWindow::ParseCTCP(BString theNick, BString theMsg)
 		BString sysInfoString;
 		if(!bowser_app->GetParanoidState())
 		{
+			BString librootversion;
+			BFile *libroot = new BFile("/boot/beos/system/lib/libroot.so", B_READ_ONLY);
+			BAppFileInfo info(libroot);
+			version_info version;
+			info.GetVersionInfo(&version, B_SYSTEM_VERSION_KIND);
+			librootversion = version.short_info;
+			
+			delete libroot;
+						
 			system_info myInfo;
 			get_system_info(&myInfo);
-			sysInfoString = "BeOS";
-			if(myInfo.platform_type == B_AT_CLONE_PLATFORM)
-				sysInfoString << "/Intel : ";
-			else if(myInfo.platform_type == B_MAC_PLATFORM)
-				sysInfoString << "/PPC : ";
+			
+			sysInfoString = "BeOS/";
+			sysInfoString << librootversion;
+			
+			// this is the way the BeOS 5.0.1 update checks for R5 Pro...
+			bool BePro;
+			BePro = true; // innocent until proven guilty
+			BFile *indeo5rt = new BFile("/boot/beos/system/add-ons/media/encoders/indeo5rt.encoder", B_READ_ONLY);
+			BFile *indeo5rtmmx = new BFile("/boot/beos/system/add-ons/media/encoders/indeo5rtmmx.encoder", B_READ_ONLY);
+			BFile *mp3 = new BFile("/boot/beos/system/add-ons/media/encoders/mp3.encoder", B_READ_ONLY);
+			
+			if ((indeo5rt->InitCheck() != B_OK) ||
+				(indeo5rtmmx->InitCheck() != B_OK) ||
+				(mp3->InitCheck() != B_OK))
+			{
+				BePro = false; // *gasp*! leeches!
+			}
+			
+			delete indeo5rt;
+			delete indeo5rtmmx;
+			delete mp3;
+				
+			if (BePro)
+				sysInfoString << " Pro Edition : ";
 			else
-				sysInfoString << "/BeBox : ";
+				sysInfoString << " Personal Ed. : ";
+						
 			sysInfoString << myInfo.cpu_count << " CPU(s) @ ~"
-				<< myInfo.cpu_clock_speed / 1000000 << "MHz";
+				<< myInfo.cpu_clock_speed / 1000000 << "MHz ";
+					
 		}
 		else
 		{

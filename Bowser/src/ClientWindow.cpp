@@ -664,8 +664,12 @@ ClientWindow::MessageReceived (BMessage *msg)
 			{
 				BString aMessage (theMessage);
 
-				aMessage.Truncate (aMessage.Length() - 1);
+				aMessage.Truncate (aMessage.Length() - 1);				
 				aMessage.RemoveFirst ("\1ACTION ");
+				aMessage.RemoveAll ("\1");	// JAVirc appends an illegal space at
+											// the end, so .Truncate doesn't remove
+											// the \1
+				
 				BString tempString("* ");
 				tempString << theNick << " " << aMessage << '\n';
 				Display (tempString.String(), &actionColor, 0, true);

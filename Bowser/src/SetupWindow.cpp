@@ -239,6 +239,7 @@ SetupWindow::SetupWindow (
 
 	ResizeTo (bgView->Frame().Width(), bgView->Frame().Height());
 
+	AddShortcut('W', B_COMMAND_KEY, new BMessage(M_SETUP_ALTW)); 
 	AddShortcut('P', B_COMMAND_KEY, new BMessage(M_PREFS_BUTTON));
 	
 	// Connect at startup. -jamie
@@ -313,7 +314,7 @@ SetupWindow::MessageReceived (BMessage *msg)
 			break;
 
 		case M_PREFS_BUTTON: // open prefs window
-
+		
 			if (prefsFrame)
 			{
 				if (prefsFrame->Lock())
@@ -334,7 +335,7 @@ SetupWindow::MessageReceived (BMessage *msg)
 				prefsFrame->AddPreference ("Deskbar Icon", "Deskbar Icon", new PreferenceNotify);
 				prefsFrame->AddPreference ("Event", "Event", new PreferenceEvent);
 				prefsFrame->AddPreference ("Command", "Command", new PreferenceCommand);
-				prefsFrame->AddPreference ("DCC", "DCC", new PreferenceDCC);
+				//prefsFrame->AddPreference ("DCC", "DCC", new PreferenceDCC);
 				prefsFrame->AddPreference ("Window", "Window", new PreferenceWindow);
 				prefsFrame->Show();
 			}
@@ -693,6 +694,15 @@ SetupWindow::MessageReceived (BMessage *msg)
 
 				Minimize(true);		
 		   	break;
+
+		case M_SETUP_ALTW:
+		{
+		
+			if (bowser_app->GetAltwSetupState())
+				QuitRequested();
+			
+			break;
+		}
 
 		default:
 			BWindow::MessageReceived (msg);

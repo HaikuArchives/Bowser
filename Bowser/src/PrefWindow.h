@@ -13,8 +13,8 @@ class PreferenceWindow : public BView
 									*hideSetup,
 									*showSetup,
 									*showTopic,
-									*SetupAltW,
-									*altwServer;
+									*AltWSetup,
+									*AltWServer;
 
 	public:
 
@@ -29,7 +29,7 @@ const uint32 M_MESSAGE_FOCUS						= 'pwmf';
 const uint32 M_HIDE_SETUP							= 'pwhs';
 const uint32 M_ACTIVATE_SETUP						= 'pwas';
 const uint32 M_SHOW_TOPIC							= 'pwst';
-const uint32 M_ALTW_SETUP							= 'pwwp';
-const uint32 M_ALTW_SERVER							= 'pwwr';
+const uint32 M_ALTW_SETUP							= 'pwap';
+const uint32 M_ALTW_SERVER							= 'pwar';
 
 #endif

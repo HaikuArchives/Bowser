@@ -183,8 +183,8 @@ ColorLabel::MouseDown (BPoint point)
 	saveColor = ValueAsColor();
 	tracking  = true;
 	
-	SetColor (Inverted());
-	Window()->UpdateIfNeeded();
+	//SetColor (Inverted());
+	//Window()->UpdateIfNeeded();
 
 	mousedown = system_time();
 	SetMouseEventMask (B_POINTER_EVENTS);
@@ -296,7 +296,7 @@ ColorLabel::ShiftColor (rgb_color c, float percent) const
 		SHIFT_COMPONENT(c.red,   percent),
 		SHIFT_COMPONENT(c.green, percent),
 		SHIFT_COMPONENT(c.blue,  percent),
-		SHIFT_COMPONENT(c.alpha,  0)
+		SHIFT_COMPONENT(c.alpha,  255)
 	};
 
 	return result;

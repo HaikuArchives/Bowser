@@ -465,11 +465,14 @@ ServerWindow::MessageReceived (BMessage *msg)
 		case M_SERVER_ALTW:
 		{
 		
-//			if (bowser_app->GetAltwServerState())
-//			{
-//				ServerWindow::QuitRequested
-//			}
-
+			if (bowser_app->GetAltwServerState())
+			{
+				sMsgr = BMessenger (this);
+				BMessage msg (B_QUIT_REQUESTED);
+				msg.AddString ("bowser:quit", "not_needed_in_this_case");
+				sMsgr.SendMessage (&msg);
+			}
+			
 			break;
 		}
 

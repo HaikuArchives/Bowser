@@ -14,6 +14,7 @@ PreferenceDCC::PreferenceDCC (void)
 	BRect bounds (Bounds());
 
 	// content would go here.
+	// uncomment AddPreference ("DCC"... in SetupWindow.cpp to activate 
 
 }
 

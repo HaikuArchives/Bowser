@@ -75,4 +75,6 @@ class SetupWindow : public BWindow
 	PrefsFrame					*prefsFrame;
 };
 
+const uint32 M_SETUP_ALTW					= 'pwcw'; // setuP Window Close Window
+
 #endif
