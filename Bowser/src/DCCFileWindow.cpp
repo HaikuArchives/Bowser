@@ -54,10 +54,11 @@ DCCFileWindow::MessageReceived (BMessage *msg)
 			}
 						
 			msg->FindPointer ("view", reinterpret_cast<void **>(&view));
+			Lock();
 			view->MoveTo (point);
 			AddChild (view);
 			ResizeTo (bounds.Width(), view->Frame().bottom);
-
+			Unlock();
 			if (IsHidden())
 			{
 				Show();
@@ -85,10 +86,10 @@ DCCFileWindow::MessageReceived (BMessage *msg)
 					if (child == view)
 					{
 						float height (view->Frame().Height());
-
+						Lock();
 						RemoveChild (view);
 						delete view;
-
+						Unlock();
 						for (int32 j = i; j < CountChildren(); ++j)
 						{
 							child = ChildAt (j);

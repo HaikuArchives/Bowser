@@ -49,8 +49,12 @@ PreferenceColor::PreferenceColor (void)
 	float label_width (0.0);
 
 	for (int32 i = 0; ControlLabels[i]; ++i)
+	{
 		if (StringWidth (ControlLabels[i]) > label_width)
+		{
 			label_width = StringWidth (ControlLabels[i]);
+		}
+	}
 
 	font_height fh;
 	GetFontHeight (&fh);

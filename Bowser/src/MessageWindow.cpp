@@ -51,8 +51,10 @@ MessageWindow::MessageWindow (
 			dataThread = spawn_thread(DCCIn, "DCC Chat(I)", B_NORMAL_PRIORITY, this);
 		}
 		else
+		{
 			dataThread = spawn_thread(DCCOut, "DCC Chat(O)", B_NORMAL_PRIORITY, this);
-
+		}
+		
 		resume_thread (dataThread);
 	}
 
@@ -94,7 +96,10 @@ bool MessageWindow::QuitRequested (void)
 	if (dChat)
 	{
 		dConnected = false;
-		if (dInitiate) closesocket (mySocket);
+		if (dInitiate)
+		{
+			closesocket (mySocket);
+		}
 		closesocket (acceptSocket);
 
 		suspend_thread (dataThread);
@@ -135,8 +140,11 @@ MessageWindow::MessageReceived (BMessage *msg)
 				BString oldId (id);
 				chatee = id = newNick;
 
-				if (dChat) id.Append (" [DCC]");
-
+				if (dChat)
+				{
+					id.Append (" [DCC]");
+				}
+				
 				// SEND NOTIFY -- We could crash the deskbar
 				// (who I'm I kidding -- We crashed the deskbar)
 				// without it (BEFORE DISPLAYS!!!)
@@ -178,7 +186,9 @@ MessageWindow::MessageReceived (BMessage *msg)
 			const char *nick;
 
 			if (msg->HasString ("nick"))
+			{
 				msg->FindString ("nick", &nick);
+			}
 			else
 			{
 				nick = chatee.String();
@@ -204,7 +214,9 @@ MessageWindow::MessageReceived (BMessage *msg)
 					<< "@" << address << ")";
 
 				if (title != Title())
+				{
 					SetTitle (title.String());
+				}
 			}
 
 			// Send the rest of processing up the chain
@@ -251,7 +263,9 @@ MessageWindow::TabExpansion (void)
 		while (place > input->TextView()->Text())
 		{
 			if (*(place - 1) == '\x20')
+			{
 				break;
+			}
 			--place;
 		}
 		
@@ -303,7 +317,9 @@ MessageWindow::Parser (const char *buffer)
 		}
 	}
 	else
+	{
 		return;
+	}
 
 	Display ("<", 0);
 	Display (myNick.String(), &myNickColor);
@@ -326,12 +342,17 @@ MessageWindow::Parser (const char *buffer)
 		Display (tempString.String(), &nickColor);
 
 		if (atoi (autoNickTime.String()) > 0)
+		{
 			nickTimes.AddItem (new TimedNick (
 				chatee.String(),
 				system_time()));
+		}
 	}
 
-	if (sBuffer.Length()) Display (sBuffer.String(), 0);
+	if (sBuffer.Length())
+	{
+		Display (sBuffer.String(), 0);
+	}
 	Display ("\n", 0);
 }
 
@@ -488,7 +509,7 @@ MessageWindow::DCCOut (void *arg)
 	struct sockaddr_in sa;
 	int status;
 	char *endpoint;
-	u_long realIP = strtoul(mWin->dIP.String(), &endpoint, 10);
+	u_long realIP = strtoul (mWin->dIP.String(), &endpoint, 10);
 	
 	if ((mWin->acceptSocket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 	{
@@ -502,7 +523,7 @@ MessageWindow::DCCOut (void *arg)
 	sa.sin_family = AF_INET;
 	sa.sin_port = htons (atoi (mWin->dPort.String()));
 	sa.sin_addr.s_addr = ntohl (realIP);
-	memset(sa.sin_zero, 0, sizeof(sa.sin_zero));
+	memset (sa.sin_zero, 0, sizeof(sa.sin_zero));
 
 	{
 		BMessage msg (M_DISPLAY);

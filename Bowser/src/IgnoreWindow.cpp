@@ -127,7 +127,9 @@ IgnoreWindow::IgnoreWindow (
 		listView->AddItem (item);
 
 		for (int32 k = 0; k < item->CountExcludes(); ++k)
+		{
 			listView->AddUnder (item->ExcludeAt (k), item);
+		}
 	}
 
 	UpdateCount();
@@ -224,7 +226,9 @@ IgnoreWindow::MessageReceived (BMessage *msg)
 					reinterpret_cast<void **>(&item));
 
 				if ((index = listView->IndexOf (item)) >= 0)
+				{
 					listView->InvalidateItem (index);
+				}
 			}
 			break;
 		}
@@ -247,7 +251,9 @@ IgnoreWindow::MessageReceived (BMessage *msg)
 						IgnoreItem *iItem ((IgnoreItem *)item);
 
 						if (strcasecmp (iItem->Text(), buffer) == 0)
+						{
 							break;
+						}
 					}
 				}
 
@@ -361,7 +367,9 @@ IgnoreWindow::MessageReceived (BMessage *msg)
 					BStringItem *sItem (item->ExcludeAt (i));
 
 					if (strcasecmp (sItem->Text(), nick) == 0)
+					{
 						break;
+					}
 				}
 
 				if (i >= item->CountExcludes())
@@ -399,13 +407,17 @@ IgnoreWindow::MessageReceived (BMessage *msg)
 				msg->FindBool ("windowfollows", &windowfollows);
 	
 				if (windowfollows)
+				{
 					SetFlags (Flags()
 						| B_NOT_ANCHORED_ON_ACTIVATE
 						| B_NO_WORKSPACE_ACTIVATION);
+				}
 				else
+				{
 					SetFlags (Flags()
 						& ~(B_NOT_ANCHORED_ON_ACTIVATE
 						|   B_NO_WORKSPACE_ACTIVATION));
+				}
 			}
 			break;
 
@@ -448,7 +460,9 @@ IgnoreWindow::UpdateCount (void)
 		BListItem *item (listView->ItemAt (i));
 
 		if (item->OutlineLevel() == 0)
+		{
 			++count;
+		}
 	}
 
 	BString buffer;
@@ -513,7 +527,9 @@ IgnoreItem::IsMatch (const char *nick, const char *address) const
 				BStringItem *item (ExcludeAt (i));
 
 				if (strcasecmp (nick, item->Text()) == 0)
+				{
 					return false;
+				}
 			}
 
 		return true;

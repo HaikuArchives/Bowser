@@ -114,17 +114,24 @@ void
 HistoryMenu::MouseMoved (BPoint, uint32 transit, const BMessage *)
 {
 	if (tracking)
+	{
 		switch (transit)
 		{
 			case B_ENTERED_VIEW:
+			{
 				SetViewColor (tricolor);
 				Invalidate();
 				break;
+			}
+			
 			case B_EXITED_VIEW:
+			{
 				SetViewColor (Parent()->ViewColor());
 				Invalidate();
 				break;
+			}
 		}
+	}
 }
 
 void
@@ -137,8 +144,10 @@ HistoryMenu::MouseUp (BPoint point)
 			bigtime_t now (system_time());
 
 			if (now - mousedown < 100000)
+			{
 				snooze (100000 - (now - mousedown));
-
+			}
+			
 			SetViewColor (Parent()->ViewColor());
 			Invalidate();
 
@@ -183,8 +192,13 @@ HistoryMenu::NextBuffer (BTextControl *input)
 	else
 	{
 		if (backBuffer[bufferFree] == input->Text())
+		{
 			buffer = "";
-		else buffer = input->Text();
+		}
+		else
+		{
+			buffer = input->Text();
+		}
 	}
 	input->SetText (buffer.String());
 	input->TextView()->Select (
@@ -201,7 +215,10 @@ HistoryMenu::Submit (const char *buffer)
 	if (bufferFree == BACK_BUFFER_SIZE)
 	{
 		for (i = 0; i < BACK_BUFFER_SIZE - 1; ++i)
+		{
 			backBuffer[i] = backBuffer[i + 1];
+		}
+		
 		bufferFree = BACK_BUFFER_SIZE - 1;
 	}
 
@@ -210,10 +227,16 @@ HistoryMenu::Submit (const char *buffer)
 	BString cmd;
 
 	for (i = 0; i < backBuffer[bufferFree].Length(); ++i)
+	{
 		if (backBuffer[bufferFree][i] == '\n')
+		{
 			cmd += " ";
+		}
 		else if (backBuffer[bufferFree][i] != '\r')
+		{
 			cmd += backBuffer[bufferFree][i];
+		}
+	}
 
 	bufferPos = ++bufferFree;
 
@@ -268,7 +291,9 @@ HistoryMenu::DoPopUp (bool animation)
 			menu->AddItem (item = new BMenuItem (outputs[i], msg));
 
 			if (i == bufferPos)
+			{
 				item->SetMarked (true);
+			}
 			delete [] outputs[i];
 		}
 

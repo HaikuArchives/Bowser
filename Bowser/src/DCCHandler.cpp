@@ -99,7 +99,9 @@ ServerWindow::DCCGetDialog (
 				which = alert->Go();
 
 				if (which == 0)
+				{
 					return;
+				}
 
 				if (which == 2)
 				{
@@ -187,16 +189,22 @@ DCCFileFilter::Filter (BMessage *msg, BHandler **)
 	switch (msg->what)
 	{
 		case M_FILE_PANEL_BUTTON:
+		{
 			result = HandleButton (msg);
 			break;
+		}
 
 		case M_FILE_PANEL_ALERT:
+		{
 			result = HandleAlert (msg);
 			break;
+		}
 
 		case B_QUIT_REQUESTED:
+		{
 			printf ("Panel Quit Requested\n");
 			break;
+		}
 	}
 
 	return result;
@@ -262,7 +270,9 @@ DCCFileFilter::HandleAlert (BMessage *msg)
 	msg->FindInt32 ("which", &which);
 
 	if (which == 0 || text == 0)
+	{
 		return B_SKIP_MESSAGE;
+	}
 
 	entry_ref ref;
 	panel->GetPanelDirectory (&ref);

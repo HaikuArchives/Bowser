@@ -246,16 +246,24 @@ NamesView::GetColor (int32 which) const
 	rgb_color color (textColor);
 
 	if (which == C_OP)
+	{
 		color = opColor;
+	}
 
 	if (which == C_VOICE)
+	{
 		color = voiceColor;
+	}
 
 	if (which == C_NAMES_BACKGROUND)
+	{
 		color = bgColor;
+	}
 
 	if (which == C_IGNORE)
+	{
 		color = ignoreColor;
+	}
 
 	return color;
 }

@@ -45,7 +45,11 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 		BString title ("Bowser: ");
 		title += id;
-		SetTitle (title.String());
+		
+		if (title != Title())
+		{
+			SetTitle (title.String());
+		}
 		
 		SetPulseRate (10000000); // 10 secs
 		

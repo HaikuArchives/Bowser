@@ -167,7 +167,9 @@ ListWindow::~ListWindow (void)
 	showing.MakeEmpty();
 	listView->MakeEmpty();
 	while ((item = (BListItem *)list.RemoveItem (0L)) != 0)
+	{
 		delete item;
+	}
 
 	regfree (&re);
 	regfree (&fre);
@@ -214,7 +216,9 @@ ListWindow::MessageReceived (BMessage *msg)
 				showing.MakeEmpty();
 				listView->MakeEmpty();
 				while ((item = (BListItem *)list.RemoveItem (0L)) != 0)
+				{
 					delete item;
+				}
 				status->SetItemValue (0, "0");
 			}
 			break;
@@ -247,11 +251,15 @@ ListWindow::MessageReceived (BMessage *msg)
 
 						width = listView->StringWidth (item->Channel());
 						if (width > sChannelWidth)
+						{
 							sChannelWidth = width;
-
+						}
+						
 						width = listView->StringWidth (item->Topic());
 						if (width > sTopicWidth)
+						{
 							sTopicWidth = width;
+						}
 					}
 				}
 			}
@@ -273,10 +281,14 @@ ListWindow::MessageReceived (BMessage *msg)
 			float low (min_c (Frame().Width() / sLineWidth, 1.0));
 
 			if (low == 1.0)
+			{
 				bar->SetRange (0.0, 0.0);
+			}
 			else
+			{
 				bar->SetProportion (low);
-	
+			}
+			
 			showing.SortItems (SortChannels);
 			status->SetItemValue (1, "Adding");
 			UpdateIfNeeded();
@@ -309,12 +321,16 @@ ListWindow::MessageReceived (BMessage *msg)
 			float width (listView->StringWidth (channel));
 
 			if (width > channelWidth)
+			{
 				channelWidth = width;
-
+			}
+			
 			width = listView->StringWidth (topic);
 			if (width > topicWidth)
+			{
 				topicWidth = width;
-
+			}
+				
 			BString countStr;
 			countStr << list.CountItems();
 			status->SetItemValue (0, countStr.String());
@@ -414,9 +430,13 @@ ListWindow::MessageReceived (BMessage *msg)
 				}
 
 				if (selection < 0)
+				{
 					selection = 0;
+				}
 				else
+				{
 					++selection;
+				}
 
 				if (find != buffer)
 				{
@@ -446,8 +466,9 @@ ListWindow::MessageReceived (BMessage *msg)
 					listView->ScrollToSelection();
 				}
 				else
+				{
 					listView->DeselectAll();
-
+				}
 			}
 			else
 			{
@@ -507,13 +528,17 @@ ListWindow::MessageReceived (BMessage *msg)
 				msg->FindBool ("windowfollows", &windowfollows);
 
 				if (windowfollows)
+				{
 					SetFlags (Flags()
 						| B_NOT_ANCHORED_ON_ACTIVATE
 						| B_NO_WORKSPACE_ACTIVATION);
+				}
 				else
+				{
 					SetFlags (Flags()
 						& ~(B_NOT_ANCHORED_ON_ACTIVATE
 						|   B_NO_WORKSPACE_ACTIVATION));
+				}
 			}
 			break;
 
@@ -537,9 +562,13 @@ ListWindow::FrameResized (float width, float)
 		float low (min_c (width / sLineWidth, 1.0));
 
 		if (low == 1.0)
+		{
 			bar->SetRange (0.0, 0.0);
+		}
 		else
+		{
 			bar->SetProportion (low);
+		}
 	
 		bar->SetSteps (5.0, listView->Frame().Width());
 	}
@@ -667,9 +696,11 @@ ChannelItem::DrawItem (BView *owner, BRect frame, bool)
 		delete [] outputs[0];
 	}
 	else
+	{
 		owner->DrawString (
 			channel.String(),
 			BPoint (4, frame.bottom - fh.descent));
+	}
 
 	float width (font.StringWidth ("@@@@"));
 	owner->DrawString (
