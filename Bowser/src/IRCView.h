@@ -31,7 +31,7 @@ class IRCView : public BTextView
 
 	int32						URLLength (const char *);
 	int32						FirstMarker (const char *);
-	void						ClearView (void);
+	void						ClearView (bool);
 
 	void						SetColor (int32, rgb_color);
 	void						SetFont  (int32, const BFont *);

@@ -289,8 +289,10 @@ SetupWindow::QuitRequested (void)
 	bowser_app->Unlock();
 
 	if (quitCount)
+	{
 		return false;
-
+	}
+	
 	SaveMarked();
 
 	qMsg.AddRect ("Setup Frame", Frame());
@@ -307,6 +309,7 @@ SetupWindow::MessageReceived (BMessage *msg)
 	{
 			
 		case M_SETUP_BUTTON: // connect to server
+		{
 
 			if (Validate())
 			{
@@ -314,8 +317,10 @@ SetupWindow::MessageReceived (BMessage *msg)
 				Connect (bgView->current);
 			}
 			break;
-
+		}
+		
 		case M_PREFS_BUTTON: // open prefs window
+		{
 		
 			if (prefsFrame)
 			{
@@ -343,12 +348,14 @@ SetupWindow::MessageReceived (BMessage *msg)
 				prefsFrame->Show();
 			}
 			break;
+		}
 
 		case M_PREFS_SHUTDOWN:
-
+		{
 			prefsFrame = 0;
 			break;
-
+		}
+		
 		case M_SERVER_NEW:
 		case M_SERVER_COPY:
 		{
@@ -379,11 +386,15 @@ SetupWindow::MessageReceived (BMessage *msg)
 				ServerData *serverData ((ServerData *)bgView->servers->ItemAt (bgView->current));
 
 				if (serverData->options)
+				{
 					serverData->options->Hide();
+				}
 			}
 
 			if (SaveMarked())
+			{
 				bgView->mField->Menu()->FindMarked()->SetMarked (false);
+			}
 			msg->FindString ("text", &address);
 
 			serverData = new ServerData;
@@ -405,8 +416,10 @@ SetupWindow::MessageReceived (BMessage *msg)
 				bgView->current = bgView->mField->Menu()->CountItems() - 5);
 
 			if (bgView->mField->Menu()->FindMarked())
+			{
 				bgView->mField->Menu()->FindMarked()->SetMarked (false);
-
+			}
+			
 			if (!bgView->iIdent->IsEnabled())
 			{
 				bgView->iIdent->SetEnabled (true);
@@ -428,7 +441,9 @@ SetupWindow::MessageReceived (BMessage *msg)
 			ServerOptions *options (serverData->options);
 
 			if (SaveMarked())
+			{
 				bgView->mField->Menu()->FindMarked()->SetMarked (false);
+			}
 			msg->FindInt32 ("index", &bgView->current);
 			SetCurrent();
 
@@ -468,8 +483,10 @@ SetupWindow::MessageReceived (BMessage *msg)
 				bgView->servers->RemoveItem (serverData);
 
 				if (serverData->options)
+				{
 					serverData->options->PostMessage (B_QUIT_REQUESTED);
-
+				}
+				
 				delete item;
 				delete serverData;
 
@@ -503,7 +520,9 @@ SetupWindow::MessageReceived (BMessage *msg)
 				ServerData *serverData ((ServerData *)bgView->servers->ItemAt (bgView->current));
 
 				if (serverData->options)
+				{
 					serverData->options->Activate (true);
+				}
 				else
 				{
 					BRect frame (Frame().OffsetByCopy (50, 100));
@@ -533,7 +552,7 @@ SetupWindow::MessageReceived (BMessage *msg)
 		}
 
 		case M_NICK_ADD:
-
+		{
 			if (msg->HasString ("text"))
 			{
 				ServerData *serverData ((ServerData *)bgView->servers->ItemAt (bgView->current));
@@ -586,7 +605,7 @@ SetupWindow::MessageReceived (BMessage *msg)
 				nickname->Show();
 			}
 			break;
-
+		}
 		case M_NICK_REMOVE:
 		{
 			int32 index;
@@ -636,7 +655,7 @@ SetupWindow::MessageReceived (BMessage *msg)
 		}
 
 		case M_STATE_CHANGE:
-
+		{
 			if (msg->HasBool ("nickbind"))
 			{
 				// Application only sends this when we need to redisplay the nick content
@@ -670,8 +689,9 @@ SetupWindow::MessageReceived (BMessage *msg)
 			}
 
 			break;
-
+		}
 		case M_SERVER_SHUTDOWN:
+		{
 
 			if (quitCount)
 				if (--quitCount == 0)
@@ -683,21 +703,21 @@ SetupWindow::MessageReceived (BMessage *msg)
 					PostMessage (B_QUIT_REQUESTED);
 				}
 			break;
-
+		}
 		case M_SETUP_ACTIVATE:
-
+		{
 			if (IsHidden())
 				Show();
 
 		   	if (!IsActive())
 				Activate();
 		   	break;
-
+		}
 		case M_SETUP_HIDE:
-
-				Minimize(true);		
+		{
+			Minimize(true);		
 		   	break;
-
+		}
 		case M_SETUP_ALTW:
 		{
 		

@@ -324,12 +324,37 @@ IRCView::FirstMarker (const char *cData)
 } 
 
 void
-IRCView::ClearView (void) 
-{ 
-	if (TextLength() > 192) 
+IRCView::ClearView (bool all) 
+{
+	if (all || TextLength() < 96)
 	{
+		// clear all data
 		list<URL> &urls (settings->urls); 
-		int32 bytes (TextLength() - 192);
+		int32 bytes (TextLength());
+
+		while (!urls.empty()) 
+		if (urls.front().offset < bytes) 
+			urls.erase (urls.begin()); 
+		else 
+			break; 
+
+		list<URL>::iterator it; 
+		for (it = urls.begin(); it != urls.end(); ++it) 
+			it->offset -= bytes; 
+                
+		ClientWindow *parent = (ClientWindow *)Window(); 
+		float scrollMin, scrollMax; 
+		parent->ScrollRange (&scrollMin, &scrollMax); 
+                
+		Delete (0, bytes);
+				
+		ScrollToOffset(0);
+	}
+	else
+	{
+		// clear all but last couple of lines
+		list<URL> &urls (settings->urls); 
+		int32 bytes (TextLength() - 96);
 		const char *text (Text()); 
 
 		while (*(text + bytes) && *(text + bytes) != '\n') 
@@ -357,29 +382,6 @@ IRCView::ClearView (void)
 		Delete (0,bytes);
 				
 		ScrollToOffset(TextLength());           
-	}
-	else
-	{
-		list<URL> &urls (settings->urls); 
-		int32 bytes (TextLength());
-
-		while (!urls.empty()) 
-		if (urls.front().offset < bytes) 
-			urls.erase (urls.begin()); 
-		else 
-			break; 
-
-		list<URL>::iterator it; 
-		for (it = urls.begin(); it != urls.end(); ++it) 
-			it->offset -= bytes; 
-                
-		ClientWindow *parent = (ClientWindow *)Window(); 
-		float scrollMin, scrollMax; 
-		parent->ScrollRange (&scrollMin, &scrollMax); 
-                
-		Delete (0,bytes);
-				
-		ScrollToOffset(0);  
 	}
 } 
 

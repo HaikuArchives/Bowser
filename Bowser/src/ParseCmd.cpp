@@ -192,7 +192,13 @@ ClientWindow::ParseCmd (const char *data)
 	
 	if (firstWord == "/CLEAR")
 	{
-		text->ClearView();
+		text->ClearView (false);
+		return true;
+	}
+
+	if (firstWord == "/FCLEAR")
+	{
+		text->ClearView (true);
 		return true;
 	}
 	
