@@ -159,15 +159,16 @@ ServerWindow::ParseEvents (const char *data)
 			return true;
 		}
 
-		BString theTarget (GetWord (data, 3).ToUpper());
-		BString theMsg (RestOfString (data, 4));
+		BString theTarget (GetWord (data, 3).ToUpper()),
+		        theTargetOrig (GetWord (data, 3)),
+		        theMsg (RestOfString (data, 4));
 		ClientWindow *client (0);
 
 		theMsg.RemoveFirst(":");
 
 		if(theMsg[0] == '\1' && GetWord(theMsg.String(), 1) != "\1ACTION") // CTCP
 		{
-			ParseCTCP (theNick, theMsg);
+			ParseCTCP (theNick, theTargetOrig, theMsg);
 			return true;
 		}
 

@@ -156,7 +156,7 @@ AboutWindow::AboutWindow (void)
 		frame.Width()/2  -  Frame().Width()/2,
 		frame.Height()/2 - Frame().Height()/2); 
 
-	SetPulseRate (90000);
+	SetPulseRate (82000);
 }
 
 AboutWindow::~AboutWindow (void)

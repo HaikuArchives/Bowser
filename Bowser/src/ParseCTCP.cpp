@@ -10,10 +10,10 @@
 #include "ServerWindow.h"
 
 void
-ServerWindow::ParseCTCP(BString theNick, BString theMsg)
+ServerWindow::ParseCTCP(BString theNick, BString theTarget, BString theMsg)
 {
-	BString theCTCP = GetWord(theMsg.String(), 1).ToUpper();
-	BString theRest = RestOfString(theMsg.String(), 2);
+	BString theCTCP = GetWord(theMsg.String(), 1).ToUpper(),
+	        theRest = RestOfString(theMsg.String(), 2);
 	theCTCP.RemoveFirst("\1");
 	theCTCP.RemoveLast("\1");
 
@@ -224,7 +224,12 @@ ServerWindow::ParseCTCP(BString theNick, BString theMsg)
 	BMessage display (M_DISPLAY);
 	BString buffer;
 
-	buffer << "[" << theNick << " " << theCTCP;
+	buffer << "[" << theNick << " ";
+	if (theTarget != myNick)
+	{
+		buffer << theTarget << ":";
+	}
+	buffer << theCTCP;
 	
 	if (theCTCP == "PING" || theRest == "-9z99")
 	{

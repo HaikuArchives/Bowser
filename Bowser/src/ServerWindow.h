@@ -78,7 +78,7 @@ class ServerWindow : public ClientWindow
 
 	bool							ParseENums (const char *, const char *);
 
-	void							ParseCTCP (BString theNick, BString theMsg);
+	void							ParseCTCP (BString theNick, BString theTarget, BString theMsg);
 	void							ParseCTCPResponse (BString theNick, BString theMsg);
 	void							DCCGetDialog (BString theNick, BString theFile, BString theSize,
 										BString theIP, BString thePort);
