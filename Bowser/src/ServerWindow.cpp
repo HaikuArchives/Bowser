@@ -224,10 +224,10 @@ ServerWindow::QuitRequested()
 	// Don't kill login thread.. it will figure
 	// things out for itself
 	
-//	if (isConnecting) {
-//		kill_thread(loginThread);	// might be waiting for something,
-//									// we're too busy to wait
-//	}
+	if (isConnecting) {
+		kill_thread(loginThread);	// might be waiting for something,
+									// we're too busy to wait
+	}
 	
 	// Tell the app about our death, he may care
 	BMessage aMsg (M_SERVER_SHUTDOWN);
