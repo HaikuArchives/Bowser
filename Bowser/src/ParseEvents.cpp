@@ -187,7 +187,9 @@ ServerWindow::ParseEvents (const char *data)
 				serverName.String(),
 				sMsgr,
 				myNick.String(),
-				addyString.String());
+				addyString.String(),
+				false, // not a dcc chat
+				true); // initated by server
 
 			clients.AddItem (client);
 			client->Show();

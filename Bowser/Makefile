@@ -93,7 +93,6 @@ $(BINARY) : $(OBJECTS)
 	@rm -f version.r
 	@xres -o $@ $(SRCDIR)/Bowser.rsrc
 	@mimeset -f $@
-	@echo fin
 	
 $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 	@echo compiling $@

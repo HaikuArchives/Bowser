@@ -33,7 +33,7 @@ MessageWindow::MessageWindow (
 		sMsgr_,
 		nick,
 		BRect(110,110,730,420)),
-
+		
 		chatAddy (addyString ? addyString : ""),
 		chatee (id_),
 		dChat (chat),
@@ -57,6 +57,13 @@ MessageWindow::MessageWindow (
 		resume_thread (dataThread);
 	}
 
+	if (dInitiate)
+	{
+		// if created by an outside event, avoid focus
+		SetFlags (B_AVOID_FOCUS);
+	}
+
+
 	status->AddItem (new StatusItem (
 		serverName.String(), 0),
 		true);
@@ -71,7 +78,6 @@ MessageWindow::MessageWindow (
 		STATUS_ALIGN_LEFT),
 		true);
 	
-	//BMessage reply(B_REPLY);
 	status->SetItemValue (STATUS_LAG, "0.000");	
 	status->SetItemValue (STATUS_NICK, myNick.String());
 
@@ -79,8 +85,8 @@ MessageWindow::MessageWindow (
 	if (addyString && *addyString)
 		titleString << " (" << addyString << ")";
 
-	SetTitle(titleString.String());
-	SetSizeLimits(300,2000,150,2000);
+	SetTitle (titleString.String());
+	SetSizeLimits (300,2000,150,2000);
 
 
 }
