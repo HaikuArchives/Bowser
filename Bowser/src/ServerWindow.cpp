@@ -302,6 +302,7 @@ ServerWindow::MessageReceived (BMessage *msg)
 			
 			// setup reconnect
 			reconnecting = true;
+			isConnecting = true;
 			
 			BMessage *msg (new BMessage);
 			msg->AddString ("id", id.String());

@@ -101,6 +101,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 	||  secondWord == "352"  // who info
 	||  secondWord == "371"  // info info
 	||  secondWord == "374"  // end of info
+	||  secondWord == "432"  // erroneus nickname
 	||  secondWord == "438"  // nick change too fast
 	||  secondWord == "445"  // summon disabled
 	||  secondWord == "446"  // users disabled
@@ -962,7 +963,7 @@ ServerWindow::ParseENums (const char *data, const char *sWord)
 
 		BString theNick (GetWord (data, 4)),
 				tempString;
-		tempString << "[x] " << theNick << " is already in use.\n";
+		tempString << "[x] Nickname " << theNick << " is already in use.\n";
 
 		BMessage display (M_DISPLAY);
 		PackDisplay (&display, tempString.String(), &nickColor);
