@@ -4,22 +4,22 @@
 
 #include <Alert.h>
 #include <TextControl.h>
-#include <Invoker.h>
-#include <Application.h>
-#include <String.h>
+//#include <Invoker.h>
+//#include <Application.h>
+//#include <String.h>
 #include <FilePanel.h>
 #include <MessageFilter.h>
-#include <Directory.h>
-#include <Entry.h>
-#include <File.h>
+//#include <Directory.h>
+//#include <Entry.h>
+//#include <File.h>
 #include <Path.h>
-#include <sys/stat.h>
+//#include <sys/stat.h>
 
 #include <stdio.h>
 
-#include "IRCDefines.h"
+//#include "IRCDefines.h"
 #include "Bowser.h"
-#include "PrefGeneral.h"
+//#include "PrefGeneral.h"
 #include "ServerWindow.h"
 
 class DCCFileFilter : public BMessageFilter

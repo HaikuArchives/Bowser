@@ -1,14 +1,13 @@
 #ifndef IGNOREWINDOW_H_
 #define IGNOREWINDOW_H_
 
-#include <Window.h>
-#include <Messenger.h>
+//#include <Window.h>
+//#include <Messenger.h>
 #include <ListItem.h>
-#include <List.h>
+//#include <List.h>
 
 #include <regex.h>
 
-#include "Prompt.h"
 
 class BList;
 class BOutlineListView;

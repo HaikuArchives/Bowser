@@ -4,10 +4,10 @@
 											((uchar)(x * (2 - y))) : \
 											((uchar)(255 - y * (255 - x))))
 
-#include <Application.h>
+//#include <Application.h>
 #include <ColorControl.h>
 
-#include <stdio.h>
+//#include <stdio.h>
 
 #include "ColorLabel.h"
 

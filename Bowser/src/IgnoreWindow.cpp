@@ -1,20 +1,20 @@
 
-#include <View.h>
+//#include <View.h>
 #include <MenuBar.h>
-#include <Menu.h>
+//#include <Menu.h>
 #include <MenuItem.h>
 #include <OutlineListView.h>
 #include <ScrollView.h>
 #include <ListItem.h>
-#include <Alert.h>
+#include <List.h>
+//#include <Alert.h>
 
-#include <stdio.h>
+//#include <stdio.h>
 
-#include "IRCDefines.h"
+//#include "IRCDefines.h"
 #include "Prompt.h"
 #include "StatusView.h"
 #include "Settings.h"
-#include "Prompt.h"
 #include "Bowser.h"
 #include "StringManip.h"
 #include "IgnoreWindow.h"

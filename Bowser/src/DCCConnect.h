@@ -4,7 +4,7 @@
 
 #include <View.h>
 #include <String.h>
-#include <Messenger.h>
+//#include <Messenger.h>
 #include <File.h>
 #include <socket.h>
 

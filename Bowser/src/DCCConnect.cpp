@@ -1,22 +1,22 @@
 
 #include <StatusBar.h>
 #include <StringView.h>
-#include <Window.h>
+//#include <Window.h>
 #include <Path.h>
-#include <File.h>
+//#include <File.h>
 #include <Mime.h>
 
 #include <stdlib.h>
-#include <net/netdb.h>
-#include <unistd.h>
+//#include <net/netdb.h>
+//#include <unistd.h>
 #include <stdio.h>
 
-#include "IRCDefines.h"
+//#include "IRCDefines.h"
 #include "PlayButton.h"
 #include "Bowser.h"
-#include "PrefGeneral.h"
+//#include "PrefGeneral.h"
 #include "DCCConnect.h"
-#include "ServerWindow.h"
+//#include "ServerWindow.h"
 
 const uint32 M_STOP_BUTTON				= 'stop';
 const uint32 M_UPDATE_STATUS			= 'stat';

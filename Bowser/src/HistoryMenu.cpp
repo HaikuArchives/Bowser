@@ -1,10 +1,10 @@
 #include <Window.h>
 #include <TextControl.h>
 
-#include <Application.h>
+//#include <Application.h>
 #include <PopUpMenu.h>
 #include <MenuItem.h>
-#include <Font.h>
+//#include <Font.h>
 
 #include "IRCDefines.h"
 #include "HistoryMenu.h"

@@ -2,18 +2,18 @@
 #define MELTDOWN_BYTES		500000 
 #define REMOVE_BYTES		1000
 
-#include <Alert.h>
+//#include <Alert.h>
 #include <TextControl.h>
-#include <Font.h>
+//#include <Font.h>
 #include <Roster.h>
 
 #include <list.h>
-#include <stdio.h>
+//#include <stdio.h>
 #include <ctype.h>
 
 #include "Bowser.h"
 #include "ClientWindow.h"
-#include "StringManip.h"
+//#include "StringManip.h"
 #include "IRCView.h"
 
 struct URL 

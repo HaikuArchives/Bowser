@@ -1,17 +1,17 @@
 #include <TranslationUtils.h>
 #include <Screen.h>
-#include <View.h>
+//#include <View.h>
 #include <TextView.h>
 #include <Bitmap.h>
-#include <Font.h>
-#include <Message.h>
+//#include <Font.h>
+//#include <Message.h>
 #include <Application.h>
-#include <String.h>
+//#include <String.h>
 
 #include <stdio.h>
 
 #include "AboutWindow.h"
-#include "StringManip.h"
+//#include "StringManip.h"
 #include "IRCDefines.h"
 
 AboutWindow::AboutWindow (void)

@@ -1,5 +1,6 @@
 
 #include <TextControl.h>
+#include <String.h>
 
 #include <stdio.h>
 

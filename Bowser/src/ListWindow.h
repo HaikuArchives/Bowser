@@ -3,8 +3,8 @@
 #define LISTWINDOW_H_
 
 #include <Window.h>
-#include <Messenger.h>
-#include <List.h>
+//#include <Messenger.h>
+//#include <List.h>
 #include <String.h>
 
 #include <regex.h>

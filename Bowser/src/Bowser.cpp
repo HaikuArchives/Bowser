@@ -240,7 +240,6 @@ BowserApp::MessageReceived (BMessage *msg)
 		case M_ID_CHANGE:
 			if (settings->deskbarMsgr.IsValid())
 			{
-				printf("think happy thoughts: %ld\n", msg->what);
 				// just pass it along
 				settings->deskbarMsgr.SendMessage (msg);
 

@@ -1,7 +1,7 @@
 
 #include <CheckBox.h>
+#include <String.h>
 
-#include "Bowser.h"
 #include "PrefDCC.h"
 
 PreferenceDCC::PreferenceDCC (void)

@@ -1,16 +1,16 @@
 #include <Application.h>
-#include <StringView.h>
+//#include <StringView.h>
 
-#include "IRCView.h"
-#include "StringManip.h"
+//#include "IRCView.h"
+//#include "StringManip.h"
 #include "IRCDefines.h"
 #include "ServerWindow.h"
 #include "StatusView.h"
 #include "MessageWindow.h"
 
-#include <stdio.h>
+//#include <stdio.h>
 #include <stdlib.h>
-#include <net/socket.h>
+//#include <net/socket.h>
 #include <net/netdb.h>
 
 MessageWindow::MessageWindow (

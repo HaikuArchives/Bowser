@@ -4,7 +4,7 @@
 #define _BOWSER_H_
 
 #include <Application.h>
-#include <String.h>
+//#include <String.h>
 #include "DCCFileWindow.h"
 #include "IRCDefines.h"
 

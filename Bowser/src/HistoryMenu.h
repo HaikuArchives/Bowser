@@ -4,7 +4,7 @@
 
 #define BACK_BUFFER_SIZE			20
 
-#include <View.h>
+//#include <View.h>
 #include <String.h>
 
 class BTextControl;

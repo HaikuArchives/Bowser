@@ -1,8 +1,8 @@
 
-#include <stdio.h>
+//#include <stdio.h>
 
 #include "Bowser.h"
-#include "Settings.h"
+//#include "Settings.h"
 #include "DCCConnect.h"
 #include "DCCFileWindow.h"
 

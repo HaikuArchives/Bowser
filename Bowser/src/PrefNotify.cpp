@@ -4,6 +4,7 @@
 #include <MenuItem.h>
 #include <CheckBox.h>
 #include <TextControl.h>
+#include <String.h>
 
 #include "Bowser.h"
 #include "IRCDefines.h"

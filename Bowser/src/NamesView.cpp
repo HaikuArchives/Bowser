@@ -3,7 +3,7 @@
 #include <MenuItem.h>
 #include <Window.h>
 
-#include <stdio.h>
+//#include <stdio.h>
 
 #include "Bowser.h"
 #include "Names.h"

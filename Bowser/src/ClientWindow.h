@@ -11,7 +11,7 @@
 #define STATUS_TOPIC			6
 
 #include <Window.h>
-#include <Messenger.h>
+//#include <Messenger.h>
 #include <String.h>
 #include <Font.h>
 #include <File.h>

@@ -1,20 +1,20 @@
 
-#include <Application.h>
+//#include <Application.h>
 #include <ScrollView.h>
 #include <FilePanel.h>
-#include <StringView.h>
+//#include <StringView.h>
 #include <TextControl.h>
 
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
+//#include <ctype.h>
 
 #include "Names.h"
 #include "Bowser.h"
-#include "IRCView.h"
+//#include "IRCView.h"
 #include "StatusView.h"
-#include "Settings.h"
+//#include "Settings.h"
 #include "StringManip.h"
 #include "IgnoreWindow.h"
 #include "ChannelWindow.h"
@@ -812,7 +812,8 @@ ChannelWindow::Parser (const char *buffer)
 	Display ("\n", 0);
 }
 
-bool ChannelWindow::RemoveUser (const char *data)
+bool
+ChannelWindow::RemoveUser (const char *data)
 {
 	int32 myIndex (FindPosition (data));
 
@@ -845,7 +846,8 @@ bool ChannelWindow::RemoveUser (const char *data)
 	return false;
 }
 
-int ChannelWindow::FindPosition (const char *data)
+int
+ChannelWindow::FindPosition (const char *data)
 {
 	int32 count (namesList->CountItems());
 
@@ -869,7 +871,8 @@ int ChannelWindow::FindPosition (const char *data)
 	return -1;
 }
 
-int ChannelWindow::SortNames(const void *name1, const void *name2)
+int
+ChannelWindow::SortNames(const void *name1, const void *name2)
 {
 	NameItem **firstPtr = (NameItem **)name1;
 	NameItem **secondPtr = (NameItem **)name2;
@@ -969,7 +972,8 @@ ChannelWindow::TabExpansion (void)
 	}
 }
 
-void ChannelWindow::UpdateMode(char theSign, char theMode)
+void
+ChannelWindow::UpdateMode(char theSign, char theMode)
 {
 	char modeString[2]; // necessary C-style string
 	sprintf(modeString, "%c", theMode);

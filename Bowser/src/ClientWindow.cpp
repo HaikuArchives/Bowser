@@ -1,16 +1,14 @@
 #include <FilePanel.h>
 #include <MenuBar.h>
 #include <MenuItem.h>
-#include <StringView.h>
+//#include <StringView.h>
 #include <ScrollView.h>
-#include <View.h>
+//#include <View.h>
 #include <Path.h>
 #include <Mime.h>
-#include <TextControl.h>
+//#include <TextControl.h>
 #include <Roster.h>
-#include <FindDirectory.h>
-#include <map>
-#include <ctype.h>
+//#include <FindDirectory.h>
 
 #include "Bowser.h"
 #include "IRCDefines.h"
@@ -25,9 +23,11 @@
 #include "ClientFilter.h"
 #include "ClientWindow.h"
 #include "ChannelWindow.h"
-#include "IgnoreWindow.h"
+//#include "IgnoreWindow.h"
 
 #include <stdio.h>
+#include <map.h>
+#include <ctype.h>
 
 const char *ClientWindow::endl						("\1\1\1\1\1");
 
