@@ -109,6 +109,7 @@ AboutWindow::AboutWindow (void)
 		"Bob Maple\n"
 		"Gord McLeod\n"
 		"Seth Flaxman\n"
+		"David Aquilina\n"
 		"Kurt von Finck\n"
 		"Kristine Gouveia\n"
 		"Jean-Baptiste Quéru\n"
