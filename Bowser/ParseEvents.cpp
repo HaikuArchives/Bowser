@@ -355,9 +355,18 @@ ServerWindow::ParseEvents (const char *data)
 			expansions[3] = ident.String();
 			expansions[4] = address.String();
 
-			buffer << client->Id() << " : " << theTopic;
-			client->SetTitle (buffer.String());
-			client->Unlock();
+			if(bowser_app->GetShowTopicState())
+			{
+				buffer << client->Id() << " : " << theTopic;
+				client->SetTitle (buffer.String());
+				client->Unlock();
+			}
+			else
+			{
+				buffer << client->Id();
+				client->SetTitle (buffer.String());
+				client->Unlock();
+			}
 
 			BMessage display (M_DISPLAY);
 

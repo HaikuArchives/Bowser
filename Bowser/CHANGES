@@ -5,6 +5,7 @@ http://bowser.sourceforge.net
 [d41a]
  * New CTCP options in nick list menu
  * New about window
+ * Fixed case where "Show topic in titlebar" option would get ignored
  
 
 [d41]
