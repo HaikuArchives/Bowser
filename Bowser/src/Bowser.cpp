@@ -238,8 +238,10 @@ BowserApp::MessageReceived (BMessage *msg)
 		case M_NEWS_CLIENT:
 		case M_NICK_CLIENT:
 		case M_ID_CHANGE:
+			//ClientWindow::notifyLock.Lock();
 			if (settings->deskbarMsgr.IsValid())
 			{
+				printf("think happy thoughts: %ld\n", msg->what);
 				// just pass it along
 				settings->deskbarMsgr.SendMessage (msg);
 
@@ -249,7 +251,9 @@ BowserApp::MessageReceived (BMessage *msg)
 
 					msg->SendReply (&reply);
 				}
+			
 			}
+			//ClientWindow::notifyLock.Unlock();
 			break;
 
 		case M_SERVER_STARTUP:

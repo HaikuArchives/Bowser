@@ -18,6 +18,7 @@
 
 #include "IRCDefines.h"
 #include "Notify.h"
+#include "ClientWindow.h"
 
 #include <stdio.h>
 
@@ -219,6 +220,11 @@ NotifyView::Archive (BMessage *archive, bool deep) const
 void
 NotifyView::Draw (BRect frame)
 {
+	if (frame.left > 1)
+	{
+		// we don't care. just want to get rid of the warning
+	}
+	
 	SetDrawingMode (B_OP_ALPHA);
 	SetBlendingMode (B_PIXEL_ALPHA, B_ALPHA_OVERLAY);
 
@@ -252,8 +258,11 @@ NotifyView::MessageReceived (BMessage *msg)
 		{
 			printf ("M_NEW_CLIENT\n");
 			const char *id;
+			//ClientWindow *client;
 
 			msg->FindString ("id", &id);
+			//msg->FindPointer ("client", reinterpret_cast<void **>(&client));
+			
 			NotifyData *nData (new NotifyData);
 
 			nData->name   = id;
@@ -432,6 +441,9 @@ NotifyView::MessageReceived (BMessage *msg)
 				msg->FindInt32 ("sid", &sid);
 				
 				printf ("found data\n");
+				
+				printf ("sid: %ld\n", sid);
+				printf ("sid name: %s\n", servers[sid]->name.String());
 	
 				if (servers[sid]->name == id)
 				{
@@ -537,6 +549,7 @@ NotifyView::MessageReceived (BMessage *msg)
 		default:
 			BView::MessageReceived (msg);
 	}
+	//ClientWindow::notifyLock.Unlock();
 	//printf ("done\n");
 }
 
@@ -661,6 +674,12 @@ NotifyView::DetachedFromWindow (void)
 void
 NotifyView::MouseDown (BPoint point)
 {
+
+	if (point.x > 1)
+	{
+		// we don't care. just want to get rid of the warning
+	}
+
 	BMessage *msg (Window()->CurrentMessage());
 	uint32 buttons;
 	uint32 modifiers;

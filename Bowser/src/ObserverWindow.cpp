@@ -97,6 +97,11 @@ ObserverWindow::DispatchMessage (BMessage *msg, BHandler *handler)
 void
 ObserverWindow::NoticeReceived (BMessage *msg, uint32 what)
 {
+	switch (msg->what)
+	{
+		// we don't care. just want to get rid of the warning
+	}
+	
 	printf ("Unhandled notice %lu!\n", what);
 	//msg->PrintToStream();
 }
@@ -104,6 +109,11 @@ ObserverWindow::NoticeReceived (BMessage *msg, uint32 what)
 void
 ObserverWindow::StateChange (BMessage *msg)
 {
+	switch (msg->what)
+	{
+		// we don't care. just want to get rid of the warning
+	}
+	
 	printf ("Unhandled state change!\n");
 	//msg->PrintToStream();
 }

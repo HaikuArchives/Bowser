@@ -31,6 +31,7 @@
 #include <stdio.h>
 
 const char *ClientWindow::endl						("\1\1\1\1\1");
+BLocker ClientWindow::notifyLock;
 
 ClientWindow::ClientWindow (
 	const char *id_,
@@ -92,6 +93,7 @@ ClientWindow::ClientWindow (
 void
 ClientWindow::Init (void)
 {
+
 	BRect frame (Bounds());
 	menubar = new BMenuBar (frame, "menu_bar");
 
@@ -272,8 +274,11 @@ ClientWindow::Init (void)
 		B_PLAIN_BORDER);
 	bgView->AddChild (scroll);
 
+
 	// For dynamic menus
 	mNotification[0] = mNotification[1] = mNotification[2] = 0;
+
+	NotifyRegister();
 
 	isLogging		= bowser_app->GetMasterLogState();
 	scrolling		= true;
@@ -313,6 +318,7 @@ ClientWindow::QuitRequested (void)
 void
 ClientWindow::Show (void)
 {
+	printf ("ClientWindow::Show\n");
 	if (!settings)
 	{
 		settings = new WindowSettings (
@@ -323,7 +329,7 @@ ClientWindow::Show (void)
 		settings->Restore();
 
 		BWindow::Show();
-		NotifyRegister();
+		//NotifyRegister();
 
 		return;
 	}
@@ -1063,11 +1069,13 @@ ClientWindow::Display (
 	&&  settings
 	&&  settings->notification[0])
 	{
+		//notifyLock.Lock();
 		BMessage msg (M_NEWS_CLIENT);
 
 		msg.AddString ("id",  id.String());
 		msg.AddInt32  ("sid", sid);
 		bowser_app->PostMessage (&msg);
+		//notifyLock.Unlock();
 	}
 }
 
@@ -1378,11 +1386,13 @@ ClientWindow::StateChange (BMessage *msg)
 void
 ClientWindow::NotifyRegister (void)
 {
+	printf ("ClientWindow::NotifyRegister\n");
 	BMessage msg (M_NEW_CLIENT);
 
 	msg.AddString ("id", id.String());
 	msg.AddString ("server", serverName.String());
 	msg.AddInt32 ("sid", sid);
+	//msg.AddPointer ("client", this);
 	msg.AddMessenger ("msgr", BMessenger (this));
 
 	bowser_app->PostMessage (&msg);

@@ -380,7 +380,6 @@ ServerWindow::MessageReceived (BMessage *msg)
 				*ip,
 				*port;
 			BPath path;
-			int64 pos = 0;
 			
 			msg->FindString("bowser:nick", &nick);
 			msg->FindString("bowser:size", &size);

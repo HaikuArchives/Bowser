@@ -61,6 +61,11 @@ ColorLabel::AttachedToWindow (void)
 void
 ColorLabel::Draw (BRect frame)
 {
+	if (frame.left > 1)
+	{
+		// we don't care. just want to get rid of the warning
+	}
+
 	font_height fh;
 
 	PushState();
@@ -178,6 +183,13 @@ ColorLabel::MessageReceived (BMessage *msg)
 void
 ColorLabel::MouseDown (BPoint point)
 {
+
+	if (point.x > 1)
+	{
+		// we don't care. just want to get rid of the warning
+	}
+
+
 	// Little song and dance for those who ... wait,
 	// who doesn't like a little singing and dancing?
 	saveColor = ValueAsColor();
@@ -189,21 +201,6 @@ ColorLabel::MouseDown (BPoint point)
 	mousedown = system_time();
 	SetMouseEventMask (B_POINTER_EVENTS);
 }
-
-//void
-//ColorLabel::MouseMoved (BPoint point, uint32 transit, const BMessage *)
-//{
-//	if (tracking)
-//		switch (transit)
-//		{
-//			case B_ENTERED_VIEW:
-//				SetColor (Inverted());
-//				break;
-//			case B_EXITED_VIEW:
-//				SetColor (saveColor);
-//				break;
-//		}
-//}
 
 void
 ColorLabel::MouseUp (BPoint point)
