@@ -112,6 +112,7 @@ const uint32 M_IGNORE_WINDOW						= 0x1035;
 const uint32 M_STATE_CHANGE							= 0x1036;
 const uint32 M_SERVER_STARTUP						= 0x1037;
 const uint32 M_SERVER_CONNECTED						= 0x1038;
+const uint32 M_GET_ESTABLISH_DATA					= 0x1039;
 
 // Client Window Messages
 const uint32 M_PREVIOUS_CLIENT						= 0x1300;

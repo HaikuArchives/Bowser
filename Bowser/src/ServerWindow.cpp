@@ -118,7 +118,7 @@ ServerWindow::ServerWindow (
 	// the establish thread.  Establish can
 	// work in getting connecting regardless of
 	// what this instance of ServerWindow is doing
-	BMessage *msg (new BMessage);
+/*	BMessage *msg (new BMessage);
 	msg->AddString ("id", id.String());
 	msg->AddString ("port", lport.String());
 	msg->AddString ("ident", lident.String());
@@ -126,12 +126,12 @@ ServerWindow::ServerWindow (
 	msg->AddString ("nick", myNick.String());
 	msg->AddBool ("identd", identd);
 	msg->AddPointer ("server", this);
-
+*/
 	loginThread = spawn_thread (
 		Establish,
 		"complimentary_tote_bag",
 		B_NORMAL_PRIORITY,
-		msg);
+		new BMessenger(this));
 	
 	resume_thread (loginThread);
 
@@ -142,10 +142,8 @@ ServerWindow::ServerWindow (
 
 ServerWindow::~ServerWindow (void)
 {
-	if (endPoint != NULL)     delete endPoint;
 	if (send_buffer)  delete [] send_buffer;
 	if (parse_buffer) delete [] parse_buffer;
-	identLock.Unlock();
 
 	char *nick;
 	while ((nick = (char *)lnicks->RemoveItem (0L)) != 0)
@@ -224,11 +222,6 @@ ServerWindow::QuitRequested()
 	// Don't kill login thread.. it will figure
 	// things out for itself
 	
-	if (isConnecting) {
-		kill_thread(loginThread);	// might be waiting for something,
-									// we're too busy to wait
-	}
-	
 	// Tell the app about our death, he may care
 	BMessage aMsg (M_SERVER_SHUTDOWN);
 	aMsg.AddString ("server", serverName.String());
@@ -240,6 +233,7 @@ ServerWindow::QuitRequested()
 	}
 		
 	return ClientWindow::QuitRequested();
+
 }
 
 void
@@ -254,6 +248,21 @@ ServerWindow::MessageReceived (BMessage *msg)
 			msg->FindString ("line", &buffer);
 			ParseLine (buffer);
 
+			break;
+		}
+		
+		case M_GET_ESTABLISH_DATA:
+		{
+			BMessage reply (B_REPLY);
+			reply.AddString ("id", id.String());
+			reply.AddString ("port", lport.String());
+			reply.AddString ("ident", lident.String());
+			reply.AddString ("name", lname.String());
+			reply.AddString ("nick", myNick.String());
+			reply.AddBool ("identd", identd);
+			reply.AddBool ("reconnecting", reconnecting);
+			reply.AddPointer("server", this);
+			msg->SendReply(&reply);
 			break;
 		}
 
@@ -291,11 +300,9 @@ ServerWindow::MessageReceived (BMessage *msg)
 		
 		case M_SLASH_RECONNECT:
 		{
-			printf ("here too\n");
 		
 			if (!isConnected && !isConnecting)
 			{
-				printf ("sent message\n");
 				PostMessage (M_SERVER_DISCONNECT);
 			}
 			
@@ -325,7 +332,6 @@ ServerWindow::MessageReceived (BMessage *msg)
 			
 						
 			// setup reconnect
-			
 			HandleReconnect();
 			
 			break;
@@ -574,7 +580,7 @@ ServerWindow::MessageReceived (BMessage *msg)
 			
 			BEntry entry (&ref);
 			BPath path (&entry);
-			printf("file path: %s\n", path.Path());
+			// PRINT(("file path: %s\n", path.Path()));
 			entry.GetSize (&size);
 
 			BString ssize;
@@ -588,7 +594,7 @@ ServerWindow::MessageReceived (BMessage *msg)
 			// LAN ip over the DUN one 
 			
 			hostent *hp = gethostbyname(hostAddress.String());		
-			
+				
 			DCCSend *view;
 			view = new DCCSend (
 				nick,
@@ -678,47 +684,46 @@ ServerWindow::Pulse (void)
 int32
 ServerWindow::Establish (void *arg)
 {
-	BMessage *msg (reinterpret_cast<BMessage *>(arg));
+	BMessenger *sMsgr (reinterpret_cast<BMessenger *>(arg));
 	const char *id, *port, *ident, *name, *nick;
 	ServerWindow *server;
 	bool identd, reconnecting (false);
-	
-	msg->FindString ("id", &id);
-	msg->FindString ("port", &port);
-	msg->FindString ("ident", &ident);
-	msg->FindString ("name", &name);
-	msg->FindString ("nick", &nick);
-	msg->FindBool ("identd", &identd);
-	msg->FindBool ("reconnecting", &reconnecting);
-	msg->FindPointer ("server", reinterpret_cast<void **>(&server));
-		
-	if (reconnecting && server->Lock())
+	thread_id establishThread = find_thread(NULL);
+	BMessage msg;
+	if (sMsgr->IsValid())
+		sMsgr->SendMessage(M_GET_ESTABLISH_DATA, &msg);	
+	msg.FindString ("id", &id);
+	msg.FindString ("port", &port);
+	msg.FindString ("ident", &ident);
+	msg.FindString ("name", &name);
+	msg.FindString ("nick", &nick);
+	msg.FindBool ("identd", &identd);
+	msg.FindBool ("reconnecting", &reconnecting);
+	msg.FindPointer ("server", reinterpret_cast<void **>(&server));
+
+	if (reconnecting)
 	{
 		if (server->retry > 0) {
-			server->Unlock();
 			snooze (2000000); // wait 2 seconds
-			server->Lock();
 		}
-		
 		server->retry++;
 		BMessage statusMsgR (M_DISPLAY);
 		BString tempStringR;
 		tempStringR << "[@] Attempting to reconnect (Retry " << server->retry << " of " << server->retryLimit << ")\n";
 		server->PackDisplay (&statusMsgR, tempStringR.String(), &(server->errorColor));
-		server->PostMessage (&statusMsgR);
+		server->PostMessage(&statusMsgR);
 		server->DisplayAll (tempStringR.String(), false, &(server->errorColor), &(server->serverFont));
-		server->Unlock();
 	}
 		
 	
 	BMessage statusMsg0 (M_DISPLAY);
 	BString tempString0;
 	tempString0 << "[@] Attempting a connection to " << id << ":" << port << "...\n";
+	
 	server->PackDisplay (&statusMsg0, tempString0.String(), &(server->errorColor));
 	server->PostMessage(&statusMsg0);
-
+	
 	BNetAddress address;
-	BMessenger msgr (server);
 
 	if (address.SetTo (id, atoi (port)) != B_NO_ERROR)
 	{
@@ -726,47 +731,42 @@ ServerWindow::Establish (void *arg)
 		server->PackDisplay (&statusMsgI, "[@] The address and port seem to be invalid. Make sure your Internet connection is operational.\n", &(server->errorColor));
 		server->PostMessage (&statusMsgI);
 
-		if (msgr.LockTarget())
-		{
-			//server->isConnecting = false;
-			server->Unlock();
-		}
-						
 		server->PostMessage (M_SERVER_DISCONNECT);
-		
-		return 0;
+		delete sMsgr;
+		return B_ERROR;
 	}
-	
 	BNetEndpoint *endPoint (new BNetEndpoint);
-
+	
 	if (!endPoint || endPoint->InitCheck() != B_NO_ERROR)
 	{
-		BMessage statusMsgC (M_DISPLAY);
-		server->PackDisplay (&statusMsgC, "[@] Could not create connection to address and port. Make sure your Internet connection is operational.\n", &(server->errorColor));
-		server->PostMessage (&statusMsgC);
-
-		if (msgr.LockTarget())
+		if (server->Lock())
 		{
+			BMessage statusMsgC (M_DISPLAY);
+			server->PackDisplay (&statusMsgC, "[@] Could not create connection to address and port. Make sure your Internet connection is operational.\n", &(server->errorColor));
+			server->PostMessage (&statusMsgC);
 			server->isConnecting = false;
 			server->Unlock();
 		}
 
 		if (endPoint)
 		{
+			endPoint->Close();
 			delete endPoint;
 			endPoint = 0;
 		}
-		
-		return 0;
+		delete sMsgr;
+		return B_ERROR;
 	}
 
 	// just see if he's still hanging around before
 	// we got blocked for a minute
-	if (!msgr.IsValid())
+	if (!sMsgr->IsValid())
 	{
+		endPoint->Close();
 		delete endPoint;
 		endPoint = 0;
-		return 0;
+		delete sMsgr;
+		return B_ERROR;
 	}
 
 	if(bowser_app->GetHideSetupState())
@@ -786,29 +786,28 @@ ServerWindow::Establish (void *arg)
 	{
 		struct sockaddr_in sin;
 		int namelen (sizeof (struct sockaddr_in));
-
 		BMessage statusMsg1 (M_DISPLAY);
 		server->PackDisplay (&statusMsg1, "[@] Established\n", &(server->errorColor));
 		server->PostMessage(&statusMsg1);
-
 		// Here we save off the local address for DCC and stuff
 		// (Need to make sure that the address we use to connect
 		//  is the one that we use to accept on)
+		server->Lock();
 		getsockname (endPoint->Socket(), (struct sockaddr *)&sin, &namelen);
 		server->localAddress = sin.sin_addr.s_addr;
-		
+		server->Unlock();
+				
 		if (identd)
 		{
 			BMessage statusMsg2 (M_DISPLAY);
 			server->PackDisplay (&statusMsg2, "[@] Spawning Ident daemon (10 sec timeout)\n", &(server->errorColor));
 			server->PostMessage(&statusMsg2);
-
 			BNetEndpoint identPoint, *accepted;
 			BNetAddress identAddress (sin.sin_addr, 113);
 			BNetBuffer buffer;
 			char received[64];
 
-			if (msgr.IsValid()
+			if (sMsgr->IsValid()
 			&&  identPoint.InitCheck()             == B_OK
 			&&  identPoint.Bind (identAddress)     == B_OK
 			&&  identPoint.Listen()                == B_OK
@@ -844,7 +843,7 @@ ServerWindow::Establish (void *arg)
 			server->PackDisplay (&statusMsgD, "[@] Deactivated daemon\n", &(server->errorColor));
 			server->PostMessage(&statusMsgD);
 		}
-
+		
 		BMessage statusMsg4 (M_DISPLAY);
 		server->PackDisplay (&statusMsg4, "[@] Handshaking\n", &(server->errorColor));
 		server->PostMessage(&statusMsg4);
@@ -858,7 +857,7 @@ ServerWindow::Establish (void *arg)
 		string.Append (name);
 
 
-		if (msgr.LockTarget())
+		if (sMsgr->LockTarget())
 		{
 			server->endPoint = endPoint;
 			server->SendData (string.String());
@@ -878,24 +877,16 @@ ServerWindow::Establish (void *arg)
 		BMessage statusMsgE (M_DISPLAY);
 		server->PackDisplay (&statusMsgE, "[@] Could not establish a connection to the server. Sorry.\n", &(server->errorColor));
 		server->PostMessage (&statusMsgE);
-
-		if (msgr.LockTarget())
-		{
-			//server->isConnecting = false;
-			server->Unlock();
-		}
-		
 		server->PostMessage (M_SERVER_DISCONNECT);
-
+		endPoint->Close();
 		delete endPoint;
 		endPoint = 0;
-		
-		return 0;
+		delete sMsgr;		
+		return B_ERROR;
 	}
 		
 	
 	// Don't need this anymore
-	delete msg;
 	struct fd_set eset, rset, wset;
 	struct timeval tv = {0, 0};
 
@@ -905,7 +896,9 @@ ServerWindow::Establish (void *arg)
 
 	BString buffer;
 
-	while (msgr.LockTarget())
+	while (sMsgr->IsValid() 
+		&& (establishThread == server->loginThread)
+		&& sMsgr->LockTarget())
 	{
 		BNetBuffer input (1024);
 		int32 length (0);
@@ -913,10 +906,9 @@ ServerWindow::Establish (void *arg)
 		FD_SET (endPoint->Socket(), &eset);
 		FD_SET (endPoint->Socket(), &rset);
 		FD_SET (endPoint->Socket(), &wset);
-
 		if (select (endPoint->Socket() + 1, &rset, 0, &eset, &tv) > 0
 		&&  FD_ISSET (endPoint->Socket(), &rset))
-		{
+		{	
 			if ((length = endPoint->Receive (input, 1024)) > 0)
 			{
 				BString temp;
@@ -955,10 +947,9 @@ ServerWindow::Establish (void *arg)
 					// handle the processing of incoming data!
 					BMessage msg (M_PARSE_LINE);
 					msg.AddString ("line", temp.String());
-					msgr.SendMessage (&msg);
+					server->PostMessage (&msg);
 				}
 			}
-	
 			if (FD_ISSET (endPoint->Socket(), &eset)
 			|| (FD_ISSET (endPoint->Socket(), &rset) && length == 0)
 			|| !FD_ISSET (endPoint->Socket(), &wset)
@@ -967,35 +958,33 @@ ServerWindow::Establish (void *arg)
 				// we got disconnected :(
 				
 				// print interesting info
-				printf ("Negative from endpoint receive! (%ld)\n", length);
-				printf ("(%d) %s\n",
+				/* PRINT(("Negative from endpoint receive! (%ld)\n", length));
+				PRINT(("(%d) %s\n",
 					endPoint->Error(),
-					endPoint->ErrorStr());
+					endPoint->ErrorStr()));
 
-				printf ("eset : %s\nrset: %s\nwset: %s\n",
+				PRINT(("eset : %s\nrset: %s\nwset: %s\n",
 					FD_ISSET (endPoint->Socket(), &eset) ? "true" : "false",
 					FD_ISSET (endPoint->Socket(), &rset) ? "true" : "false",
-					FD_ISSET (endPoint->Socket(), &wset) ? "true" : "false");
-		
+					FD_ISSET (endPoint->Socket(), &wset) ? "true" : "false"));
+				*/		
 
 				// tell the user all about it
-						
-				server->Unlock();
-				
 				server->PostMessage (M_SERVER_DISCONNECT);
-				delete endPoint;
-				endPoint = 0;
-				
+				server->Unlock();
 				break;
 			}
 		}
-		server->Unlock();
-
 		// take a nap, so the ServerWindow can do things
+		server->Unlock();
 		snooze (20000);
 	}
-
-	return 0;
+	endPoint->Close();
+	delete endPoint;
+	endPoint = 0;
+	
+	delete sMsgr;
+	return B_OK;
 }
 
 void
@@ -1330,8 +1319,8 @@ ServerWindow::AddResumeData (BMessage *msg)
 	data->path   = msg->FindString ("path");
 	data->pos    = msg->FindInt64  ("pos");
 	
-	printf("%s %s %s %s %s", data->nick.String(), data->file.String(), 
-		data->size.String(), data->ip.String(), data->port.String());
+	//PRINT(("%s %s %s %s %s", data->nick.String(), data->file.String(), 
+	//	data->size.String(), data->ip.String(), data->port.String()));
 	resumes.AddItem (data);
 
 	BString buffer;
@@ -1363,22 +1352,13 @@ ServerWindow::HandleReconnect (void)
 		reconnecting = true;
 		isConnecting = true;
 		nickAttempt = 0;
+		
 			
-		BMessage *msg (new BMessage);
-		msg->AddString ("id", id.String());
-		msg->AddString ("port", lport.String());
-		msg->AddString ("ident", lident.String());
-		msg->AddString ("name", lname.String());
-		msg->AddString ("nick", myNick.String());
-		msg->AddBool ("identd", identd);
-		msg->AddBool ("reconnecting", reconnecting);
-		msg->AddPointer ("server", this);
-	
 		loginThread = spawn_thread (
 			Establish,
 			"complimentary_tote_bag",
 			B_NORMAL_PRIORITY,
-			msg);
+			new BMessenger(this));
 	
 		resume_thread (loginThread);
 	}
