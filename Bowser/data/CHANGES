@@ -16,6 +16,8 @@ http://bowser.sourceforge.net
  * StatusView items now autosize to their contents.
  * Added Lag Checker to StatusView
  * Displayed cps rate for DCC xfers is averaged better now... not as erratic.
+ * Added /dns command
+ * Tab completion cycles through nicknames if you repeatedly hit tab.
 
 
 [d42b]
