@@ -40,7 +40,6 @@ CFLAGS += -fno-pic
 CFLAGS += -ffast-math
 CFLAGS += -Wall -W -Wno-multichar -Wp,-Wall
 #CFLAGS += -Werror
-CFLAGS += -DVERSION_STRING=\"$(VERSION)\" -DBINARY_NAME=\"$(BINARY)\"
 
 LD := g++
 LDFLAGS := $(LIBS)
@@ -69,7 +68,7 @@ DEPENDS := $(addprefix $(DEPDIR)/,$(addsuffix .d,$(basename $(BASESOURCES))))
 BASEHEADERS := $(shell cd $(SRCDIR) && ls -1 *.h)
 HEADERS := $(addprefix $(SRCDIR)/,$(BASEHEADERS))
 
-.PHONY : default clean binarchive sourcearchive all
+.PHONY : default release clean binarchive sourcearchive all
 
 .DELETE_ON_ERROR : $(BINARY)
 
@@ -94,6 +93,7 @@ $(BINARY) : $(OBJECTS)
 	@rm -f version.r
 	@xres -o $@ $(SRCDIR)/Bowser.rsrc
 	@mimeset -f $@
+	@echo fin
 	
 $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 	@echo compiling $@
