@@ -206,7 +206,7 @@ ServerWindow::QuitRequested()
 	if (sentDemise)
 		return false;
 
-	if (endPoint)
+	if (isConnected && endPoint)
 	{
 		if (quitMsg.Length() == 0)
 		{
@@ -220,12 +220,12 @@ ServerWindow::QuitRequested()
 	}
 
 	// Don't kill login thread.. it will figure
-	// things out for itself and very quickly
+	// things out for itself
 	
-	if (isConnecting) {
-		kill_thread(loginThread);	// might be waiting for something,
-									// we're too busy to wait
-	}
+//	if (isConnecting) {
+//		kill_thread(loginThread);	// might be waiting for something,
+//									// we're too busy to wait
+//	}
 	
 	// Tell the app about our death, he may care
 	BMessage aMsg (M_SERVER_SHUTDOWN);
@@ -968,13 +968,11 @@ ServerWindow::Establish (void *arg)
 		
 
 				// tell the user all about it
-				//server->isConnected = false;
-				endPoint->Close();
-				delete endPoint;
-							
-				server->PostMessage (M_SERVER_DISCONNECT);
-				
+						
 				server->Unlock();
+				
+				server->PostMessage (M_SERVER_DISCONNECT);
+				delete endPoint;
 				break;
 			}
 		}
