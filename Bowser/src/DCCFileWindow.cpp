@@ -297,7 +297,7 @@ int32 DCCFileWindow::DCCSend()
 
 	int32 myLength = 0, sendInPass = 0, bytesSent = 0;
 	int32 fileSize = atol(dSize.String());
-	char myBuffer[4096];
+	char myBuffer[2048];
 	
 	bigtime_t last (system_time()), now;
 	int cps (0), period (0);
