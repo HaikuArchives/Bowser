@@ -157,6 +157,7 @@ class ClientWindow : public BWindow
 	const BString					&Id (void) const;
 	virtual void					TabExpansion (void);
 	virtual void					DroppedFile (BMessage *);
+	static int32					DNSLookup (void *);
 
 	bool								Scrolling (void) const;
 	void								ChannelMessage (
@@ -225,8 +226,11 @@ class ClientWindow : public BWindow
 	void								VisitCmd (const char *);
 	void								SleepCmd (const char *);
 	void								UptimeCmd (const char *);
+	void								DnsCmd (const char *);
 	
 	BString								DurationString(int64);
+	
+	thread_id							lookupThread;	// run by DnsCmd
 	
 	void								CTCPAction (BString theTarget, BString
 											theMsg);

@@ -9,6 +9,7 @@
 #include <FindDirectory.h>
 #include <map>
 #include <ctype.h>
+#include <netdb.h>
 
 #include "Bowser.h"
 #include "IRCDefines.h"
@@ -324,6 +325,7 @@ ClientWindow::Init (void)
 	cmdWrap->cmds["/MEMOSERV"]		= &ClientWindow::MemoServCmd;
 	cmdWrap->cmds["/USERHOST"]		= &ClientWindow::UserhostCmd;
 	cmdWrap->cmds["/UPTIME"]		= &ClientWindow::UptimeCmd;
+	cmdWrap->cmds["/DNS"]			= &ClientWindow::DnsCmd;
 
 	
 	// no parms
@@ -955,6 +957,7 @@ ClientWindow::Display (
 	const BFont *font,
 	bool timeStamp)
 {
+	printf("i be here at the hood\n");
 	if (timeStamp && timeStampState)
 		text->DisplayChunk (
 			TimeStamp().String(),
@@ -1299,6 +1302,27 @@ ClientWindow::UptimeCmd (const char *data)
 		
 	}
 		
+}
+
+void
+ClientWindow::DnsCmd (const char *data)
+{
+	BString parms (GetWord(data, 2));
+	
+	if (parms != "-9z99")
+	{
+		BMessage *msg (new BMessage);
+		msg->AddString ("lookup", parms.String());
+		
+		lookupThread = spawn_thread (
+			DNSLookup,
+			"dns_lookup",
+			B_NORMAL_PRIORITY,
+			msg);
+
+		resume_thread (lookupThread);
+	}
+
 }
 
 void
@@ -2406,5 +2430,64 @@ ClientWindow::DurationString (int64 value)
 	duration << message;
 
 	return duration;
+}
+
+int32
+ClientWindow::DNSLookup (void *arg)
+{
+	printf ("here\n");
+	ClientWindow *window((ClientWindow *)arg);
+	printf ("after cast\n");
+	BMessage *msg (reinterpret_cast<BMessage *>(arg));
+	const char *lookup;
+	
+	msg->FindString ("lookup", &lookup);
+	
+	delete msg;
+	
+	BString resolve (lookup),
+			output ("[x] ");
+	
+	if(isalpha(resolve[0]))
+	{
+		hostent *hp = gethostbyname(resolve.String());
+				
+		if(hp)
+		{
+			// ip address is in hp->h_addr_list[0];
+			char addr_buf[16];
+					
+			in_addr *addr = (in_addr *)hp->h_addr_list[0];
+			strcpy(addr_buf, inet_ntoa(*addr));
+
+			output << "Resolved " << resolve.String() << " to " << addr_buf;
+		}
+		else
+		{
+			output << "Unable to resolve " << resolve.String();
+		}
+	}
+	else
+	{
+		ulong addr = inet_addr(resolve.String());
+				
+		hostent *hp = gethostbyaddr((const char *)&addr, 4, AF_INET);
+		if(hp)
+		{
+			output << "Resolved " << resolve.String() << " to " << hp->h_name;
+		}
+		else
+		{
+			output << "Unable to resolve " << resolve.String();
+		}
+	}
+	
+	output << "\n";
+	printf ("dnslookup: %s\n", output.String());
+	window->Display (output.String(), &(window->quitColor));
+	printf ("after display\n");
+	
+	return 0;
+
 }
 
