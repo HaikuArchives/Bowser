@@ -3,9 +3,9 @@
 #include <Menu.h>
 #include <MenuItem.h>
 #include <CheckBox.h>
-#include <TextControl.h>
 #include <String.h>
 
+#include "VTextControl.h"
 #include "Bowser.h"
 #include "IRCDefines.h"
 #include "PrefNotify.h"
@@ -95,7 +95,7 @@ PreferenceNotify::PreferenceNotify (void)
 	flashOtherNickBox->SetEnabled ((bowser_app->GetNotificationMask() & NOTIFY_NICK_BIT) != 0);
 	AddChild (flashOtherNickBox);
 
-	akaEntry = new BTextControl (
+	akaEntry = new VTextControl (
 		BRect (0, 90, bounds.right, 109),
 		"akaEntry",
 		ControlLabels[1],
@@ -105,7 +105,7 @@ PreferenceNotify::PreferenceNotify (void)
 	akaEntry->SetModificationMessage (new BMessage (M_AKA_MODIFIED));
 	AddChild (akaEntry);
 
-	otherNickEntry = new BTextControl (
+	otherNickEntry = new VTextControl (
 		BRect (0, 110, bounds.right, 129),
 		"otherNickEntry",
 		ControlLabels[2],
@@ -115,7 +115,7 @@ PreferenceNotify::PreferenceNotify (void)
 	otherNickEntry->SetModificationMessage (new BMessage (M_OTHER_NICK_MODIFIED));
 	AddChild (otherNickEntry);
 
-	autoNickTimeEntry = new BTextControl (
+	autoNickTimeEntry = new VTextControl (
 		BRect (0, 130, bounds.right, 149),
 		"autoNickTimeEntry",
 		ControlLabels[3],

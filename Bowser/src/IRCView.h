@@ -20,7 +20,7 @@
 
 #include <TextView.h>
 
-class BTextControl;
+class VTextControl;
 class BFont;
 
 struct IRCViewSettings;
@@ -34,7 +34,7 @@ class IRCView : public BTextView
     IRCView (
       BRect,
       BRect,
-      BTextControl *);
+      VTextControl *);
 
     ~IRCView (void);
 

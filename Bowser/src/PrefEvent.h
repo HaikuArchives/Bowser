@@ -4,11 +4,11 @@
 
 #include <View.h>
 
-class BTextControl;
+class VTextControl;
 
 class PreferenceEvent : public BView
 {
-	BTextControl				**events;
+	VTextControl				**events;
 
 	public:
 

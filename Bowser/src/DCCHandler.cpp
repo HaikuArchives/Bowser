@@ -3,23 +3,16 @@
 // protoIRC and Baxter. Big thanks to all.
 
 #include <Alert.h>
-#include <TextControl.h>
-//#include <Invoker.h>
-//#include <Application.h>
-//#include <String.h>
+
 #include <FilePanel.h>
 #include <MessageFilter.h>
-//#include <Directory.h>
-//#include <Entry.h>
-//#include <File.h>
+
 #include <Path.h>
-//#include <sys/stat.h>
 
 #include <stdio.h>
 
-//#include "IRCDefines.h"
 #include "Bowser.h"
-//#include "PrefGeneral.h"
+#include "VTextControl.h"
 #include "ServerWindow.h"
 
 class DCCFileFilter : public BMessageFilter
@@ -214,7 +207,7 @@ filter_result
 DCCFileFilter::HandleButton (BMessage *)
 {
 	filter_result result (B_DISPATCH_MESSAGE);
-	BTextControl *text (dynamic_cast<BTextControl *>(
+	VTextControl *text (dynamic_cast<VTextControl *>(
 		panel->Window()->FindView ("text view")));
 
 	if (text)
@@ -263,7 +256,7 @@ DCCFileFilter::HandleButton (BMessage *)
 filter_result
 DCCFileFilter::HandleAlert (BMessage *msg)
 {
-	BTextControl *text (dynamic_cast<BTextControl *>(
+	VTextControl *text (dynamic_cast<VTextControl *>(
 		panel->Window()->FindView ("text view")));
 	int32 which;
 

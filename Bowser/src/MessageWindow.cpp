@@ -17,10 +17,10 @@
 
 #include <Application.h>
 
-//#include <stdio.h>
 #include <stdlib.h>
 #include <net/netdb.h>
 
+#include "VTextControl.h"
 #include "Bowser.h"
 #include "IRCDefines.h"
 #include "ServerWindow.h"

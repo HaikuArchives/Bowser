@@ -6,7 +6,7 @@
 
 class BMenuField;
 class BCheckBox;
-class BTextControl;
+class VTextControl;
 
 class PreferenceNotify : public BView
 {
@@ -14,7 +14,7 @@ class PreferenceNotify : public BView
 									*flashContentBox,
 									*flashOtherNickBox;
 	BMenuField					*notifyMenu;
-	BTextControl				*akaEntry,
+	VTextControl				*akaEntry,
 									*otherNickEntry,
 									*autoNickTimeEntry;
 

@@ -3,13 +3,13 @@
 #include <ScrollView.h>
 #include <FilePanel.h>
 //#include <StringView.h>
-#include <TextControl.h>
 
 
 #include <stdio.h>
 #include <stdlib.h>
 //#include <ctype.h>
 
+#include "VTextControl.h"
 #include "Names.h"
 #include "Bowser.h"
 //#include "IRCView.h"

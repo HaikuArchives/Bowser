@@ -1,10 +1,10 @@
 
 #include <Application.h>
 #include <Handler.h>
-#include <TextControl.h>
 #include <Button.h>
 #include <Alert.h>
 
+#include "VTextControl.h"
 #include "Prompt.h"
 
 const uint32 M_DONE							= 'done';
@@ -56,7 +56,7 @@ PromptWindow::PromptWindow (
 	bgView->SetViewColor (222, 222, 222, 255);
 	AddChild (bgView);
 
-	field = new BTextControl (
+	field = new VTextControl (
 		BRect (
 			10,
 			10,

@@ -18,7 +18,6 @@
 #ifndef MESSAGEWINDOW_H_
 #define MESSAGEWINDOW_H_
 
-#include <TextControl.h>
 #include <String.h>
 
 #include "ClientWindow.h"

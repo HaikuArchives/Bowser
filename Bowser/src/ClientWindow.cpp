@@ -24,6 +24,7 @@
 #include "ClientFilter.h"
 #include "ClientWindow.h"
 #include "ChannelWindow.h"
+#include "VTextControl.h"
 //#include "IgnoreWindow.h"
 
 #include <stdio.h>
@@ -225,7 +226,7 @@ ClientWindow::Init (void)
 	status = new StatusView (frame);
 	bgView->AddChild (status);
 
-	input = new BTextControl (
+	input = new VTextControl (
 		BRect (2, frame.top, frame.right - 15, frame.bottom),
 		"Input", 0, 0,
 		0,

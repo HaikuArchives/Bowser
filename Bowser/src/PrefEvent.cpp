@@ -1,9 +1,8 @@
-
-#include <TextControl.h>
 #include <String.h>
 
 #include <stdio.h>
 
+#include "VTextControl.h"
 #include "Bowser.h"
 #include "PrefEvent.h"
 
@@ -37,11 +36,11 @@ PreferenceEvent::PreferenceEvent (void)
 		if (StringWidth (ControlLabels[i]) > label_width)
 			label_width = StringWidth (ControlLabels[i]);
 
-	events = new BTextControl * [MAX_EVENTS];
+	events = new VTextControl * [MAX_EVENTS];
 
 	for (int32 i = 0; i < MAX_EVENTS; ++i)
 	{
-		events[i] = new BTextControl (
+		events[i] = new VTextControl (
 			BRect (0, i * 25, bounds.right, i * 25 + 20),
 			"event",
 			ControlLabels[i],

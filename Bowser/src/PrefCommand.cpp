@@ -1,9 +1,9 @@
 
-#include <TextControl.h>
 #include <String.h>
 
 #include <stdio.h>
 
+#include "VTextControl.h"
 #include "Bowser.h"
 #include "PrefCommand.h"
 
@@ -34,11 +34,11 @@ PreferenceCommand::PreferenceCommand (void)
 		if (StringWidth (ControlLabels[i]) > label_width)
 			label_width = StringWidth (ControlLabels[i]);
 
-	commands = new BTextControl * [MAX_COMMANDS];
+	commands = new VTextControl * [MAX_COMMANDS];
 
 	for (int32 i = 0; i < MAX_COMMANDS; ++i)
 	{
-		commands[i] = new BTextControl (
+		commands[i] = new VTextControl (
 			BRect (0, i * 25, bounds.right, i * 25 + 20),
 			"commands",
 			ControlLabels[i],

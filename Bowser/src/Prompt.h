@@ -8,7 +8,7 @@
 
 #include <regex.h>
 
-class BTextControl;
+class VTextControl;
 class BButton;
 
 class PromptValidate
@@ -38,7 +38,7 @@ class PromptWindow : public BWindow
 	BHandler						*handler;
 	BMessage						*invoked;
 
-	BTextControl				*field;
+	VTextControl				*field;
 	BButton						*done, *cancel;
 	PromptValidate				*validate;
 	bool							blanks;

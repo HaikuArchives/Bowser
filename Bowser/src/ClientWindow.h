@@ -22,7 +22,7 @@ class BMenu;
 class BMenuItem;
 class BView;
 class BStringView;
-class BTextControl;
+class VTextControl;
 class BScrollView;
 
 class BTextView;
@@ -62,7 +62,7 @@ class ClientWindow : public BWindow
 										*mScrolling;
 	BView								*bgView;
 	StatusView						*status;
-	BTextControl					*input;
+	VTextControl					*input;
 	HistoryMenu						*history;
 	BScrollView						*scroll;
 	IRCView							*text;

@@ -1,12 +1,10 @@
 #include <Window.h>
-#include <TextControl.h>
 
-//#include <Application.h>
 #include <PopUpMenu.h>
 #include <MenuItem.h>
-//#include <Font.h>
 #include <stdio.h>
 
+#include "VTextControl.h"
 #include "IRCDefines.h"
 #include "HistoryMenu.h"
 
@@ -150,7 +148,7 @@ HistoryMenu::MouseUp (BPoint point)
 }
 
 void
-HistoryMenu::PreviousBuffer (BTextControl *input)
+HistoryMenu::PreviousBuffer (VTextControl *input)
 {
 	if (bufferPos)
 	{
@@ -169,7 +167,7 @@ HistoryMenu::PreviousBuffer (BTextControl *input)
 }
 
 void
-HistoryMenu::NextBuffer (BTextControl *input)
+HistoryMenu::NextBuffer (VTextControl *input)
 {
 	BString buffer;
 

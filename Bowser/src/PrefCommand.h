@@ -4,11 +4,11 @@
 
 #include <View.h>
 
-class BTextControl;
+class VTextControl;
 
 class PreferenceCommand : public BView
 {
-	BTextControl				**commands;
+	VTextControl				**commands;
 
 	public:
 

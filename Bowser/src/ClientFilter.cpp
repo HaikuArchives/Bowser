@@ -1,16 +1,11 @@
 
 #include <Alert.h>
-//#include <File.h>
 #include <NodeInfo.h>
-#include <TextControl.h>
-//#include <TextView.h>
-//#include <Clipboard.h>
 #include <Roster.h>
 #include <ScrollView.h>
 
-//#include <stdio.h>
-//#include <string.h>
 
+#include "VTextControl.h"
 #include "IRCView.h"
 #include "IRCDefines.h"
 #include "ClientWindow.h"

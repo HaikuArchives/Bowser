@@ -19,12 +19,12 @@
 #define MELTDOWN_BYTES      500000 
 #define REMOVE_BYTES        1000
 
-#include <TextControl.h>
 #include <Roster.h>
 
 #include <list.h>
 #include <ctype.h>
 
+#include "VTextControl.h"
 #include "Bowser.h"
 #include "ClientWindow.h"
 #include "IRCView.h"
@@ -75,7 +75,7 @@ struct URL
 
 struct IRCViewSettings 
 { 
-  BTextControl  *parentInput; 
+  VTextControl  *parentInput; 
 
   BFont  urlFont; 
   rgb_color  urlColor; 
@@ -86,7 +86,7 @@ struct IRCViewSettings
 IRCView::IRCView ( 
   BRect textframe, 
   BRect textrect, 
-  BTextControl *inputControl) 
+  VTextControl *inputControl) 
 
   : BTextView ( 
     textframe, 

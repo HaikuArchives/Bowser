@@ -6,7 +6,6 @@
 #include <Menu.h>
 #include <MenuItem.h>
 #include <View.h>
-#include <TextControl.h>
 #include <StringView.h>
 #include <ScrollView.h>
 #include <ListView.h>
@@ -26,6 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "VTextControl.h"
 #include "Bowser.h"
 #include "Prompt.h"
 #include "ServerWindow.h"
@@ -55,7 +55,7 @@ class SetupView : public BView
 {
 	public:
 
-	BTextControl				*iPort,
+	VTextControl				*iPort,
 									*iName,
 									*iIdent;
 	BListView					*iNicks;
@@ -1062,7 +1062,7 @@ SetupView::SetupView (BRect frame, BList *servers_, int32 current_, const BStrin
 
 	AddChild (mField);
 
-	iIdent = new BTextControl (
+	iIdent = new VTextControl (
 		BRect (
 			frame.left + 10,
 			mField->Frame().bottom + 3,
@@ -1075,7 +1075,7 @@ SetupView::SetupView (BRect frame, BList *servers_, int32 current_, const BStrin
 	iIdent->SetDivider (biggest + 5);
 	AddChild(iIdent);
 
-	iName = new BTextControl (
+	iName = new VTextControl (
 		BRect (
 			frame.left + 10,
 			iIdent->Frame().bottom + 1,
@@ -1088,7 +1088,7 @@ SetupView::SetupView (BRect frame, BList *servers_, int32 current_, const BStrin
 	iName->SetDivider (biggest + 5);
 	AddChild(iName);
 	
-	iPort = new BTextControl (
+	iPort = new VTextControl (
 		BRect (
 			frame.left + 10,
 			iName->Frame().bottom + 1,
