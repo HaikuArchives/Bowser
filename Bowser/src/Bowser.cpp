@@ -1831,6 +1831,7 @@ AppSettings::AppSettings (void)
 	commands[CMD_UNIGNORE]				= "*** $N is no longer ignored.";
 	commands[CMD_AWAY]					= "is idle: $R";
 	commands[CMD_BACK]					= "has returned";
+	commands[CMD_UPTIME]				= "System was last booted $U ago.";
 }
 
 AppSettings::~AppSettings (void)

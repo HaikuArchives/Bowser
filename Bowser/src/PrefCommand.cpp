@@ -14,6 +14,7 @@ static const char *ControlLabels[] =
 	"Unignore:",
 	"Away:",
 	"Back:",
+	"Uptime:",
 	0
 };
 

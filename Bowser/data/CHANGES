@@ -15,7 +15,8 @@ http://bowser.sourceforge.net
  * Fixed "Add Nickname" prompt dimensions in Notify window
  * Fixed "Find" and "Filter" prompt dimensions in List window
  * Don't show processor info in CTCP Version reply should work all the time now.
- * Responds to CTCP Uptime requests.
+ * Responds to CTCP Uptime requests, output configurable from Prefs
+ * Added /uptime command, output configurable from Prefs
  * Fixed DCC send issues with transfers dieing
  * Alt+P works in Setup Window now
  * Bowser now updates the mimetype of files after DCC Gets.

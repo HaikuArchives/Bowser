@@ -39,8 +39,8 @@
 #define F_TEXT												0
 #define F_SERVER											1
 #define F_URL												2
-#define F_NAMES											3
-#define F_INPUT											4
+#define F_NAMES												3
+#define F_INPUT												4
 
 #define MAX_FONTS											5
 
@@ -49,22 +49,23 @@
 #define E_NICK												2
 #define E_QUIT												3
 #define E_KICK												4
-#define E_TOPIC											5
+#define E_TOPIC												5
 #define E_SNOTICE											6
 #define E_UNOTICE											7
-#define E_NOTIFY_ON										8
+#define E_NOTIFY_ON											8
 #define E_NOTIFY_OFF										9
 
-#define MAX_EVENTS										10
+#define MAX_EVENTS											10
 
 #define CMD_QUIT											0
 #define CMD_KICK											1
-#define CMD_IGNORE										2
+#define CMD_IGNORE											2
 #define CMD_UNIGNORE										3
 #define CMD_AWAY											4
 #define CMD_BACK											5
+#define CMD_UPTIME											6
 
-#define MAX_COMMANDS										6
+#define MAX_COMMANDS										7
 
 #define STATUS_OP_BIT									0x0001
 #define STATUS_VOICE_BIT								0x0010

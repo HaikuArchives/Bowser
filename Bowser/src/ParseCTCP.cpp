@@ -69,8 +69,11 @@ ServerWindow::ParseCTCP(BString theNick, BString theMsg)
 			else
 				sysInfoString << " Personal Ed. : ";
 						
-			sysInfoString << myInfo.cpu_count << " CPU(s) @ ~"
-				<< myInfo.cpu_clock_speed / 1000000 << "MHz";
+			sysInfoString << myInfo.cpu_count << " CPU";
+			if (myInfo.cpu_count > 1)
+				sysInfoString << "s";
+			
+			sysInfoString << " @ ~" << myInfo.cpu_clock_speed / 1000000 << "MHz";
 					
 		}
 		else
@@ -79,38 +82,27 @@ ServerWindow::ParseCTCP(BString theNick, BString theMsg)
 		}
 		BString tempString("NOTICE ");
 		tempString << theNick << " :\1VERSION Bowser[d" 
-			<< VERSION << "] : " << sysInfoString;
-		tempString << " : http://bowser.sourceforge.net\1";
+			<< VERSION << "] : http://bowser.sourceforge.net : " << sysInfoString;
+		tempString << "\1";
 		SendData (tempString.String());
 	}
 	
 	else if(theCTCP == "UPTIME")
 	{
-		bigtime_t micro = system_time();
-		bigtime_t milli = micro/1000;
-		bigtime_t sec = milli/1000;
-		bigtime_t min = sec/60;
-		bigtime_t hours = min/60;
-		bigtime_t days = hours/24;
-	
-		char message[512] = "";
-		BString uptime = "BeOS system was booted ";
-
-		if (days)
-			sprintf(message, "%Ld day%s, ",days,days!=1?"s":"");
 		
-		if (hours%24)
-			sprintf(message, "%s%Ld hour%s, ",message, hours%24,(hours%24)!=1?"s":"");
+		BString uptime (UptimeString());
+		BString expandedString;
 		
-		if (min%60)
-			sprintf(message, "%s%Ld minute%s, ",message, min%60, (min%60)!=1?"s":"");
+		const char *expansions[1];
+		expansions[0] = uptime.String();
 
-		sprintf(message, "%s%Ld second%s ago.",message, sec%60,(sec%60)!=1?"s":"");
-
-		uptime << message;
+		expandedString = ExpandKeyed (bowser_app->GetCommand (CMD_UPTIME).String(), "U",
+		expansions);
+		expandedString.RemoveFirst("\n");
+		
 		BString tempString("NOTICE ");
 		tempString << theNick << " :\1UPTIME " 
-			<< uptime;
+			<< expandedString;
 		tempString << '\1';
 		SendData (tempString.String());
 

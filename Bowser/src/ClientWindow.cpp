@@ -324,11 +324,14 @@ ClientWindow::Init (void)
 	cmdWrap->cmds["/USERHOST"]		= &ClientWindow::UserhostCmd;
 	
 	// no parms
+	// TODO:	add wrapper that doesn't send const char *
+	//			(will fix warnings)
 	cmdWrap->cmds["/CLEAR"]			= &ClientWindow::ClearCmd;
 	cmdWrap->cmds["/PART"]			= &ClientWindow::PartCmd;
 	cmdWrap->cmds["/BACK"]			= &ClientWindow::BackCmd;
 	cmdWrap->cmds["/ABOUT"]			= &ClientWindow::AboutCmd;
 	cmdWrap->cmds["/PREFERENCES"]	= &ClientWindow::PreferencesCmd;
+	cmdWrap->cmds["/UPTIME"]		= &ClientWindow::UptimeCmd;
 
 }
 
@@ -1252,6 +1255,31 @@ ClientWindow::MemoServCmd (const char *data)
 }
 
 void
+ClientWindow::UptimeCmd (const char *data)
+{
+	if (id != serverName) {
+	
+		BString uptime (UptimeString());
+		BString expandedString;
+		
+		const char *expansions[1];
+		expansions[0] = uptime.String();
+		expandedString = ExpandKeyed (bowser_app->GetCommand (CMD_UPTIME).String(), "U",
+			expansions);
+		expandedString.RemoveFirst("\n");
+		
+		BMessage send (M_SERVER_SEND);
+		AddSend (&send, "PRIVMSG ");
+		AddSend (&send, id);
+		AddSend (&send, " :");
+		AddSend (&send, expandedString.String());
+		AddSend (&send, endl);
+		
+		ChannelMessage (expandedString.String(), myNick.String());
+	}
+}
+
+void
 ClientWindow::CtcpCmd (const char *data)
 {
 	BString theTarget (GetWord (data, 2));
@@ -1611,28 +1639,6 @@ ClientWindow::StatsCmd (const char *data)
 	}
 }
 
-//void
-//ClientWindow::AwayCmd (const char *data)
-//{
-//	BString theAway (RestOfString (data, 2));
-//
-//	BMessage send (M_SERVER_SEND);
-//	AddSend (&send, "AWAY");
-//	AddSend (&send, " :");
-//
-//	if (theAway != "-9z99")
-//		AddSend (&send, theAway);
-//	else
-//		AddSend (&send, bowser_app->GetCommand (CMD_AWAY).String());
-//
-//	AddSend (&send, endl);
-//	
-//	ActionMessage (
-//		theAway == "-9z99"
-//			? bowser_app->GetCommand (CMD_AWAY).String()
-//			: theAway.String(),
-//		myNick.String());
-//}
 
 void
 ClientWindow::AwayCmd (const char *data)
@@ -2328,19 +2334,48 @@ ClientWindow::NotifyRegister (void)
 }
 
 float
-ClientWindow::ScrollPos(void)
+ClientWindow::ScrollPos (void)
 {
 	return scroll->ScrollBar (B_VERTICAL)->Value();
 }
 
 void
-ClientWindow::SetScrollPos(float value)
+ClientWindow::SetScrollPos (float value)
 {
 	scroll->ScrollBar (B_VERTICAL)->SetValue(value);
 }
 
 void
-ClientWindow::ScrollRange(float *min, float *max)
+ClientWindow::ScrollRange (float *min, float *max)
 {
 	scroll->ScrollBar(B_VERTICAL)->GetRange (min, max);
 }
+
+BString
+ClientWindow::UptimeString (void)
+{
+	BString uptime;
+	bigtime_t micro = system_time();
+	bigtime_t milli = micro/1000;
+	bigtime_t sec = milli/1000;
+	bigtime_t min = sec/60;
+	bigtime_t hours = min/60;
+	bigtime_t days = hours/24;
+
+	char message[512] = "";
+	if (days)
+		sprintf(message, "%Ld day%s, ",days,days!=1?"s":"");
+	
+	if (hours%24)
+		sprintf(message, "%s%Ld hour%s, ",message, hours%24,(hours%24)!=1?"s":"");
+	
+	if (min%60)
+		sprintf(message, "%s%Ld minute%s, ",message, min%60, (min%60)!=1?"s":"");
+
+	sprintf(message, "%s%Ld second%s",message, sec%60,(sec%60)!=1?"s":"");
+
+	uptime << message;
+
+	return uptime;
+}
+

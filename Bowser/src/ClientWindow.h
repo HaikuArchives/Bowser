@@ -215,6 +215,9 @@ class ClientWindow : public BWindow
 	void								AboutCmd (const char *);
 	void								VisitCmd (const char *);
 	void								SleepCmd (const char *);
+	void								UptimeCmd (const char *);
+	
+	BString								UptimeString(void);
 	
 	void								CTCPAction (BString theTarget, BString
 											theMsg);
