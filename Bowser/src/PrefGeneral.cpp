@@ -35,7 +35,7 @@ PreferenceGeneral::PreferenceGeneral (void)
 	nickBindBox = new BCheckBox (
 		BRect (0, 50, bounds.right, 74),
 		"nickbind",
-		"Use same nickname list for all servers",
+		"Use unique nickname list for each server",
 		new BMessage (M_NICKNAME_BIND));
 	nickBindBox->SetValue (bowser_app->GetNicknameBindState()
 		? B_CONTROL_ON : B_CONTROL_OFF);

@@ -37,6 +37,7 @@
 #include "PrefColor.h"
 #include "PrefEvent.h"
 #include "PrefCommand.h"
+#include "PrefDCC.h"
 #include "PrefWindow.h"
 #include "ServerOptions.h"
 #include "IgnoreWindow.h"
@@ -331,6 +332,7 @@ SetupWindow::MessageReceived (BMessage *msg)
 				prefsFrame->AddPreference ("Deskbar Icon", "Deskbar Icon", new PreferenceNotify);
 				prefsFrame->AddPreference ("Event", "Event", new PreferenceEvent);
 				prefsFrame->AddPreference ("Command", "Command", new PreferenceCommand);
+				prefsFrame->AddPreference ("DCC", "DCC", new PreferenceDCC);
 				prefsFrame->AddPreference ("Window", "Window", new PreferenceWindow);
 				prefsFrame->Show();
 			}
