@@ -387,7 +387,8 @@ ListWindow::MessageReceived (BMessage *msg)
 			{
 				PromptWindow *prompt (new PromptWindow (
 					BPoint (Frame().right - 100, Frame().top + 50),
-					"Filter:",
+					"  Filter:",
+					"List Filter",
 					filter.String(),
 					this,
 					new BMessage (M_FILTER_LIST),
@@ -452,7 +453,8 @@ ListWindow::MessageReceived (BMessage *msg)
 			{
 				PromptWindow *prompt (new PromptWindow (
 					BPoint (Frame().right - 100, Frame().top + 50),
-					"Find:",
+					"    Find:",
+					"Find",
 					find.String(),
 					this,
 					new BMessage (M_LIST_FIND),

@@ -348,6 +348,7 @@ SetupWindow::MessageReceived (BMessage *msg)
 			PromptWindow *serverName (new PromptWindow (
 				BPoint (Frame().right - 100, Frame().top + 50),
 				"Server address:",
+				"New Server",
 				"",
 				this,
 				pMsg));
@@ -568,6 +569,7 @@ SetupWindow::MessageReceived (BMessage *msg)
 				PromptWindow *nickname (new PromptWindow (
 					BPoint (Frame().right - 100, Frame().top + 50),
 					"Nickname:",
+					"Add Nickname",
 					"",
 					this,
 					new BMessage (M_NICK_ADD)));

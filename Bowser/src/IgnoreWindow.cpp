@@ -270,6 +270,7 @@ IgnoreWindow::MessageReceived (BMessage *msg)
 				PromptWindow *prompt (new PromptWindow (
 					BPoint (Frame().right - 100, Frame().top + 50),
 					"Nick or Address:",
+					"Ignore",
 					"",
 					this,
 					new BMessage (M_IGNORE_ADD),
@@ -381,6 +382,7 @@ IgnoreWindow::MessageReceived (BMessage *msg)
 				PromptWindow *prompt (new PromptWindow (
 					BPoint (Frame().right - 100, Frame().top + 50),
 					"Nick:",
+					"Ignore Exclude",
 					"",
 					this,
 					new BMessage (M_IGNORE_EXCLUDE)));

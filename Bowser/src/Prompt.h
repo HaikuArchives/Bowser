@@ -49,6 +49,7 @@ class PromptWindow : public BWindow
 										BPoint,
 										const char *,
 										const char *,
+										const char *,
 										BHandler *,
 										BMessage *,
 										PromptValidate * = 0,

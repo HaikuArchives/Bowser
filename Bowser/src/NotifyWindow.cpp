@@ -175,7 +175,8 @@ NotifyWindow::MessageReceived (BMessage *msg)
 			{
 				PromptWindow *prompt (new PromptWindow (
 					BPoint (Frame().right - 100, Frame().top + 50),
-					"Nick:",
+					"Nickname:",
+					"Notify",
 					"",
 					this,
 					new BMessage (M_IGNORE_ADD),

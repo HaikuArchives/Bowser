@@ -22,6 +22,7 @@ PromptValidate::~PromptValidate (void)
 PromptWindow::PromptWindow (
 	BPoint point,
 	const char *label,
+	const char *title,
 	const char *text,
 	BHandler *handler_,
 	BMessage *msg,
@@ -34,8 +35,8 @@ PromptWindow::PromptWindow (
 			point.y,
 			point.x + 10,		// To be resized
 			point.y + 10),
-		"Prompt",
-		B_MODAL_WINDOW,
+		title,
+		B_FLOATING_WINDOW,
 		B_NOT_RESIZABLE | B_NOT_ZOOMABLE | B_ASYNCHRONOUS_CONTROLS),
 
 		handler (handler_),

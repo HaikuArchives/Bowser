@@ -3,7 +3,16 @@ http://bowser.sourceforge.net
 
 [d42b]
  * Source changes (new makefile, etc)
+ * New optimizations
  * DCC Xfer window tweaked
+ * New /sleep <seconds> command, useful for Connect Commands, pauses
+   Bowser before continuing.
+   eg (Connect Commands):
+   		/nickserv identify mypass
+   		/sleep 1
+   		/j #channel
+ * Various prompts are now non-modal windows, and look a little better
+ * Fixed "Add Nickname" prompt dimensions in Notify window
 
 [d42a]
  * Improved DCC Send performance dramatically for users on fast pipes
