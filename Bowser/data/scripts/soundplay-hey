@@ -1,0 +1,27 @@
+#!/bin/sh
+####################################################
+# Get current SoundPlay song in playlist #1
+#
+# Tested with SoundPlay 4.3 and hey 1.2.6
+#
+# requires hey binary (http://w3.datanet.hu/~mezeia/)
+# put it in ~/config/bin/
+#
+# -Wade Majors (guru@startrek.com)
+
+#####################################################
+
+
+# make sure hey exists
+if [ ! -f /bin/hey ] &&
+   [ ! -f /boot/home/config/bin/hey ]
+then
+	echo "I should install 'hey' properly."
+	exit 1
+fi
+
+
+echo -n "SoundPlay is playing: "
+hey SoundPlay get info of track 0 | grep name | cut -d: -f2 | tr -d \" | cut -d" " -f2-
+
+# eof

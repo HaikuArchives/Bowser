@@ -1,0 +1,27 @@
+#!/bin/sh
+####################################################
+# Get current SoundPlay song in playlist #1
+#
+# Tested with SoundPlay 4.3 and getsp 1.0
+#
+# requires getsp binary (http://www.bebits.com/app/1870)
+# put it in ~/config/bin/
+#
+# -Wade Majors (guru@startrek.com)
+
+#####################################################
+
+
+# make sure getsp exists
+if [ ! -f /bin/getsp ] &&
+   [ ! -f /boot/home/config/bin/getsp ]
+then
+	echo "I should install 'getsp' properly."
+	exit 1
+fi
+
+
+echo -n "SoundPlay is playing: "
+getsp
+
+# eof

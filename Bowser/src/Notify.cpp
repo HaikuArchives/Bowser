@@ -208,8 +208,7 @@ NotifyView::Archive (BMessage *archive, bool deep) const
 	{
 		#ifdef DEV_BUILD
 		if (NotifyStatus)
-			printf ("*** Could not archive elements for Notify: %s\n", strerror
-				(status));
+			printf ("*** Could not archive elements for Notify: %s\n", strerror (status));
 		#endif
 		;
 	}
@@ -246,10 +245,12 @@ NotifyView::Draw (BRect frame)
 void
 NotifyView::MessageReceived (BMessage *msg)
 {
+	//printf ("MessageReceived\n");
 	switch (msg->what)
 	{
 		case M_NEW_CLIENT:
 		{
+			printf ("M_NEW_CLIENT\n");
 			const char *id;
 
 			msg->FindString ("id", &id);
@@ -270,27 +271,44 @@ NotifyView::MessageReceived (BMessage *msg)
 				servers[nData->sid] = nData;
 			else
 				servers[nData->sid]->clients[nData->name] = nData;
-				
+			
+			printf ("break;\n");
 			break;
 		}
 
 		case M_ACTIVATION_CHANGE:
 		{
+			printf ("M_ACTIVATION_CHANGE\n");
 			NotifyData *nData;
 			const char *id;
 			int32 sid;
 			bool active;
 
-			if (msg->FindString ("id", &id) != B_OK
-			 || msg->FindInt32 ("sid", &sid) != B_OK
-			 || msg->FindBool ("active", &active) != B_OK)
-						break;
+			msg->FindString ("id", &id);
+			msg->FindInt32 ("sid", &sid);
+			msg->FindBool ("active", &active);
+			
+			printf ("found everything\n");
+			
+			printf ("sid: %ld\n", sid);
+			printf ("sid name: %s\n", servers[sid]->name);
 						
 			if (servers[sid]->name == id)
+			{
+				printf ("active here\n");
 				// the server has activation
 				nData = servers[sid];
+				printf ("clean\n");
+			}
 			else
+			{
+				printf ("no active\n");
 				nData = servers[sid]->clients[id];
+				printf ("clean\n");
+			}
+			
+			printf ("set nData\n");
+
 
 			if (!nData->active && active)
 			{
@@ -303,22 +321,26 @@ NotifyView::MessageReceived (BMessage *msg)
 				if (nData->other)
 					--others;
 			}
+			
+			printf ("updated ndata\n");
 
 			nData->active = active;
 			nData->news   = false;
 			nData->nick   = false;
 			nData->other  = false;
+			
+			printf ("break;\n");
 			break;
 		}
 
 		case M_ID_CHANGE:
 		{
+			printf ("M_ID_CHANGE\n");
 			const char *id;
 			int32 sid;
 
-			if (msg->FindString ("id", &id) != B_OK
-				|| msg->FindInt32 ("sid", &sid) != B_OK)
-					break;
+			msg->FindString ("id", &id);
+			msg->FindInt32 ("sid", &sid);
 
 			map<BString, NotifyData *>::iterator it;
 
@@ -333,19 +355,20 @@ NotifyView::MessageReceived (BMessage *msg)
 				msg->FindString ("newid", &newid);
 				nData = it->second;
 
-				printf ("NOTIFY Changing id from %s to %s\n", it->first.String(),
-					newid);
+				printf ("NOTIFY Changing id from %s to %s\n", it->first.String(), newid);
 				strId = newid;
 				servers[sid]->clients.erase (it);
 				servers[sid]->clients[strId] = nData;
 				nData->name = strId;
 			}
 
+			printf ("break\n");
 			break;
 		}
 
 		case M_QUIT_CLIENT:
 		{
+			printf ("M_QUIT_CLIENT\n");
 			map<BString, NotifyData *>::iterator it;
 			const char *id;
 			int32 sid;
@@ -389,24 +412,40 @@ NotifyView::MessageReceived (BMessage *msg)
 				servers[sid]->clients.erase (it);
 			}
 			
+			printf ("break\n");
 			break;
 		}
 		
 		case M_NEWS_CLIENT:
-
+		{
+			printf ("M_NEWS_CLIENT\n");
 			if ((mask & NOTIFY_CONT_BIT) != 0)
 			{
+				printf ("!= 0\n");
 				NotifyData *nData;
 				const char *id;
 				int32 sid;
+				
+				printf ("constructed\n");
 	
 				msg->FindString ("id", &id);
 				msg->FindInt32 ("sid", &sid);
+				
+				printf ("found data\n");
 	
 				if (servers[sid]->name == id)
+				{
+					printf ("name == id");
 					nData = servers[sid];
+					printf ("clear");
+				}
 				else
+				{
+					printf ("name != id\n");
 					nData = servers[sid]->clients[id];
+					printf ("clear");
+				}
+				
 	
 				if (!nData->active && !nData->news)
 				{
@@ -414,10 +453,13 @@ NotifyView::MessageReceived (BMessage *msg)
 					nData->news = true;
 				}
 			}
+			printf ("break\n");
 			break;
+		}
 
 		case M_NICK_CLIENT:
-
+		{
+			printf ("M_NICK_CLIENT\n");
 			if ((mask & NOTIFY_NICK_BIT) != 0)
 			{
 				NotifyData *nData;
@@ -445,21 +487,27 @@ NotifyView::MessageReceived (BMessage *msg)
 					nData->other = true;
 				}
 			}
+			printf ("break\n");
 			break;
+		}
 
 		case M_NOTIFY_SELECT:
 		{
+			printf ("M_NOTIFY_SLECT\n");
 			BMessenger msgr;
 
 			msg->FindMessenger ("msgr", &msgr);
 
 			if (msgr.IsValid())
 				msgr.SendMessage (M_NOTIFY_SELECT);
+				
+			printf ("break\n");
 			break;
 		}
 
 		case M_NOTIFY_PULSE:
-
+		{
+			//printf ("M_NOTIFY_PULSE\n");
 			if ((nicks && (mask & NOTIFY_NICK_FLASH_BIT) != 0)
 			||  (nicks && (mask & NOTIFY_NICK_FLASH_BIT) == 0 && !nickOn)
 			|| (!nicks && nickOn))
@@ -481,11 +529,15 @@ NotifyView::MessageReceived (BMessage *msg)
 				newsOn = newsOn ? false : true;
 				Draw (Bounds());
 			}
+			
+			//printf ("break\n");
 			break;
+		}
 
 		default:
 			BView::MessageReceived (msg);
 	}
+	//printf ("done\n");
 }
 
 void
@@ -538,14 +590,10 @@ NotifyView::AttachedToWindow (void)
 			{
 				if (ibits[k] == B_TRANSPARENT_MAGIC_CMAP8)
 				{
-					bbits[0][j + 0] = bbits[1][j + 0] = bbits[2][j + 0] =
-						bbits[3][j + 0] = background.blue;
-					bbits[0][j + 1] = bbits[1][j + 1] = bbits[2][j + 1] =
-						bbits[3][j + 1] = background.green;
-					bbits[0][j + 2] = bbits[1][j + 2] = bbits[2][j + 2] =
-						bbits[3][j + 2] = background.red;
-					bbits[0][j + 3] = bbits[1][j + 3] = bbits[2][j + 3] =
-						bbits[3][j + 3] = 255;
+					bbits[0][j + 0] = bbits[1][j + 0] = bbits[2][j + 0] = bbits[3][j + 0] = background.blue;
+					bbits[0][j + 1] = bbits[1][j + 1] = bbits[2][j + 1] = bbits[3][j + 1] = background.green;
+					bbits[0][j + 2] = bbits[1][j + 2] = bbits[2][j + 2] = bbits[3][j + 2] = background.red;
+					bbits[0][j + 3] = bbits[1][j + 3] = bbits[2][j + 3] = bbits[3][j + 3] = 255;
 				}
 				else
 				{
@@ -562,10 +610,8 @@ NotifyView::AttachedToWindow (void)
 					bbits[1][j + 3] = 255;
 
 					bbits[2][j + 0] = cmap->color_list[index].blue;
-					bbits[2][j + 1] = min_c (cmap->color_list[index].green +
-						100L, 255L);
-					bbits[2][j + 2] = min_c (cmap->color_list[index].red +
-						100L, 255L);
+					bbits[2][j + 1] = min_c (cmap->color_list[index].green + 100L, 255L);
+					bbits[2][j + 2] = min_c (cmap->color_list[index].red + 100L, 255L);
 					bbits[2][j + 3] = 255;
 
 					bbits[3][j + 0] = 255;

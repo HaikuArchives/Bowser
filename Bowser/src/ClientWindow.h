@@ -92,8 +92,6 @@ class ClientWindow : public BWindow
 
 	static const char				*endl;
 
-	CommandWrapper					*cmdWrap;
-
 
 	friend							ClientInputFilter;
 
@@ -169,6 +167,7 @@ class ClientWindow : public BWindow
 	virtual void					TabExpansion (void);
 	virtual void					DroppedFile (BMessage *);
 	static int32					DNSLookup (void *);
+	static int32					ExecPipe (void *);
 
 	bool								Scrolling (void) const;
 	void								ChannelMessage (
@@ -185,59 +184,7 @@ class ClientWindow : public BWindow
 
 	protected:
 										// Commands
-	void								PingCmd (const char *);
-	void								VersionCmd (const char *);
-	void								NoticeCmd (const char *);
-	void								RawCmd (const char *);
-	void								StatsCmd (const char *);
-	void								QuitCmd (const char *);
-	void								KillCmd (const char *);
-	void								WallopsCmd (const char *);
-	void								TraceCmd (const char *);
-	void								MeCmd (const char *);
-	void								DescribeCmd (const char *);
-	void								AwayCmd (const char *);
-	void								BackCmd (const char *);
-	void								JoinCmd (const char *);
-	void								NickCmd (const char *);
-	void								MsgCmd (const char *);
-	void								NickServCmd (const char *);
-	void								ChanServCmd (const char *);
-	void								MemoServCmd (const char *);
-	void								UserhostCmd (const char *);
-	void								CtcpCmd (const char *);
-	void								AdminCmd (const char *);
-	void								InfoCmd (const char *);
-	void								OperCmd (const char *);
-	void								RehashCmd (const char *);
-	void								KickCmd (const char *);
-	void								WhoIsCmd (const char *);
-	void								PartCmd (const char *);
-	void								OpCmd (const char *);
-	void								DopCmd (const char *);
-	void								ModeCmd (const char *);
-	void								Mode2Cmd (const char *);
-	void								MotdCmd (const char *);
-	void								TopicCmd (const char *);
-	void								NamesCmd (const char *);
-	void								QueryCmd (const char *);
-	void								WhoCmd (const char *);
-	void								WhoWasCmd (const char *);
-	void								DccCmd (const char *);
-	void								ClearCmd (const char *);
-	void								InviteCmd (const char *);
-	void								ListCmd (const char *);
-	void								IgnoreCmd (const char *);
-	void								UnignoreCmd (const char *);
-	void								ExcludeCmd (const char *);
-	void								NotifyCmd (const char *);
-	void								UnnotifyCmd (const char *);
-	void								PreferencesCmd (const char *);
-	void								AboutCmd (const char *);
-	void								VisitCmd (const char *);
-	void								SleepCmd (const char *);
-	void								UptimeCmd (const char *);
-	void								DnsCmd (const char *);
+	// gone!
 	
 	BString								DurationString(int64);
 	
@@ -248,6 +195,8 @@ class ClientWindow : public BWindow
 	
 	void								Init (void);
 	void								NotifyRegister (void);
+	
+	bool								ParseCmd (const char *);
 };
 
 class TimedNick

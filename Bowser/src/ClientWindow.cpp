@@ -30,13 +30,6 @@
 
 #include <stdio.h>
 
-// For the sole purpose of keeping the template
-// restricted to this file
-struct CommandWrapper
-{
-	map<BString, ClientWindow::CmdFunc>				cmds;
-};
-
 const char *ClientWindow::endl						("\1\1\1\1\1");
 
 ClientWindow::ClientWindow (
@@ -63,8 +56,7 @@ ClientWindow::ClientWindow (
 	  sMsgr (sMsgr_),
 	  myNick (myNick_),
 	  timeStampState (bowser_app->GetStampState()),
-	  settings (settings_),
-	  cmdWrap (0)
+	  settings (settings_)
 {
 	Init();
 }
@@ -91,8 +83,7 @@ ClientWindow::ClientWindow (
 	  serverName (serverName_),
 	  myNick (myNick_),
 	  timeStampState (bowser_app->GetStampState()),
-	  settings (settings_),
-	  cmdWrap (0)
+	  settings (settings_)
 {
 	Init();
 	sMsgr = BMessenger (this);
@@ -192,6 +183,33 @@ ClientWindow::Init (void)
 	menubar->AddItem (mHelp);
 	AddChild (menubar);
 	
+
+	// A client window maintains it's own state, so we don't
+	// have to lock the app everytime we want to get this information.
+	// When it changes, the application looper will let us know
+	// through a M_STATE_CHANGE message
+	textColor		= bowser_app->GetColor (C_TEXT);
+	nickColor		= bowser_app->GetColor (C_NICK);
+	ctcpReqColor	= bowser_app->GetColor (C_CTCP_REQ);
+	quitColor		= bowser_app->GetColor (C_QUIT);
+	errorColor		= bowser_app->GetColor (C_ERROR);
+	whoisColor		= bowser_app->GetColor (C_WHOIS);
+	joinColor		= bowser_app->GetColor (C_JOIN);
+	myNickColor		= bowser_app->GetColor (C_MYNICK);
+	actionColor		= bowser_app->GetColor (C_ACTION);
+	opColor			= bowser_app->GetColor (C_OP);
+	inputColor		= bowser_app->GetColor (C_INPUT);
+	
+	myFont			= *(bowser_app->GetClientFont (F_TEXT));
+	serverFont		= *(bowser_app->GetClientFont (F_SERVER));
+	inputFont   	= *(bowser_app->GetClientFont (F_INPUT));
+	canNotify		= bowser_app->CanNotify();
+	alsoKnownAs		= bowser_app->GetAlsoKnownAs();
+	otherNick		= bowser_app->GetOtherNick();
+	autoNickTime	= bowser_app->GetAutoNickTime();
+	notifyMask		= bowser_app->GetNotificationMask();
+
+	
 	frame.top = menubar->Frame().bottom + 1;
 	bgView = new BView (frame,
 		"Background",
@@ -206,20 +224,26 @@ ClientWindow::Init (void)
 	status = new StatusView (frame);
 	bgView->AddChild (status);
 
-	inputFont   = *(bowser_app->GetClientFont (F_INPUT));
 	input = new BTextControl (
 		BRect (2, frame.top, frame.right - 15, frame.bottom),
 		"Input", 0, 0,
 		0,
 		B_FOLLOW_LEFT_RIGHT | B_FOLLOW_BOTTOM);
-	input->SetDivider (0);
-	input->ResizeToPreferred();
-	input->MoveTo (
-		2,
+	input->TextView()->SetFontAndColor (&inputFont, B_FONT_ALL, 
+			&inputColor);
+	input->SetDivider (0); 
+	input->ResizeToPreferred(); 
+	
+	input->MoveTo ( 
+		2, 
 		status->Frame().top - input->Frame().Height() - 1);
 
 	input->TextView()->AddFilter (new ClientInputFilter (this));
+	
 	bgView->AddChild (input);
+	
+	input->TextView()->SetViewColor (bowser_app->GetColor (C_INPUT_BACKGROUND));
+	input->Invalidate();
 
 	history = new HistoryMenu (BRect (
 		frame.right - 11,
@@ -251,116 +275,16 @@ ClientWindow::Init (void)
 	// For dynamic menus
 	mNotification[0] = mNotification[1] = mNotification[2] = 0;
 
-	// A client window maintains it's own state, so we don't
-	// have to lock the app everytime we want to get this information.
-	// When it changes, the application looper will let us know
-	// through a M_STATE_CHANGE message
-	textColor		= bowser_app->GetColor (C_TEXT);
-	nickColor		= bowser_app->GetColor (C_NICK);
-	ctcpReqColor	= bowser_app->GetColor (C_CTCP_REQ);
-	quitColor		= bowser_app->GetColor (C_QUIT);
-	errorColor		= bowser_app->GetColor (C_ERROR);
-	whoisColor		= bowser_app->GetColor (C_WHOIS);
-	joinColor		= bowser_app->GetColor (C_JOIN);
-	myNickColor		= bowser_app->GetColor (C_MYNICK);
-	actionColor		= bowser_app->GetColor (C_ACTION);
-	opColor			= bowser_app->GetColor (C_OP);
-	inputColor		= bowser_app->GetColor (C_INPUT);
-	inputbgColor	= bowser_app->GetColor (C_INPUT_BACKGROUND);
-	
-	myFont			= *(bowser_app->GetClientFont (F_TEXT));
-	serverFont		= *(bowser_app->GetClientFont (F_SERVER));
-	canNotify		= bowser_app->CanNotify();
-	alsoKnownAs		= bowser_app->GetAlsoKnownAs();
-	otherNick		= bowser_app->GetOtherNick();
-	autoNickTime	= bowser_app->GetAutoNickTime();
-	notifyMask		= bowser_app->GetNotificationMask();
-
 	isLogging		= bowser_app->GetMasterLogState();
 	scrolling		= true;
 	
 	SetupLogging();
 
-	input->TextView()->SetViewColor(inputbgColor);
-	input->TextView()->SetFontAndColor (&inputFont, B_FONT_ALL, 
-			&inputColor);
-	input->TextView()->Invalidate();
-
-
-	cmdWrap = new CommandWrapper;
-
-	// Add Commands (make cmdWrap static?)
-	cmdWrap->cmds["/PING"]			= &ClientWindow::PingCmd;
-	cmdWrap->cmds["/VERSION"]		= &ClientWindow::VersionCmd;
-	cmdWrap->cmds["/NOTICE"]		= &ClientWindow::NoticeCmd;
-	cmdWrap->cmds["/ADMIN"]			= &ClientWindow::AdminCmd;
-	cmdWrap->cmds["/INFO"]			= &ClientWindow::InfoCmd;
-	cmdWrap->cmds["/RAW"]			= &ClientWindow::RawCmd;
-	cmdWrap->cmds["/QUOTE"]			= &ClientWindow::RawCmd;
-	cmdWrap->cmds["/STATS"]			= &ClientWindow::StatsCmd;
-	cmdWrap->cmds["/OPER"]			= &ClientWindow::OperCmd;
-	cmdWrap->cmds["/REHASH"]		= &ClientWindow::RehashCmd;
-	cmdWrap->cmds["/WALLOPS"]		= &ClientWindow::WallopsCmd;
-	cmdWrap->cmds["/KILL"]			= &ClientWindow::KillCmd;
-	cmdWrap->cmds["/TRACE"]			= &ClientWindow::TraceCmd;
-	cmdWrap->cmds["/QUIT"]			= &ClientWindow::QuitCmd;
-	cmdWrap->cmds["/AWAY"]			= &ClientWindow::AwayCmd;
-	cmdWrap->cmds["/ME"]			= &ClientWindow::MeCmd;
-	cmdWrap->cmds["/DESCRIBE"]		= &ClientWindow::DescribeCmd;
-	cmdWrap->cmds["/JOIN"]			= &ClientWindow::JoinCmd;
-	cmdWrap->cmds["/NICK"]			= &ClientWindow::NickCmd;
-	cmdWrap->cmds["/MSG"]			= &ClientWindow::MsgCmd;
-	cmdWrap->cmds["/CTCP"]			= &ClientWindow::CtcpCmd;
-	cmdWrap->cmds["/KICK"]			= &ClientWindow::KickCmd;
-	cmdWrap->cmds["/WHOIS"]			= &ClientWindow::WhoIsCmd;
-	cmdWrap->cmds["/OP"]			= &ClientWindow::OpCmd;
-	cmdWrap->cmds["/DEOP"]			= &ClientWindow::DopCmd;
-	cmdWrap->cmds["/DOP"]			= &ClientWindow::DopCmd;
-	cmdWrap->cmds["/MODE"]			= &ClientWindow::ModeCmd;
-	cmdWrap->cmds["/MOTD"]			= &ClientWindow::MotdCmd;
-	cmdWrap->cmds["/T"]				= &ClientWindow::TopicCmd;
-	cmdWrap->cmds["/TOPIC"]			= &ClientWindow::TopicCmd;
-	cmdWrap->cmds["/NAMES"]			= &ClientWindow::NamesCmd;
-	cmdWrap->cmds["/Q"]				= &ClientWindow::QueryCmd;
-	cmdWrap->cmds["/QUERY"]			= &ClientWindow::QueryCmd;
-	cmdWrap->cmds["/WHO"]			= &ClientWindow::WhoCmd;
-	cmdWrap->cmds["/WHOWAS"]		= &ClientWindow::WhoWasCmd;
-	cmdWrap->cmds["/DCC"]			= &ClientWindow::DccCmd;
-	cmdWrap->cmds["/INVITE"]		= &ClientWindow::InviteCmd;
-	cmdWrap->cmds["/LIST"]			= &ClientWindow::ListCmd;
-	cmdWrap->cmds["/IGNORE"]		= &ClientWindow::IgnoreCmd;
-	cmdWrap->cmds["/UNIGNORE"]		= &ClientWindow::UnignoreCmd;
-	cmdWrap->cmds["/EXCLUDE"]		= &ClientWindow::ExcludeCmd;
-	cmdWrap->cmds["/NOTIFY"]		= &ClientWindow::NotifyCmd;
-	cmdWrap->cmds["/UNNOTIFY"]		= &ClientWindow::UnnotifyCmd;
-	cmdWrap->cmds["/J"]				= &ClientWindow::JoinCmd;
-	cmdWrap->cmds["/M"]				= &ClientWindow::Mode2Cmd;
-	cmdWrap->cmds["/W"]				= &ClientWindow::WhoIsCmd;
-	cmdWrap->cmds["/K"]				= &ClientWindow::KickCmd;
-	cmdWrap->cmds["/SLEEP"]			= &ClientWindow::SleepCmd;
-	cmdWrap->cmds["/VISIT"]			= &ClientWindow::VisitCmd;
-	cmdWrap->cmds["/NICKSERV"]		= &ClientWindow::NickServCmd;
-	cmdWrap->cmds["/CHANSERV"]		= &ClientWindow::ChanServCmd;
-	cmdWrap->cmds["/MEMOSERV"]		= &ClientWindow::MemoServCmd;
-	cmdWrap->cmds["/USERHOST"]		= &ClientWindow::UserhostCmd;
-	cmdWrap->cmds["/UPTIME"]		= &ClientWindow::UptimeCmd;
-	cmdWrap->cmds["/DNS"]			= &ClientWindow::DnsCmd;
-
-	
-	// no parms
-	// TODO:	add wrapper that doesn't send const char *
-	//			(will fix warnings)
-	cmdWrap->cmds["/CLEAR"]			= &ClientWindow::ClearCmd;
-	cmdWrap->cmds["/PART"]			= &ClientWindow::PartCmd;
-	cmdWrap->cmds["/BACK"]			= &ClientWindow::BackCmd;
-	cmdWrap->cmds["/ABOUT"]			= &ClientWindow::AboutCmd;
-	cmdWrap->cmds["/PREFERENCES"]	= &ClientWindow::PreferencesCmd;
 }
 
 ClientWindow::~ClientWindow (void)
 {
 	if (settings) delete settings;
-	if (cmdWrap)  delete cmdWrap;
 	
 	isLogging = false;
 	SetupLogging();
@@ -505,15 +429,14 @@ ClientWindow::DispatchMessage (BMessage *msg, BHandler *handler)
 	
 	else if (msg->what == B_KEY_DOWN)
 	{
-		if (input->TextView()->LineWidth(0) > 0)
-		{
-			BRect bounds = input->TextView()->Bounds();
-			BFont current;
-			input->TextView()->GetFontAndColor(0, &current);
-			bounds.left = input->TextView()->LineWidth(0);
-			bounds.right = bounds.left + 2 * current.Size();
-			bounds.left -= current.Size();
-		}
+		BRect bounds = input->TextView()->Bounds();
+		BFont current;
+		input->TextView()->GetFontAndColor(0, &current);
+		
+		bounds.left = input->TextView()->LineWidth(0);
+		bounds.right = bounds.left + 2 * current.Size();
+		if (bounds.left > 0) bounds.left -= current.Size();
+		input->TextView()->Invalidate(bounds);
 	}
 	
 	BWindow::DispatchMessage (msg, handler);
@@ -579,6 +502,7 @@ ClientWindow::MessageReceived (BMessage *msg)
 			}
 			else
 			{
+				printf ("1111111111in the else zone11111111\n");
 				BString buffer;
 				for (int32 i = 0; msg->HasString ("data", i); ++i)
 				{
@@ -590,19 +514,39 @@ ClientWindow::MessageReceived (BMessage *msg)
 				int32 start, finish;
 				if (msg->FindInt32 ("selstart", &start) == B_OK)
 				{
+					printf ("whatever this means\n");
+					
 					msg->FindInt32 ("selend", &finish);
+					printf ("start: %ld end: %ld\n", start, finish);
 					if (start != finish)
-							input->TextView()->Delete (start, finish);
-					input->TextView()->Insert (start, buffer.String(), buffer.Length());
-					input->TextView()->Select (start + buffer.Length(), start + buffer.Length()); 				
+					{
+						printf ("nuking something\n");
+						input->TextView()->Delete (start, finish);
+					}
+					
+					
+					if ((start == 0) && (finish == 0))
+					{
+						input->TextView()->Insert (input->TextView()->TextLength(), buffer.String(), buffer.Length());
+						input->TextView()->Select (input->TextView()->TextLength(),
+							input->TextView()->TextLength());
+					}
+					else
+					{				
+						input->TextView()->Insert (start, buffer.String(), buffer.Length());
+						input->TextView()->Select (start + buffer.Length(), start + buffer.Length()); 				
+					}
 				}
 				else
 				{
+					printf ("am i even being called\n");
 					input->TextView()->Insert (buffer.String());
 					input->TextView()->Select (input->TextView()->TextLength(),
 						input->TextView()->TextLength());
 				}
-					input->TextView()->ScrollToSelection();
+				
+				
+				input->TextView()->ScrollToSelection();
 			}
 
 			break;
@@ -1158,55 +1102,13 @@ ClientWindow::Scrolling (void) const
 bool
 ClientWindow::SlashParser (const char *data)
 {
-	BString first (GetWord (data, 1));
+	BString first (GetWord (data, 1).ToUpper());
 	
-	first.ToUpper();
-
-	map<BString, CmdFunc>::iterator it;
-
-	if ((it = cmdWrap->cmds.find (first)) != cmdWrap->cmds.end())
-	{
-		CmdFunc &cmd (it->second);
-
-//		if (first != "-9z99")
-			(this->*cmd) (data);
-//		else
-//			(this->*cmd) (void);
-		
+	if (ParseCmd (data))
 		return true;
-	}
 
 	return false;
 }
-
-//bool
-//ClientWindow::AcceptsPaste(BClipboard *clipboard)
-//{
-//	printf("called AcceptsPaste\n");
-//	const char *text;
-//
-//	int32 textLen;
-//
-//	BMessage *clip = (BMessage *)NULL;
-//
-//	if (clipboard->Lock()) {
-//
-//	   if ((clip = clipboard->Data()))
-//	    if (clip->FindData("text/plain", B_MIME_TYPE, 
-//	    	(const void **)&text, &textLen) != B_OK)
-//	    	{
-//	    		clipboard->Unlock();
-//	    		return false;
-//	    	}
-//	   	clipboard->Unlock();
-//	   	BMessage mimeMsg(B_MIME_TYPE);
-//	   	mimeMsg.AddData("text/plain", B_MIME_TYPE,
-//	   		(const void *)&text, textLen, true);
-//	   	PostMessage(&mimeMsg);
-//	   	return true;
-//	}
-//	return false;
-//}
 
 void
 ClientWindow::ChannelMessage (
@@ -1248,325 +1150,6 @@ ClientWindow::ActionMessage (
 
 
 void
-ClientWindow::JoinCmd (const char *data)
-{
-	BString channel (GetWord (data, 2));
-
-	if (channel != "-9z99")
-	{
-		if (channel[0] != '#' && channel[0] != '&')
-			channel.Prepend("#");
-
-		BMessage send (M_SERVER_SEND);
-
-		AddSend (&send, "JOIN ");
-		AddSend (&send, channel);
-
-		BString key (GetWord (data, 3));
-		if (key != "-9z99")
-		{
-			AddSend (&send, " ");
-			AddSend (&send, key);
-		}
-
-		AddSend (&send, endl);
-	}
-}
-
-void
-ClientWindow::NickCmd (const char *data)
-{
-	BString newNick (GetWord (data, 2));
-
-	if (newNick != "-9z99")
-	{
-		BString tempString ("*** Trying new nick ");
-
-		tempString << newNick << ".\n";
-		Display (tempString.String(), 0);
-
-		BMessage send (M_SERVER_SEND);
-		AddSend (&send, "NICK ");
-		AddSend (&send, newNick);
-		AddSend (&send, endl);
-	}
-}
-
-void
-ClientWindow::MsgCmd (const char *data)
-{
-	BString theRest (RestOfString (data, 3));
-	BString theNick (GetWord (data, 2));
-
-	if (theNick != "-9z99"
-	&&  theRest != "-9z99"
-	&&  myNick.ICompare (theNick))
-	{
-		if (bowser_app->GetMessageOpenState())
-		{
-			BMessage msg (OPEN_MWINDOW);
-			BMessage buffer (M_SUBMIT);
-
-			buffer.AddString ("input", theRest.String());
-			msg.AddMessage ("msg", &buffer);
-			msg.AddString ("nick", theNick.String());
-			sMsgr.SendMessage (&msg);
-		}
-		else
-		{
-			BString tempString;
-			
-			tempString << "[M]-> " << theNick << " > " << theRest << "\n";
-			Display (tempString.String(), 0);
-
-			BMessage send (M_SERVER_SEND);
-			AddSend (&send, "PRIVMSG ");
-			AddSend (&send, theNick);
-			AddSend (&send, " :");
-			AddSend (&send, theRest);
-			AddSend (&send, endl);
-		}
-
-	}
-}
-
-void
-ClientWindow::NickServCmd (const char *data)
-{
-	BString theRest (RestOfString (data, 2));
-
-	if (theRest != "-9z99")
-	{
-		if (bowser_app->GetMessageOpenState())
-		{
-			BMessage msg (OPEN_MWINDOW);
-			BMessage buffer (M_SUBMIT);
-
-			buffer.AddString ("input", theRest.String());
-			msg.AddMessage ("msg", &buffer);
-			msg.AddString ("nick", "NickServ");
-			sMsgr.SendMessage (&msg);
-		}
-		else
-		{
-			BString tempString;
-			
-			tempString << "[M]-> NickServ > " << theRest << "\n";
-			Display (tempString.String(), 0);
-
-			BMessage send (M_SERVER_SEND);
-			AddSend (&send, "PRIVMSG NickServ");
-			AddSend (&send, " :");
-			AddSend (&send, theRest);
-			AddSend (&send, endl);
-		}
-
-	}
-}
-
-void
-ClientWindow::ChanServCmd (const char *data)
-{
-	BString theRest (RestOfString (data, 2));
-
-	if (theRest != "-9z99")
-	{
-		if (bowser_app->GetMessageOpenState())
-		{
-			BMessage msg (OPEN_MWINDOW);
-			BMessage buffer (M_SUBMIT);
-
-			buffer.AddString ("input", theRest.String());
-			msg.AddMessage ("msg", &buffer);
-			msg.AddString ("nick", "ChanServ");
-			sMsgr.SendMessage (&msg);
-		}
-		else
-		{
-			BString tempString;
-			
-			tempString << "[M]-> ChanServ > " << theRest << "\n";
-			Display (tempString.String(), 0);
-
-			BMessage send (M_SERVER_SEND);
-			AddSend (&send, "PRIVMSG ChanServ");
-			AddSend (&send, " :");
-			AddSend (&send, theRest);
-			AddSend (&send, endl);
-		}
-
-	}
-}
-
-void
-ClientWindow::MemoServCmd (const char *data)
-{
-	BString theRest (RestOfString (data, 2));
-
-	if (theRest != "-9z99")
-	{
-		if (bowser_app->GetMessageOpenState())
-		{
-			BMessage msg (OPEN_MWINDOW);
-			BMessage buffer (M_SUBMIT);
-
-			buffer.AddString ("input", theRest.String());
-			msg.AddMessage ("msg", &buffer);
-			msg.AddString ("nick", "MemoServ");
-			sMsgr.SendMessage (&msg);
-		}
-		else
-		{
-			BString tempString;
-			
-			tempString << "[M]-> MemoServ > " << theRest << "\n";
-			Display (tempString.String(), 0);
-
-			BMessage send (M_SERVER_SEND);
-			AddSend (&send, "PRIVMSG MemoServ");
-			AddSend (&send, " :");
-			AddSend (&send, theRest);
-			AddSend (&send, endl);
-		}
-
-	}
-}
-
-void
-ClientWindow::UptimeCmd (const char *data)
-{
-	BString parms (GetWord(data, 2));
-	
-	if ((id != serverName) && (parms == "-9z99"))
-	{
-		BString uptime (DurationString(system_time()));
-		BString expandedString;
-		
-		const char *expansions[1];
-		expansions[0] = uptime.String();
-		expandedString = ExpandKeyed (bowser_app->GetCommand (CMD_UPTIME).String(), "U",
-			expansions);
-		expandedString.RemoveFirst("\n");
-		
-		BMessage send (M_SERVER_SEND);
-		AddSend (&send, "PRIVMSG ");
-		AddSend (&send, id);
-		AddSend (&send, " :");
-		AddSend (&send, expandedString.String());
-		AddSend (&send, endl);
-		
-		ChannelMessage (expandedString.String(), myNick.String());
-	}
-	else if ((parms == "-l") || (id == serverName)) // echo locally
-	{
-		BString uptime (DurationString(system_time()));
-		BString expandedString;
-		
-		const char *expansions[1];
-		expansions[0] = uptime.String();
-		expandedString = ExpandKeyed (bowser_app->GetCommand (CMD_UPTIME).String(), "U",
-			expansions);
-		expandedString.RemoveFirst("\n");
-		
-		BString tempString;
-			
-		tempString << "Uptime: " << expandedString << "\n";
-		Display (tempString.String(), &whoisColor);
-		
-	}
-		
-}
-
-void
-ClientWindow::DnsCmd (const char *data)
-{
-	BString parms (GetWord(data, 2));
-	ChannelWindow *window;
-	MessageWindow *message;
-	
-	if ((window = dynamic_cast<ChannelWindow *>(this)))
-	{
-			int32 count (window->namesList->CountItems());
-			
-			for (int32 i = 0; i < count; ++i)
-			{
-				NameItem *item ((NameItem *)(window->namesList->ItemAt (i)));
-				
-				if (!item->Name().ICompare (parms.String(), strlen (parms.String()))) //nick
-				{
-					BMessage send (M_SERVER_SEND);
-					AddSend (&send, "USERHOST ");
-					AddSend (&send, item->Name().String());
-					AddSend (&send, endl);
-					PostMessage(&send);	
-					return;				
-				}
-			}
-	}
-
-	else if ((message = dynamic_cast<MessageWindow *>(this)))
-	{
-		BString eid (id);
-		eid.RemoveLast (" [DCC]");
-		if (!ICompare(eid, parms) || !ICompare(myNick, parms))
-		{
-			BMessage send (M_SERVER_SEND);
-			AddSend (&send, "USERHOST ");
-			AddSend (&send, parms.String());
-			AddSend (&send, endl);
-			PostMessage(&send);
-			return;
-		}
-	}
-		
-	if (parms != "-9z99")
-	{
-		BMessage *msg (new BMessage);
-		msg->AddString ("lookup", parms.String());
-		msg->AddPointer ("client", this);
-		
-		thread_id lookupThread = spawn_thread (
-			DNSLookup,
-			"dns_lookup",
-			B_LOW_PRIORITY,
-			msg);
-
-		resume_thread (lookupThread);
-	}
-
-}
-
-void
-ClientWindow::CtcpCmd (const char *data)
-{
-	BString theTarget (GetWord (data, 2));
-	BString theAction (RestOfString (data, 3));
-
-	if (theAction != "-9z99")
-	{
-		theAction.ToUpper();
-
-		if (theAction.ICompare ("PING") == 0)
-		{
-			time_t now (time (0));
-
-			theAction << " " << now;
-		}
-
-		CTCPAction (theTarget, theAction);
-		
-//		BString tempString ("[C]-> ");
-//		tempString << theTarget << " -> " << theAction << '\n';
-//		Display (tempString.String(), 0);
-
-		BMessage send (M_SERVER_SEND);
-		AddSend (&send, "PRIVMSG ");
-		AddSend (&send, theTarget << " :\1" << theAction << "\1");
-		AddSend (&send, endl);
-	}
-}
-
-void
 ClientWindow::CTCPAction(BString theTarget, BString theMsg)
 {
 	BString theCTCP = GetWord(theMsg.String(), 1).ToUpper();
@@ -1587,815 +1170,6 @@ ClientWindow::CTCPAction(BString theTarget, BString theMsg)
 	
 	Display (tempString.String(), &ctcpReqColor, &serverFont);
 	
-}
-
-void
-ClientWindow::MeCmd (const char *data)
-{
-	BString theAction (RestOfString (data, 2));
-
-	if (theAction != "-9z99")
-		ActionMessage (theAction.String(), myNick.String());
-}
-
-void
-ClientWindow::DescribeCmd (const char *data)
-{
-    BString theTarget (GetWord (data, 2));
-	BString theAction (RestOfString (data, 3));
-	
-	if (theAction != "-9z99") {
-	
-		BMessage send (M_SERVER_SEND);
-
-		AddSend (&send, "PRIVMSG ");
-		AddSend (&send, theTarget);
-		AddSend (&send, " :\1ACTION ");
-		AddSend (&send, theAction);
-		AddSend (&send, "\1");
-		AddSend (&send, endl);
-	
-		BString theActionMessage ("[ACTION]-> ");
-		theActionMessage << theTarget << " -> " << theAction << "\n";
-
-		Display (theActionMessage.String(), 0);
-	}
-
-}
-
-void
-ClientWindow::QuitCmd (const char *data)
-{
-	BString theRest (RestOfString (data, 2));
-	BString buffer;
-
-	if (theRest == "-9z99")
-	{
-		const char *expansions[1];
-		BString version (VERSION);
-
-		expansions[0] = version.String();
-		theRest = ExpandKeyed (bowser_app
-			->GetCommand (CMD_QUIT).String(), "V", expansions);
-	}
-
-	buffer << "QUIT :" << theRest;
-
-	BMessage msg (B_QUIT_REQUESTED);
-	msg.AddString ("bowser:quit", buffer.String());
-	sMsgr.SendMessage (&msg);
-}
-
-void
-ClientWindow::KickCmd (const char *data)
-{
-	BString theNick (GetWord (data, 2));
-
-	if (theNick != "-9z99")
-	{
-		BString theReason (RestOfString (data, 3));
-
-		if (theReason == "-9z99")
-		{
-			// No expansions
-			theReason = bowser_app
-				->GetCommand (CMD_KICK);
-		}
-
-		BMessage send (M_SERVER_SEND);
-
-		AddSend (&send, "KICK ");
-		AddSend (&send, id);
-		AddSend (&send, " ");
-		AddSend (&send, theNick);
-		AddSend (&send, " :");
-		AddSend (&send, theReason);
-		AddSend (&send, endl);
-	}
-}
-	
-void
-ClientWindow::WhoIsCmd (const char *data)
-{
-	BString theNick (GetWord (data, 2));
-	BString theNick2 (GetWord (data, 3));
-
-	if (theNick != "-9z99")
-	{
-		BMessage send (M_SERVER_SEND);
-
-		AddSend (&send, "WHOIS ");
-		AddSend (&send, theNick);
-
-
-		if (theNick2 != "-9z99")
-		{
-			AddSend (&send, " ");
-			AddSend (&send, theNick2);
-		}
-
-		AddSend (&send, endl);
-	}
-}
-
-void
-ClientWindow::UserhostCmd (const char *data)
-{
-	BString theNick (GetWord (data, 2));
-
-	if (theNick != "-9z99")
-	{
-		BMessage send (M_SERVER_SEND);
-
-		AddSend (&send, "USERHOST ");
-		AddSend (&send, theNick);
-		AddSend (&send, endl);
-	}
-}
-
-void
-ClientWindow::PartCmd (const char *data)
-{
-	BMessage msg (B_QUIT_REQUESTED);
-
-	msg.AddBool ("bowser:part", true);
-	PostMessage (&msg);
-}
-
-
-void
-ClientWindow::OpCmd (const char *data)
-{
-	BString theNick (RestOfString (data, 2));
-
-	if (theNick != "-9z99")
-	{
-		// TODO only applies to a channel
-
-		BMessage send (M_SERVER_SEND);
-
-		AddSend (&send, "MODE ");
-		AddSend (&send, id);
-		AddSend (&send, " +oooo ");
-		AddSend (&send, theNick);
-		AddSend (&send, endl);
-	}
-}
-
-void
-ClientWindow::DopCmd (const char *data)
-{
-	BString theNick (RestOfString (data, 2));
-
-	if (theNick != "-9z99")
-	{
-		BMessage send (M_SERVER_SEND);
-
-		AddSend (&send, "MODE ");
-		AddSend (&send, id);
-		AddSend (&send, " -oooo ");
-		AddSend (&send, theNick);
-		AddSend (&send, endl);
-	}
-}
-
-void
-ClientWindow::ModeCmd (const char *data)
-{
-	BString theMode (RestOfString (data, 3));
-	BString theTarget (GetWord (data, 2));
-
-	if (theTarget != "-9z99")
-	{
-		BMessage send (M_SERVER_SEND);
-
-		AddSend (&send, "MODE ");
-
-		if (theMode == "-9z99")
-			AddSend (&send, theTarget);
-		else
-			AddSend (&send, theTarget << " " << theMode);
-
-		AddSend (&send, endl);
-	}
-}
-
-void
-ClientWindow::Mode2Cmd (const char *data)
-{
-	BString theMode (RestOfString (data, 2));
-	
-	BMessage send (M_SERVER_SEND);
-	AddSend (&send, "MODE ");
-
-	if (id == serverName)
-		AddSend (&send, myNick);
-	else if (id[0] == '#' || id[0] == '&')
-		AddSend (&send, id);
-	else
-		AddSend (&send, myNick);
-	 
-	if (theMode != "-9z99")
-	{
-			AddSend (&send, " ");
-			AddSend (&send, theMode);
-	}
-
-	AddSend (&send, endl);
-}
-	
-void
-ClientWindow::PingCmd (const char *data)
-{
-	BString theNick (GetWord (data, 2));
-
-	if (theNick != "-9z99")
-	{
-		long theTime (time (0));
-		BString tempString ("/CTCP ");
-
-		tempString << theNick << " PING " << theTime;
-		SlashParser (tempString.String());
-	}
-}
-
-void
-ClientWindow::VersionCmd (const char *data)
-{
-	BString theNick (GetWord (data, 2));
-
-	if (theNick != "-9z99")
-	{
-		BString tempString ("/CTCP ");
-
-		tempString << theNick << " VERSION";
-		SlashParser (tempString.String());
-	}
-	else
-	{
-	  	BMessage send (M_SERVER_SEND);
-
-		AddSend (&send, "VERSION");
-		AddSend (&send, endl);
-	}
-		
-}
-
-void
-ClientWindow::NoticeCmd (const char *data)
-{
-	BString theTarget (GetWord (data, 2));
-	BString theMsg (RestOfString (data, 3));
-
-	if (theMsg != "-9z99")
-	{
-		BMessage send (M_SERVER_SEND);
-
-		AddSend (&send, "NOTICE ");
-		AddSend (&send, theTarget);
-		AddSend (&send, " :");
-		AddSend (&send, theMsg);
-		AddSend (&send, endl);
-
-		BString tempString ("[N]-> ");
-		tempString << theTarget << " -> " << theMsg << '\n';
-
-		Display (tempString.String(), 0);
-	}
-}
-
-void
-ClientWindow::RawCmd (const char *data)
-{
-	BString theRaw (RestOfString (data, 2));
-
-	if (theRaw != "-9z99")
-	{
-		BMessage send (M_SERVER_SEND);
-
-		AddSend (&send, theRaw);
-		AddSend (&send, endl);
-
-		BString tempString ("[R]-> ");
-		tempString << theRaw << '\n';
-
-		Display (tempString.String(), 0);
-
-	}
-}
-
-void
-ClientWindow::StatsCmd (const char *data)
-{
-	BString theStat (RestOfString (data, 2));
-
-	if (theStat != "-9z99")
-	{
-		BMessage send (M_SERVER_SEND);
-		
-		AddSend (&send, "STATS ");
-		AddSend (&send, theStat);
-		AddSend (&send, endl);
-	}
-}
-
-
-void
-ClientWindow::AwayCmd (const char *data)
-{
-	BString theReason (RestOfString (data, 2));
-	BString tempString;
-
-
-	if (theReason != "-9z99")
-	{
-		//nothing to do
-	}
-	else
-	{
-		theReason = "BRB"; // Todo: make a default away msg option
-	}
-
-	const char *expansions[1];
-	expansions[0] = theReason.String();
-	
-	tempString = ExpandKeyed (bowser_app->GetCommand (CMD_AWAY).String(), "R",
-		expansions);
-	tempString.RemoveFirst("\n");
-
-	BMessage send (M_SERVER_SEND);
-	AddSend (&send, "AWAY");
-	AddSend (&send, " :");
-	AddSend (&send, theReason.String());
-	AddSend (&send, endl);
-	
-	if (id != serverName)
-	{
-		ActionMessage (tempString.String(), myNick.String());
-	}
-}
-
-void
-ClientWindow::BackCmd (const char *data)
-{
-	BMessage send (M_SERVER_SEND);
-
-	AddSend (&send, "AWAY");
-	AddSend (&send, endl);
-
-	if (id != serverName)
-	{
-		ActionMessage (
-			bowser_app->GetCommand (CMD_BACK).String(),
-			myNick.String());
-	}
-}
-
-void
-ClientWindow::KillCmd (const char *data)
-{
-	BString theNick (GetWord (data, 2));
-	BString theKill (RestOfString (data, 3));
-
-	if (theNick != "-9z99")
-	{
-		BMessage send (M_SERVER_SEND);
-		
-		// nick
-		AddSend (&send, "KILL ");
-		AddSend (&send, theNick);
-		
-		if (theKill != "-9z99")
-		{
-			// reason
-			AddSend (&send, " :");
-			AddSend (&send, theKill);
-		}
-		
-		AddSend (&send, endl);
-	}
-}
-
-void
-ClientWindow::WallopsCmd (const char *data)
-{
-	BString theWallops (RestOfString (data, 2));
-
-	if (theWallops != "-9z99")
-	{
-		BMessage send (M_SERVER_SEND);
-		
-		AddSend (&send, "WALLOPS :");
-		AddSend (&send, theWallops);
-		AddSend (&send, endl);
-	}
-}
-
-void
-ClientWindow::OperCmd (const char *data)
-{
-	BString theOper (RestOfString (data, 2));
-
-	if (theOper != "-9z99")
-	{
-		BMessage send (M_SERVER_SEND);
-		
-		AddSend (&send, "OPER ");
-		AddSend (&send, theOper);
-		AddSend (&send, endl);
-	}
-}
-
-void
-ClientWindow::AdminCmd (const char *data)
-{
-	BString theAdmin (RestOfString (data, 2));
-	BMessage send (M_SERVER_SEND);
-	
-	AddSend (&send, "ADMIN");
-	
-	if (theAdmin != "-9z99")
-	{
-		AddSend (&send, " ");
-		AddSend (&send, theAdmin);
-	}
-	AddSend (&send, endl);
-}
-
-
-void
-ClientWindow::RehashCmd (const char *data)
-{
-	BString theRehash (RestOfString (data, 2));
-	BMessage send (M_SERVER_SEND);
-	
-	AddSend (&send, "REHASH");
-	
-	if (theRehash != "-9z99")
-	{
-		AddSend (&send, " ");
-		AddSend (&send, theRehash);
-	}
-	AddSend (&send, endl);
-}
-
-void
-ClientWindow::TraceCmd (const char *data)
-{
-	BString theTrace (RestOfString (data, 2));
-	BMessage send (M_SERVER_SEND);
-	
-	AddSend (&send, "TRACE");
-	
-	if (theTrace != "-9z99")
-	{
-		AddSend (&send, " ");
-		AddSend (&send, theTrace);
-	}
-	AddSend (&send, endl);
-}
-
-void
-ClientWindow::InfoCmd (const char *data)
-{
-	BString theInfo (RestOfString (data, 2));
-	BMessage send (M_SERVER_SEND);
-	
-	AddSend (&send, "INFO");
-	
-	if (theInfo != "-9z99")
-	{
-		AddSend (&send, " ");
-		AddSend (&send, theInfo);
-	}
-	AddSend (&send, endl);
-}
-
-void
-ClientWindow::MotdCmd (const char *data)
-{
-	BString theMotd (RestOfString (data, 2));
-	BMessage send (M_SERVER_SEND);
-	
-	AddSend (&send, "MOTD");
-	
-	if (theMotd != "-9z99")
-	{
-		AddSend (&send, " ");
-		AddSend (&send, theMotd);
-	}
-	AddSend (&send, endl);
-}
-
-void
-ClientWindow::TopicCmd (const char *data)
-{
-	BString theChan (id);
-	BString theTopic (RestOfString (data, 2));
-	BMessage send (M_SERVER_SEND);
-
-	AddSend (&send, "TOPIC ");
-
-	if (theTopic == "-9z99")
-		AddSend (&send, theChan);
-	else
-		AddSend (&send, theChan << " :" << theTopic);
-	AddSend (&send, endl);
-}
-
-void
-ClientWindow::NamesCmd (const char *data)
-{
-	BString theChan (GetWord (data, 2));
-
-	if (theChan != "-9z99")
-	{
-		BMessage send (M_SERVER_SEND);
-
-		AddSend (&send, "NAMES ");
-		AddSend (&send, theChan);
-		AddSend (&send, endl);
-	}
-}
-
-void
-ClientWindow::QueryCmd (const char *data)
-{
-	BString theNick (GetWord (data, 2));
-
-	if (theNick != "-9z99")
-	{
-		BMessage msg (OPEN_MWINDOW);
-
-		msg.AddString ("nick", theNick.String());
-		sMsgr.SendMessage (&msg);
-	}
-}
-
-void
-ClientWindow::WhoWasCmd (const char *data)
-{
-	BString theNick (GetWord (data, 2));
-
-	if (theNick != "-9z99")
-	{
-		BMessage send (M_SERVER_SEND);
-
-		AddSend (&send, "WHOWAS ");
-		AddSend (&send, theNick);
-		AddSend (&send, endl);
-	}
-}
-
-void
-ClientWindow::DccCmd (const char *data)
-{
-	BString secondWord (GetWord (data, 2));
-	BString theNick (GetWord (data, 3));
-	BString theFile (RestOfString(data, 4));
-	
-	if (secondWord.ICompare ("SEND") == 0
-	&&  theNick != "-9z99")
-	{
-		BMessage *msg (new BMessage (CHOSE_FILE));
-		msg->AddString ("nick", theNick.String());
-		if (theFile != "-9z99")
-		{	
-			char filePath[B_PATH_NAME_LENGTH] = "\0";
-			if (theFile.ByteAt(0) != '/')
-			{
-				find_directory(B_USER_DIRECTORY, 0, false, filePath, B_PATH_NAME_LENGTH);
-				filePath[strlen(filePath)] = '/';
-			}
-			strcat(filePath, theFile.LockBuffer(0));
-			theFile.UnlockBuffer();
-
-			// use BPath to resolve relative pathnames, above code forces it
-			// to use /boot/home as a working dir as opposed to the app path
-
-			BPath sendPath(filePath, NULL, true);
-			
-			// the BFile is used to verify if the file exists
-			// based off the documentation get_ref_for_path *should*
-			// return something other than B_OK if the file doesn't exist
-			// but that doesn't seem to be working correctly
-			
-			BFile sendFile(sendPath.Path(), B_READ_ONLY);
-			
-			// if the file exists, send, otherwise drop to the file panel
-			
-			if (sendFile.InitCheck() == B_OK)
-			{
-				sendFile.Unset();
-				entry_ref ref;
-				get_ref_for_path(sendPath.Path(), &ref);
-				msg->AddRef("refs", &ref);
-				sMsgr.SendMessage(msg);	
-				return;	
-			}
-		}
-		BFilePanel *myPanel (new BFilePanel);
-		BString myTitle ("Sending a file to ");
-
-		myTitle.Append (theNick);
-		myPanel->Window()->SetTitle (myTitle.String());
-
-		myPanel->SetMessage (msg);
-
-		myPanel->SetButtonLabel (B_DEFAULT_BUTTON, "Send");
-		myPanel->SetTarget (sMsgr);
-		myPanel->Show();
-	}
-	else if (secondWord.ICompare ("CHAT") == 0
-	&&       theNick != "-9z99")
-	{
-		BMessage msg (CHAT_ACTION);
-
-		msg.AddString ("nick", theNick.String());
-
-		sMsgr.SendMessage (&msg);
-	}
-}
-
-void
-ClientWindow::ClearCmd (const char *data)
-{
-	text->ClearView();
-}
-
-void
-ClientWindow::InviteCmd (const char *data)
-{
-	BString theUser (GetWord (data, 2));
-
-	if (theUser != "-9z99")
-	{
-		BString theChan (GetWord (data, 3));
-
-		if (theChan == "-9z99")
-			theChan = id;
-
-		BMessage send (M_SERVER_SEND);
-
-		AddSend (&send, "INVITE ");
-		AddSend (&send, theUser << " " << theChan);
-		AddSend (&send, endl);
-	}
-}
-
-void
-ClientWindow::WhoCmd (const char *data)
-{
-	BString theMask (GetWord (data, 2));
-
-	BMessage send (M_SERVER_SEND);
-
-	AddSend (&send, "WHO ");
-	AddSend (&send, theMask);
-	AddSend (&send, endl);
-}
-
-void
-ClientWindow::ListCmd (const char *data)
-{
-	BMessage msg (M_LIST_COMMAND);
-
-	msg.AddString ("cmd", data);
-	msg.AddString ("server", serverName.String());
-	msg.AddRect ("frame", Frame());
-	bowser_app->PostMessage (&msg);
-}
-
-void
-ClientWindow::IgnoreCmd (const char *data)
-{
-	BString rest (RestOfString (data, 2));
-
-	if (rest != "-9z99")
-	{
-		BMessage msg (M_IGNORE_COMMAND);
-
-		msg.AddString ("cmd", rest.String());
-		msg.AddString ("server", serverName.String());
-		msg.AddRect ("frame", Frame());
-		bowser_app->PostMessage (&msg);
-	}
-}
-
-void
-ClientWindow::UnignoreCmd (const char *data)
-{
-	BString rest (RestOfString (data, 2));
-
-	if (rest != "-9z99")
-	{
-		BMessage msg (M_UNIGNORE_COMMAND);
-
-		msg.AddString ("cmd", rest.String());
-		msg.AddString ("server", serverName.String());
-		msg.AddRect ("frame", Frame());
-		bowser_app->PostMessage (&msg);
-	}
-}
-
-void
-ClientWindow::ExcludeCmd (const char *data)
-{
-	BString second (GetWord (data, 2)),
-		rest (RestOfString (data, 3));
-
-	if (rest != "-9z99" && rest != "-9z99")
-	{
-		BMessage msg (M_EXCLUDE_COMMAND);
-
-		msg.AddString ("second", second.String());
-		msg.AddString ("cmd", rest.String());
-		msg.AddString ("server", serverName.String());
-		msg.AddRect ("frame", Frame());
-		bowser_app->PostMessage (&msg);
-	}
-}
-
-void
-ClientWindow::NotifyCmd (const char *data)
-{
-	BString rest (RestOfString (data, 2));
-
-	if (rest != "-9z99")
-	{
-		BMessage msg (M_NOTIFY_COMMAND);
-
-		msg.AddString ("cmd", rest.String());
-		msg.AddBool ("add", true);
-		msg.AddString ("server", serverName.String());
-		msg.AddRect ("frame", Frame());
-		bowser_app->PostMessage (&msg);
-	}
-}
-
-void
-ClientWindow::UnnotifyCmd (const char *data)
-{
-	BString rest (RestOfString (data, 2));
-
-	if (rest != "-9z99")
-	{
-		BMessage msg (M_NOTIFY_COMMAND);
-
-		msg.AddString ("cmd", rest.String());
-		msg.AddBool ("add", false);
-		msg.AddRect ("frame", Frame());
-		msg.AddString ("server", serverName.String());
-		bowser_app->PostMessage (&msg);
-	}
-}
-
-void
-ClientWindow::PreferencesCmd (const char *data)
-{
-	be_app_messenger.SendMessage (M_PREFS_BUTTON);
-}
-
-void
-ClientWindow::AboutCmd (const char *data)
-{
-	be_app_messenger.SendMessage (B_ABOUT_REQUESTED);
-}
-
-void
-ClientWindow::VisitCmd (const char *data)
-{
-	BString buffer (data);
-	int32 place;
-
-	if ((place = buffer.FindFirst (" ")) >= 0)
-	{
-		buffer.Remove (0, place + 1);
-
-		const char *arguments[] = {buffer.String(), 0};
-		
-		
-
-		be_roster->Launch (
-			"text/html",
-			1,
-			const_cast<char **>(arguments));
-	}
-}
-
-void
-ClientWindow::SleepCmd (const char *data)
-{
-	BString rest (RestOfString (data, 2));
-
-	if (rest != "-9z99")
-	{
-		// this basically locks up the window its run from,
-		// but I can't think of a better way with our current
-		// commands implementation
-		int32 time = atoi(rest.String());
-		snooze(time * 1000 * 100); // deciseconds? 10 = one second
-	}
 }
 
 

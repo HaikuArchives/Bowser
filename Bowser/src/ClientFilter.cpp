@@ -38,8 +38,10 @@ ClientInputFilter::Filter (BMessage *msg, BHandler **target)
 			break;
 
 		case B_KEY_DOWN:
+		{
 			result = HandleKeys (msg);
 			break;
+		}
 
 		case B_MOUSE_UP:
 			if (handledDrop)
@@ -323,10 +325,9 @@ ClientInputFilter::HandleDrop (const char *buffer)
 	}
 	
 	int32 start, finish;
-	window->input->TextView()->GetSelection(&start, &finish);
+	window->input->TextView()->GetSelection (&start, &finish);
 	msg.AddInt32 ("selstart", start);
 	msg.AddInt32 ("selend", finish);
-
 
 	if (result || lines == 1)
 	{

@@ -17,7 +17,7 @@
 # the file name, ...
 
 BINARY := Bowser
-VERSION := 1.0
+VERSION := 1.0.1
 LIBS := -lbe -lnet -lnetapi -ltextencoding -ltranslation -ltracker
 
 ################################################

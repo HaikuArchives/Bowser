@@ -1,5 +1,11 @@
-Bowser 1.0
+Bowser 1.0.1
 http://bowser.sourceforge.net
+
+[1.0.1]
+ * Fixed issue with using fonts larger than the default for the input box.
+ * New internal /command parsing system. Bowser is now smaller and uses less ram!
+ * Unknown /commands are passed to the server
+
 
 [1.0]
  * New DCC system

@@ -1,0 +1,27 @@
+#!/bin/sh
+####################################################
+# Get current CL-Amp song in playlist #1
+#
+# Tested with CL-Amp 3.7 and clr 6
+#
+# requires clr binary (http://www.bebits.com/app/176)
+# put it in ~/config/bin/
+#
+# -Wade Majors (guru@startrek.com)
+
+#####################################################
+
+
+# make sure clr exists
+if [ ! -f /bin/clr ] &&
+   [ ! -f /boot/home/config/bin/clr ]
+then
+	echo "I should install 'clr' properly."
+	exit 1
+fi
+
+
+echo -n "CL-Amp is playing: "
+clr get title
+
+# eof
