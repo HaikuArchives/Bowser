@@ -3,6 +3,7 @@
 #include <NodeInfo.h>
 #include <Roster.h>
 #include <ScrollView.h>
+#include <Clipboard.h>
 
 
 #include "VTextControl.h"
@@ -183,7 +184,7 @@ ClientInputFilter::HandleKeys (BMessage *msg)
 			{
 				BClipboard clipboard("system");
 				const char *text;
-				int32 textLen;
+				ssize_t textLen;
 				BMessage *clip = (BMessage *)NULL;
 				if (clipboard.Lock()) {
 				   if ((clip = clipboard.Data()))

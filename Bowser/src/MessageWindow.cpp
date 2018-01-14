@@ -18,7 +18,11 @@
 #include <Application.h>
 
 #include <stdlib.h>
-#include <net/netdb.h>
+//#include <net/netdb.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <sys/select.h>
+#include <arpa/inet.h>
 
 #include "VTextControl.h"
 #include "Bowser.h"
@@ -112,9 +116,9 @@ bool MessageWindow::QuitRequested (void)
     dConnected = false;
     
     if (dInitiate)
-      closesocket (mySocket);
+      close (mySocket);
     
-    closesocket (acceptSocket);
+    close (acceptSocket);
 
     suspend_thread (dataThread);
     kill_thread (dataThread);
@@ -444,7 +448,7 @@ MessageWindow::DCCIn (void *arg)
   BMessenger mMsgr (mWin);
 
   struct sockaddr_in remoteAddy;
-  int theLen (sizeof (struct sockaddr_in));
+  socklen_t theLen (sizeof (struct sockaddr_in));
 
   mWin->acceptSocket = accept(mWin->mySocket, (struct sockaddr*)&remoteAddy, &theLen);
 
@@ -485,8 +489,8 @@ MessageWindow::DCCIn (void *arg)
 	
   outta_there: // GOTO MARKER
 
-  closesocket (mWin->mySocket);
-  closesocket (mWin->acceptSocket);
+  close (mWin->mySocket);
+  close (mWin->acceptSocket);
 
   return 0;
 }
@@ -536,7 +540,7 @@ MessageWindow::DCCOut (void *arg)
 
     mWin->PackDisplay (&msg, "Error connecting socket.\n", 0);
     mWin->PostMessage (&msg);
-    closesocket (mWin->mySocket);
+    close (mWin->mySocket);
     return false;
   }
 
@@ -576,7 +580,7 @@ MessageWindow::DCCOut (void *arg)
 	
   outta_loop: // GOTO MARKER
 
-  closesocket (mWin->acceptSocket);
+  close (mWin->acceptSocket);
   
   return 0;
 }

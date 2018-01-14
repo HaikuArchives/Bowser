@@ -42,7 +42,7 @@ StatusView::~StatusView (void)
 {
 	while (!items.IsEmpty())
 	{
-		StatusItem *item ((StatusItem *)items.RemoveItem (0L));
+		StatusItem *item ((StatusItem *)items.RemoveItem (0));
 
 		delete item;
 	}

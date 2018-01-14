@@ -6,6 +6,7 @@
 #include <Font.h>
 
 #include <stdio.h>
+#include <string.h>
 
 #include "Bowser.h"
 #include "PrefFont.h"

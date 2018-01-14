@@ -147,7 +147,7 @@ ServerWindow::~ServerWindow (void)
 	if (parse_buffer) delete [] parse_buffer;
 
 	char *nick;
-	while ((nick = (char *)lnicks->RemoveItem (0L)) != 0)
+	while ((nick = (char *)lnicks->RemoveItem (0)) != 0)
 		delete [] nick;
 	delete lnicks;
 
@@ -787,7 +787,7 @@ ServerWindow::Establish (void *arg)
 	if (endPoint->Connect (address) == B_NO_ERROR)
 	{
 		struct sockaddr_in sin;
-		int namelen (sizeof (struct sockaddr_in));
+		socklen_t namelen (sizeof (struct sockaddr_in));
 		BMessage statusMsg1 (M_DISPLAY);
 		server->PackDisplay (&statusMsg1, "[@] Established\n", &(server->errorColor));
 		server->PostMessage(&statusMsg1);

@@ -6,7 +6,9 @@
 #include <String.h>
 //#include <Messenger.h>
 #include <File.h>
-#include <socket.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <sys/select.h>
 
 class BStatusBar;
 class BStringView;

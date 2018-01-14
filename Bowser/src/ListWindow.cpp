@@ -166,7 +166,7 @@ ListWindow::~ListWindow (void)
 
 	showing.MakeEmpty();
 	listView->MakeEmpty();
-	while ((item = (BListItem *)list.RemoveItem (0L)) != 0)
+	while ((item = (BListItem *)list.RemoveItem (0)) != 0)
 	{
 		delete item;
 	}
@@ -215,7 +215,7 @@ ListWindow::MessageReceived (BMessage *msg)
 				BListItem *item;
 				showing.MakeEmpty();
 				listView->MakeEmpty();
-				while ((item = (BListItem *)list.RemoveItem (0L)) != 0)
+				while ((item = (BListItem *)list.RemoveItem (0)) != 0)
 				{
 					delete item;
 				}

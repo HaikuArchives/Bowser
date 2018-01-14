@@ -8,6 +8,7 @@
 #include "Bowser.h"
 #include "StringManip.h"
 #include "ServerWindow.h"
+#include <OS.h>
 
 void
 ServerWindow::ParseCTCP(BString theNick, BString theTarget, BString theMsg)
@@ -73,7 +74,8 @@ ServerWindow::ParseCTCP(BString theNick, BString theTarget, BString theMsg)
 			if (myInfo.cpu_count > 1)
 				sysInfoString << "s";
 			
-			sysInfoString << " @ ~" << myInfo.cpu_clock_speed / 1000000 << "MHz";
+			//sysInfoString << " @ ~" << myInfo.cpu_clock_speed / 1000000 << "MHz"
+			sysInfoString << " @ ~0" << "MHz";
 					
 		}
 		else

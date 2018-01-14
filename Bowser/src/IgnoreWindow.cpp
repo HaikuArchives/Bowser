@@ -500,7 +500,7 @@ IgnoreItem::~IgnoreItem (void)
 
 	while (!excludes.IsEmpty())
 	{
-		BStringItem *item ((BStringItem *)excludes.RemoveItem (0L));
+		BStringItem *item ((BStringItem *)excludes.RemoveItem (0));
 
 		delete item;
 	}

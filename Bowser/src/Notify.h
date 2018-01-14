@@ -23,7 +23,7 @@ class _EXPORT NotifyView : public BView
 											// Left in header, cuz only
 											// two files include this one.
 											// not too bad
-	map<int32, NotifyData *>		servers;
+	std::map<int32, NotifyData *>		servers;
 	int32									news,
 											nicks,
 											others,
