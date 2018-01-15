@@ -28,7 +28,8 @@
 //#include "IgnoreWindow.h"
 
 #include <stdio.h>
-#include <map.h>
+#include <stdlib.h>
+#include <map>
 #include <ctype.h>
 
 const char *ClientWindow::endl						("\1\1\1\1\1");

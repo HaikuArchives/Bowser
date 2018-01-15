@@ -60,7 +60,7 @@ class AppSettings : public Settings
 	int32							current;
 	BRect							setupFrame;
 
-	vector<BString>			nicks;
+	std::vector<BString>			nicks;
 	rgb_color					colors[MAX_COLORS];
 	BString						events[MAX_EVENTS];
 	BString						commands[MAX_COMMANDS];
@@ -857,8 +857,11 @@ BowserApp::MessageReceived (BMessage *msg)
 			{
 				while (!sd->ignores.IsEmpty())
 				{
+					#ifdef __x86_64__
+					IgnoreItem *item ((IgnoreItem *)sd->ignores.RemoveItem (0));
+					#else
 					IgnoreItem *item ((IgnoreItem *)sd->ignores.RemoveItem (0L));
-
+					#endif
 					delete item;
 				}
 
@@ -2247,11 +2250,7 @@ AppSettings::AddDeskbarIcon (int32 mask)
 	if ((mask & NOTIFY_NICK_BIT) != 0
 	||  (mask & NOTIFY_CONT_BIT) != 0)
 	{
-		#ifdef __INTEL__
 		BDeskbar deskbar;
-		#else
-		BDeskbarInterface deskbar;
-		#endif
 
 		if (
 

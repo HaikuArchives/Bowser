@@ -4,9 +4,11 @@
 #include <Roster.h>
 #include <FindDirectory.h>
 #include <stdio.h>
-#include <map.h>
+#include <stdlib.h>
+#include <map>
 #include <netdb.h>
 #include <ctype.h>
+#include <arpa/inet.h>
 
 #include "Bowser.h"
 #include "IRCDefines.h"
@@ -20,6 +22,8 @@
 #include "IRCView.h"
 #include "IRCDefines.h"
 #include "Settings.h"
+
+using namespace std;
 
 bool
 ClientWindow::ParseCmd (const char *data)

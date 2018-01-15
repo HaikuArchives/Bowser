@@ -20,7 +20,7 @@ BINARY := Bowser
 VTOP := 1.1.1
 VDATE := $(shell date +%Y%m%d)
 VERSION := $(VTOP)-$(VDATE)
-LIBS := -lbe -lnet -lnetapi -ltextencoding -ltranslation -ltracker
+LIBS := -lbe -lbnetapi -lnetwork -ltextencoding -ltranslation -ltracker
 
 ################################################
 
@@ -39,6 +39,7 @@ CFLAGS += -O3
 CFLAGS += -fno-pic 
 CFLAGS += -ffast-math 
 CFLAGS += -Wall -W -Wno-multichar -Wp,-Wall 
+CFLAGS += -fPIC
 #CFLAGS += -Werror
 
 LD := g++
@@ -87,10 +88,7 @@ binarchive : $(FULLNAME).zip
 $(BINARY) : $(OBJECTS)
 	@echo linking $@
 	@$(LD) $(LDFLAGS) $(OBJECTS) -o $@
-	@echo merging resources
-	@echo resource\(\'CSTR\', 100, \"VERSION\"\) { \"$(VERSION)\" } >version.r
-	@mwbres -merge -o $(SRCDIR)/Bowser.rsrc version.r
-	@rm -f version.r
+	@rc $(SRCDIR)/Bowser.rdef
 	@xres -o $@ $(SRCDIR)/Bowser.rsrc
 	@mimeset -f $@
 	
@@ -103,7 +101,6 @@ $(DEPDIR)/%.d : $(SRCDIR)/%.cpp
 	@echo generating dependencies for $<
 	@mkdir -p $(DEPDIR)
 	@$(DEP) $< > $@
-	@echo -e yf.i$(OBJDIR)/\\033t:a$(DEPDIR)/\\033pad \\033f:a $(MAKEFILE)\\033ZZ | vi $@ >/dev/null 2>/dev/null
 
 $(FULLNAME).zip : $(BINARY) $(DATA) $(EXTRADATA) $(MAKEFILE)
 	@rm -rf $@~

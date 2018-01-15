@@ -5,6 +5,7 @@
 #include <Window.h>
 #include <String.h>
 #include <List.h>
+#include <ListItem.h>
 
 #include <vector>
 
@@ -33,7 +34,7 @@ class ServerData
 									// nickname list.  One single list
 									// of nicknames.  Users specify the
 									// order for each server.
-	vector<uint32>				order;
+	std::vector<uint32>				order;
 	BList							ignores,
 									notifies;
 	ServerOptions				*options;

@@ -153,7 +153,7 @@ DCCConnect::Stopped (void)
 
 	if (s > 0)
 	{
-		closesocket (s);
+		close (s);
 	}
 
 	Unlock();
@@ -446,12 +446,12 @@ DCCSend::Transfer (void *arg)
 	sin.sin_addr.s_addr = INADDR_ANY;
 	sin.sin_port        = htons (atoi (view->port.String()));
 
-	int sin_size = (sizeof (struct sockaddr_in));
+	socklen_t sin_size = (sizeof (struct sockaddr_in));
 		
 	if (!view->running || bind (sd, (sockaddr *)&sin, sin_size) < 0)
 	{
 		view->UpdateStatus ("Unable to establish connection.");
-		closesocket (sd);
+		close (sd);
 		view->Unlock();
 		view->Stopped();
 		return 0;
@@ -479,7 +479,7 @@ DCCSend::Transfer (void *arg)
 		if (listen (sd, 1) < 0)
 		{
 			view->UpdateStatus ("Unable to establish connection.");
-			closesocket (sd);
+			close (sd);
 			view->Unlock();
 			view->Stopped();
 			return 0;
@@ -502,7 +502,7 @@ DCCSend::Transfer (void *arg)
 		if (select (sd + 1, &rset, 0, 0, &t) < 0)
 		{
 			view->UpdateStatus ("Unable to establish connection.");
-			closesocket (sd);
+			close (sd);
 			view->Unlock();
 			view->Stopped();
 			return 0;
@@ -522,7 +522,7 @@ DCCSend::Transfer (void *arg)
 	};
 	char set[4];
 	memset(set, 1, sizeof(set));
-	closesocket (sd);
+	close (sd);
 	view->Unlock();
 	
 	view->file.SetTo(view->file_name.String(), B_READ_ONLY);

@@ -21,9 +21,11 @@
 
 #include <stdio.h>
 
+using namespace std;
+
 struct NotifyData
 {
-	map<BString, NotifyData *>			clients;	// Yeah, I know this is wasted
+	std::map<BString, NotifyData *>			clients;	// Yeah, I know this is wasted
 													// on the second level deep..
 													// shoot me!
 

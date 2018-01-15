@@ -500,8 +500,11 @@ IgnoreItem::~IgnoreItem (void)
 
 	while (!excludes.IsEmpty())
 	{
+		#ifdef __x86_64__
+		BStringItem *item ((BStringItem *)excludes.RemoveItem (0));
+		#else
 		BStringItem *item ((BStringItem *)excludes.RemoveItem (0L));
-
+		#endif
 		delete item;
 	}
 

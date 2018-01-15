@@ -21,13 +21,15 @@
 
 #include <Roster.h>
 
-#include <list.h>
+#include <list>
 #include <ctype.h>
 
 #include "VTextControl.h"
 #include "Bowser.h"
 #include "ClientWindow.h"
 #include "IRCView.h"
+
+using namespace std;
 
 struct URL 
 { 

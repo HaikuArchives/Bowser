@@ -12,7 +12,7 @@
 #include <stdio.h>
 
 #include "Bowser.h"
-#include "BTextControl.h"
+#include <TextControl.h>
 #include "ServerWindow.h"
 
 class DCCFileFilter : public BMessageFilter
