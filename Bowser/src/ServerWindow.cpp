@@ -147,7 +147,11 @@ ServerWindow::~ServerWindow (void)
 	if (parse_buffer) delete [] parse_buffer;
 
 	char *nick;
+	#ifdef __x86_64__
 	while ((nick = (char *)lnicks->RemoveItem (0)) != 0)
+	#else
+	while ((nick = (char *)lnicks->RemoveItem (0L)) != 0)
+	#endif
 		delete [] nick;
 	delete lnicks;
 

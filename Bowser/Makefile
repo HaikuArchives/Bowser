@@ -101,7 +101,6 @@ $(DEPDIR)/%.d : $(SRCDIR)/%.cpp
 	@echo generating dependencies for $<
 	@mkdir -p $(DEPDIR)
 	@$(DEP) $< > $@
-	@echo -e yf.i$(OBJDIR)/\\033t:a$(DEPDIR)/\\033pad \\033f:a $(MAKEFILE)\\033ZZ | vi $@ >/dev/null 2>/dev/null
 
 $(FULLNAME).zip : $(BINARY) $(DATA) $(EXTRADATA) $(MAKEFILE)
 	@rm -rf $@~

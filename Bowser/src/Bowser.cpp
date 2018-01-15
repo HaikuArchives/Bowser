@@ -857,8 +857,11 @@ BowserApp::MessageReceived (BMessage *msg)
 			{
 				while (!sd->ignores.IsEmpty())
 				{
+					#ifdef __x86_64__
 					IgnoreItem *item ((IgnoreItem *)sd->ignores.RemoveItem (0));
-
+					#else
+					IgnoreItem *item ((IgnoreItem *)sd->ignores.RemoveItem (0L));
+					#endif
 					delete item;
 				}
 
