@@ -1215,7 +1215,7 @@ SetupView::Draw (BRect)
 }
 
 NickFilter::NickFilter (SetupView *sv)
-	: BMessageFilter (B_PROGRAMMED_DELIVERY, B_LOCAL_SOURCE),
+	: BMessageFilter (B_PROGRAMMED_DELIVERY, B_ANY_SOURCE),
 	  view (sv)
 {
 }
